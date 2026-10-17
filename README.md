@@ -69,10 +69,13 @@ REAPER 7.x（Windows / macOS）単体で動作します。基本の機能には�
   - Herculesの一部の機種・CDJなど: 「プリセット一覧」の表の「準備」と「機種ごとの説明」に書いてあります。
   - NI Traktor Kontrol（HID）: 付属の`HID bridge`とloopMIDIを使います（「HIDの機材をつなぐ」）。
 - **あれば使うもの**（ない場合も、基本の機能は使用できます）
-  - ffmpeg: 動画の取り込みと全コマキーフレームへの変換で、元の動画とコマがずれないように変換します。演奏の収録で動画も作ります。探す場所は「動画が重い場合」を参照してください。
-  - js_ReaScriptAPI拡張（ReaPackで入れます）とffmpeg: LOADボタン（Media Explorerから読み込む）に必要です。LOADボタンはWindowsだけで動きます。
-  - js_ReaScriptAPI拡張とSWS拡張（どちらもReaPackで入れます）: Media Explorerのファイルの試聴（`P`キー）に必要です。
-  - ffmpeg: JSFX画面へファイルをドラッグして読み込むときに必要です（js_ReaScriptAPI拡張は要りません）。LOADボタンと同じく、Windowsだけで動きます。
+  - ffmpeg: 次の機能に使います。探す場所は「動画が重い場合」を参照してください。
+    - 動画を取り込んで全コマキーフレームへ変換します（元の動画とコマがずれないように変換します）。
+    - 演奏の収録時に動画も作成します。
+    - JSFX画面へファイルをドラッグして読み込みます（Windowsのみです）。
+    - LOADボタンでMedia Explorerから読み込みます（js_ReaScriptAPI拡張も必要です。Windowsのみです）。
+  - js_ReaScriptAPI拡張（ReaPackで入れます）: LOADボタンと、Media Explorerのファイルの試聴（`P`キー）に必要です。
+  - SWS拡張（ReaPackで入れます）: Media Explorerのファイルの試聴（`P`キー）に必要です（js_ReaScriptAPI拡張も必要です）。
 
 ### 1. ファイルの配置
 

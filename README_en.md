@@ -68,10 +68,13 @@ Runs on REAPER 7.x (Windows / macOS) alone. The basic features need no extension
   - Some Hercules models, CDJs and others: noted under “Preparation” in the table and in “Notes by model” of the “Preset list”.
   - NI Traktor Kontrol (HID): uses the included `HID bridge` and loopMIDI (see “HID controllers”).
 - **Used when present** (the basic features work without them)
-  - FFmpeg: importing a video and converting it to all-intra use it so that the frames match the source exactly; capturing a performance also makes videos with it. For where ReaScratch looks for it, see “Heavy video”.
-  - The js_ReaScriptAPI extension (install it with ReaPack) and FFmpeg: needed for the LOAD button (loading from the Media Explorer). The LOAD button works on Windows only.
-  - The js_ReaScriptAPI and SWS extensions (both from ReaPack): needed for previewing a Media Explorer file (the `P` key).
-  - FFmpeg: needed for loading a file by dragging it onto a JSFX window (js_ReaScriptAPI is not needed). Like the LOAD button, it works on Windows only.
+  - FFmpeg: used for the following. For where ReaScratch looks for it, see “Heavy video”.
+    - Importing a video and converting it to all-intra (so that the frames match the source exactly)
+    - Making videos when capturing a performance
+    - Loading a file by dragging it onto a JSFX window (Windows only)
+    - Loading with the LOAD button (from the Media Explorer; also needs js_ReaScriptAPI; Windows only)
+  - The js_ReaScriptAPI extension (install it with ReaPack): needed for the LOAD button and for previewing a Media Explorer file (the `P` key).
+  - The SWS extension (install it with ReaPack): needed for previewing a Media Explorer file (the `P` key; also needs js_ReaScriptAPI).
 
 ### 1. Copy the files
 
