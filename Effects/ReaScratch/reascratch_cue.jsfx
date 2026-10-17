@@ -1,0 +1,67 @@
+desc:DJ cue mix (headphones)
+// (The kit's cue mix. Its name must not contain the word ReaScratch: the scripts take a JSFX with that name for a deck.)
+// On the "Cue" track made by reascratch_setup.lua (the track does not feed the master; it goes straight to the
+// headphone output). Its inputs come from the decks' "scratch engine" tracks:
+//   channels 1/2 = the cue: each deck's channels 5/6 (its sound before the crossfader while its cue is on)
+//   channels 3/4 = the main: each deck's channels 1/2 after the track fader (crossfader and volume fader included,
+//                  the master's FX not)
+//   channels 5/6 = the metronome (⚪191): each deck's channels 7/8, added whatever the cue mix (the knob turned to the
+//                  main must not take it away). With the metronome on the main too (gmem [392] = 1, deck A's setting)
+//                  the main brings it in by the mix already: then only the rest (1 - mix), so it stays as loud
+// Cue mix: 0 = the cue only, 1 = the main only, between = both. Linear (cue x (1 - m) + main x m; equal power until
+// 2026-10-07): with equal power, cueing the deck that is on air in the middle made it 0.71 + 0.71 = 3 dB louder (user's
+// report: louder and breaking up); linear keeps it at the same level while the faders are up.
+// Limiter (2026-10-07): this sound does not go through the master's limiter, and the cue plus the main went over 0 dBFS
+// and broke up on the hard limit (user's report with the Buddy). Peaks above -1 dBFS are turned down at once and come
+// back in 0.1 s; the hard limit stays behind it.
+slider1:0.5<0,1,0.01>Cue mix (0 = cue, 1 = main)
+slider2:0<-30,6,0.1>Level (dB)
+slider3:0<0,30,0.1>-Limiter gain reduction (dB, shown)
+// a cue mix knob on the controller (⚪76, the APC40's CUE LEVEL): a deck writes the mix to gmem[44] and counts gmem[46]
+// up; this JSFX takes it and writes its own value back (gmem[45] = 1: it is there), so the knob goes on from here
+options:gmem=ReaScratch_video
+
+in_pin:cue left
+in_pin:cue right
+in_pin:main left
+in_pin:main right
+in_pin:metronome left
+in_pin:metronome right
+out_pin:left
+out_pin:right
+
+@init
+ext_noinit = 1;
+mx_cue = 1 - slider1; mx_main = slider1; mx_lvl = 10 ^ (slider2 / 20);
+mx_gc = mx_cue; mx_gm = mx_main; mx_gl = mx_lvl;
+lm_g = 1; lm_min = 1;
+cm_seen = gmem[46];
+LM_THR = 10 ^ (-1 / 20);
+
+@slider
+mx_cue = 1 - slider1; mx_main = slider1; mx_lvl = 10 ^ (slider2 / 20);
+
+@block
+gmem[46] != cm_seen ? (cm_seen = gmem[46]; slider1 = max(0, min(1, gmem[44])); sliderchange(slider1); mx_cue = 1 - slider1; mx_main = slider1)
+                    : (gmem[44] = slider1; gmem[45] = 1);
+mx_k = 1 - exp(-1 / (0.01 * srate));   // 10 ms smoothing: turning the knob does not click
+lm_k = 1 - exp(-1 / (0.1 * srate));    // limiter release 0.1 s
+(lm_n += samplesblock) >= srate * 0.1 ? (
+  slider3 = -20 * log10(max(lm_min, 0.000001)); sliderchange(slider3); lm_min = 1; lm_n = 0;
+);
+
+@sample
+mx_gc += (mx_cue - mx_gc) * mx_k; mx_gm += (mx_main - mx_gm) * mx_k; mx_gl += (mx_lvl - mx_gl) * mx_k;
+mx_mt = gmem[392] > 0.5 ? 1 - mx_gm : 1;   // (⚪191) the metronome, see the top
+mx_l = (spl0 * mx_gc + spl2 * mx_gm + spl4 * mx_mt) * mx_gl;
+mx_r = (spl1 * mx_gc + spl3 * mx_gm + spl5 * mx_mt) * mx_gl;
+mx_l != mx_l ? mx_l = 0;
+mx_r != mx_r ? mx_r = 0;
+lm_p = max(abs(mx_l), abs(mx_r));
+lm_t = lm_p > LM_THR ? LM_THR / lm_p : 1;
+lm_t < lm_g ? lm_g = lm_t : lm_g += (lm_t - lm_g) * lm_k;
+lm_min = min(lm_min, lm_g);
+// safety: hard limit to 0 dBFS (headphones)
+spl0 = max(-1, min(1, mx_l * lm_g));
+spl1 = max(-1, min(1, mx_r * lm_g));
+spl2 = spl3 = spl4 = spl5 = 0;

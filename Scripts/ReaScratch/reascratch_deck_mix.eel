@@ -1,0 +1,1343 @@
+// ReaScratch deck mix
+// (the first line is the name REAPER shows for this Video processor: kept short, ⚪100 - the long one was cut off)
+// Deck A (this track, "video") and deck B (the track above with video, "video B view")
+// mixed by the crossfader. reascratch_setup.lua puts this code into a Video processor on the "video" track.
+// The ReaScratch JSFX writes into the shared memory below: [0] deck A gain, [1] deck B gain (0..1, after the
+// crossfader curve, cut and Z key), [2] blend (0 mix, 1 add, 2 subtract, 3 multiply, 4 overlay, 5 soft light,
+// 6 hard light, 7 luma key, 8 chroma key; 9 .. the transitions and camera moves, see m below), [3] key threshold, [4] key softness (both 0..1; written by deck A).
+// Crossfader at deck A's end = A only, at deck B's end = B only, in the middle = the blend of the two (for "mix" a
+// plain crossfade). Both cut = black. Input 0 is this track's own picture, which is also the framebuffer, so both
+// inputs are copied first. Blend: B on top of A (subtract = A - B; the keys make parts of B see-through).
+// Video FX (2026-10-04, after Resolume's effects): [10..13] deck A / [20..23] deck B = effect (0 off, 1 tint,
+// 2 hue rotate, 3 invert, 4 threshold, 5 mirror, 6 kaleidoscope, 7 LoRez, 8 shift RGB, 9 strobe, 10 trails, 11 VHS, 12 disc, 13 line art, 14 halftone, 15 zoom blur), amount
+// (0..1), beat position (beats from the deck's grid, -1 = no BPM), lamp colour (0 yellow, 1 blue: the tint);
+// [5] / [6] = the effect and amount on the mixed picture (deck A's settings; its beat position for the strobe).
+// (⚪128) [131] / [132] / [133] = the camera moves' (the remapped m 25 .. 36, see m below) blur, overshoot, shake (deck A's setup page).
+// [99] = the time the last frame took to draw (s; written here, ⚪99). [100] / [101] = deck B / A shows without a frame (⚪100). [102] / [103] = deck A / B Strobe step (⚪101).
+// [16] / [26] = deck A / B head moved in the last block (1) or stands still (0). (⚪132) [134] / [135] = deck A / B platter turns (the Disc).
+// (⚪135) [136..138] / [139..141] = deck A / B video FX LFO: shape, rate, depth (see lfo below).
+// [7] / [27] = deck A / B crossfader flips so far, [8] / [28] = the gain of the last flip.
+// (⚪151) [270] / [271] = deck A / B clip changes so far (the JSFX counts them up when it changes the slot): the deck's
+// trails and still-picture history are let go (deck B also by [29], the video sync script's; never written: nothing is
+// let go). (⚪179) Also read, explained where they are used: [32] / [33] picture fade, [34] / [35] filter tilt, [126] /
+// [127], [142] / [143] the crossfader's place and end, [170..177] the TOUCH FX second rows, [188], [241..243],
+// [273..276], [372] / [373] (⚪188). Written here: the label pictures at 9000000 / 9010000 and the preview's at 9020000 (see PVN below).
+// A deck's effect is drawn only while the deck shows.
+//@gmem=ReaScratch_video
+//@param1:redraw 'redraw (the video sync script)' 0 0 1 0.5 0.001
+
+t_draw0 = time_precise();   // (⚪99, see the end)
+inA = 0; inB = input_track(0);
+okA = input_info(inA, wA, hA);
+okB = input_info(inB, wB, hB);
+// (user's report 2026-10-10: the transitions blurred) project size on auto took deck A's size: a 320 x 240 deck A made
+// the mix (deck B's 1280 x 720 too) at 320 x 240. Now the largest picture either deck has handed (kept, so the size
+// does not jump when a deck hands no frame)
+okA && wA * hA > vmx_w * vmx_h ? (vmx_w = wA; vmx_h = hA);
+okB && wB * hB > vmx_w * vmx_h ? (vmx_w = wB; vmx_h = hB);
+project_wh_valid === 0 && vmx_w > 0 ? (project_w = vmx_w; project_h = vmx_h);
+colorspace = 'RGBA';
+// (⚪174, user's choice 2026-10-14: as rekordbox's deck previews, each deck's picture in its record's label in the JSFX) a
+// PVN x PVN grid of the deck's picture with its own video effects (also while it is hidden in the mix: see shA below),
+// the square in its middle, as r * 65536 + g * 256 + b: deck A gmem [9000000 ..], deck B [9010000 ..], each with a count
+// of the grids written at + PVN * PVN. gfx_getpixel reads 0..255 (tried 2026-10-14). ((user 2026-10-14: larger,
+// sharper, with the effects) 32 -> 64)
+// (⚪179, 2026-10-15: moved from 3000000 / 3010000, which lay inside deck B's scratch lane 2100000 .. 3099999; the JSFX reads the same)
+PVN = 64;
+function pv_take(pv_in, pv_w, pv_h, pv_o) local(pv_s, pv_x0, pv_y0, pv_i, pv_j, pv_r, pv_g, pv_b) (
+  pv_s = min(pv_w, pv_h); pv_x0 = (pv_w - pv_s) * 0.5; pv_y0 = (pv_h - pv_s) * 0.5;
+  pv_j = 0;
+  loop(PVN,
+    pv_i = 0;
+    loop(PVN,
+      pv_r = pv_g = pv_b = 0;
+      gfx_getpixel(pv_in, pv_x0 + (pv_i + 0.5) * pv_s / PVN, pv_y0 + (pv_j + 0.5) * pv_s / PVN, pv_r, pv_g, pv_b);
+      gmem[pv_o + pv_j * PVN + pv_i] = floor(max(0, min(255, pv_r))) * 65536 + floor(max(0, min(255, pv_g))) * 256 + floor(max(0, min(255, pv_b)));
+      pv_i += 1;
+    );
+    pv_j += 1;
+  );
+  gmem[pv_o + PVN * PVN] += 1;
+);
+// work at 1280x720 at most (2026-10-04): with a 1920x1080 deck A the per-pixel blends drew only 15-22 frames/s.
+// Project size on auto: the output itself becomes this size (REAPER scales it to the window). Project size set by
+// hand: the mix is made at this size and stretched to the project size at the end.
+sc = min(1, min(1280 / max(1, project_w), 720 / max(1, project_h)));
+// ((⚪169, user's choice 2026-10-14: a 320 x 240 video made every effect at 320 x 240, coarse when stretched to the window)
+// at least as large as fits in 960 x 720 (aspect kept: 320 x 240 -> 960 x 720, 640 x 360 -> 960 x 540); the pictures
+// are grown into it (put: filtered), the effects drawn at that size
+sc >= 1 ? sc = max(1, min(960 / max(1, project_w), 720 / max(1, project_h)));
+W = max(2, floor(project_w * sc * 0.5) * 2); H = max(2, floor(project_h * sc * 0.5) * 2);
+project_wh_valid === 0 ? (project_w = W; project_h = H);
+OW = project_w; OH = project_h;
+// (⚪151) the working size changed this frame: the kept pictures (deck B's, the trails, the histories) hold nothing
+// usable at the new size (taken again / started afresh below)
+sz_ch = W != szW || H != szH; szW = W; szH = H;
+
+gA = max(0, min(1, gmem[0])); gB = max(0, min(1, gmem[1]));
+// a crossfader flip (counted by each deck: [7] / [27], its gain [8] / [28]) is drawn for 2 frames even if it is over
+// before this frame (a 16th-note cut fell between two redraws and never showed, 2026-10-05)
+// (⚪151) the first frame after the code is loaded takes the counts as they are: fnA = 0 drew an old flip's gain for 2 frames
+!fn_ok ? (fnA = gmem[7]; fnB = gmem[27]; clA = gmem[270]; clB = gmem[271]; fn_ok = 1);
+gmem[7] != fnA ? (fnA = gmem[7]; fkA = 2; fgA = gmem[8]); fkA > 0 ? (gA = max(0, min(1, fgA)); fkA -= 1);
+gmem[27] != fnB ? (fnB = gmem[27]; fkB = 2; fgB = gmem[28]); fkB > 0 ? (gB = max(0, min(1, fgB)); fkB -= 1);
+// (⚪91) [34] / [35] = each deck's filter tilt (-1 the lows .. +1 the highs): the mixed picture's look follows the decks
+// that show (weighted by their gains). [32] / [33] = each deck's picture fade (1 - opacity; the APC40's faders): the
+// sound stays, the picture goes (the other deck takes its place, as on the crossfader)
+tw = gA + gB; tlt = tw > 0.0001 ? max(-1, min(1, (gA * gmem[34] + gB * gmem[35]) / tw)) : 0; abs(tlt) < 0.02 ? tlt = 0;
+gA *= 1 - max(0, min(1, gmem[32])); gB *= 1 - max(0, min(1, gmem[33]));
+m = max(0, min(37, gmem[2] | 0)); m = m <= 12 ? m : m <= 25 ? m + 1 : m <= 30 ? m + 2 : m == 31 ? 33 : m == 32 ? 36 : m + 4;   // ((2026-10-12, user's choice) 32 = Tilt down (it was Tilt up, 35))
+// ((2026-10-12, user's choices) taken out of the JSFX's list: Push (13 here), then Whip left (27), Tilt left (34) and
+// Tilt up (35) (going back runs the mirror image of Whip right / Tilt right / Tilt down instead): the JSFX's numbers
+// turned into these, which are not reached for the four (⚪150: this said Tilt down (36); 36 is the one in use))
+ th = gmem[3]; soft = gmem[4];   // ((⚪116) 9 .. 24 = the transitions, (⚪128) 25 .. 36 the camera moves, (⚪136) 37 .. the transitions again)
+s = gA + gB;
+xf = s > 0.0001 ? gB / s : 0.5;
+// ((2026-10-12) the transitions and camera moves (9 ..) by the crossfader's place (deck A writes gmem [142], see the JSFX):
+// by the gains' ratio they jumped to a quarter at the cut-in and stopped at three quarters)
+m >= 9 && gmem[142] >= 0 ? xf = max(0, min(1, gmem[142]));
+vis = min(1, s);
+cA = xf < 0.5 ? 1 - 2 * xf : 0;
+cY = xf < 0.5 ? 2 * xf : 2 - 2 * xf;
+cB = xf < 0.5 ? 0 : 2 * xf - 1;
+cA *= vis; cY *= vis; cB *= vis;
+m == 0 ? (cA += cY * 0.5; cB += cY * 0.5; cY = 0);   // plain mix = straight crossfade
+// ((⚪116) a transition: between the ends only its picture (T), at the ends the deck there
+m >= 9 ? (cY = xf > 0.0001 && xf < 0.9999 ? vis : 0; cA = xf <= 0.0001 ? vis : 0; cB = xf >= 0.9999 ? vis : 0);
+
+function clear(img) ( gfx_dest = img; gfx_mode = 0; gfx_a = 1; gfx_set(0, 0, 0, 1); gfx_fillrect(0, 0, W, H); );
+function put(img, a, md) ( a > 0 ? ( gfx_mode = md | 0x100; gfx_a = a; gfx_blit(img, 1); ); );
+// ((2026-10-12, the user's report: deck B showed deck A's video at the crossfader's B end) a Video processor holds 32
+// images at most, and with the effects and transitions added on 2026-10-12 about 60 could be made: once the user had
+// gone through them, a new one (deck B's trails picture) came out as -1 = this track's own picture, deck A's video.
+// ((⚪151, counted again) kept for good: imA, imB, BKEEP, T, Oimg, the trails TPIC [0..2], the histories HPIC [0..2], DSK,
+// HTD, QBM (14) and the scratch TMP1 / TMP3 / TMPS (3): 17. Every other picture is let go at the end of the function that
+// made it (ifree: the handle back to 0, so the next resize makes a new one). The most alive at once on top of the 17: a
+// camera move (TBL + CMT, CMM, CMU, CMS + one half copy + one bordered copy: 7; 9 if both decks' copies were made) or the
+// Defocus (TBL + 7 levels: 8); a deck's VHS 2 (TMPV2 / TMPV4, ⚪161), Halftone or Line art 4: 26 at most
+// ((⚪160) + the VHS afterglow VHP [0..2] kept while VHS is drawn (freed at the frame's end when not): 29 at most
+function ifree(im) ( im > 0 ? gfx_img_free(im); 0; );   // ((⚪150) not "h": that is H)
+// (⚪151) every picture is made / resized here: gfx_img_resize gives -1 (= this track's own picture) when it cannot make
+// one, and a handle kept at -1 drew every frame after into the output itself (and resized it). Failed: 0 (none), so the
+// next frame tries again; the callers that keep a picture by its size forget the size then
+function iget(im, iw, ih) local(r) ( r = gfx_img_resize(im > 0 ? im : 0, iw, ih); r > 0 ? r : 0; );
+function cp(dst, src) ( gfx_dest = dst; gfx_mode = 0; gfx_a = 1; gfx_blit(src, 0); );
+// (⚪151) the usual 0..1 hash of a number (the fraction of a large sine), used for the "random" places and times
+function hash(x) ( x = sin(x) * 43758.5453; x - floor(x); );
+// (⚪151) a copy of the picture (W x H) put at (ox, oy) in a larger one (gw x gh) whose edges are the picture's own
+// stretched round it (the LoRez, the Halftone, the Brush wipe's card): returns the larger one's handle
+function pad_cp(dst, src, gw, gh, ox, oy) (
+  dst = iget(dst, gw, gh);
+  gfx_dest = dst; gfx_mode = 0x100; gfx_a = 1; gfx_blit(src, 0, 0, 0, gw, gh);   // the stretched edges
+  gfx_mode = 0; gfx_blit(src, 0, ox, oy, W, H);
+  dst;
+);
+// (⚪151) the lookup table's red part (LUT [0..255], 0..1) copied to the three channels times lr / lg / lb (up to 1)
+function lut_fill(lr, lg, lb) local(i, v) (
+  i = 0; loop(256, v = LUT[i]; LUT[i] = min(1, v * lr); LUT[256 + i] = min(1, v * lg); LUT[512 + i] = min(1, v * lb); i += 1);
+);
+// (⚪151, was in the Strobe and lfo twice) a deck's beat position comes in steps (one an audio block, about 23 ms):
+// while it moves forward, the place between its steps from the time since it came at the beats a second it moves.
+// o [0] the last position, o [1] when it changed, o [2] beats a second (smoothed). bp_mv = it is moving forward now
+function bp_est(o, ph) local(t, d, dt) (
+  t = time_precise();
+  ph != o[0] ? (
+    d = ph - o[0]; dt = t - o[1];
+    d > 0 && d < 1 && dt > 0.001 && dt < 0.25 ? o[2] += (d / dt - o[2]) * (o[2] > 0 ? 0.15 : 1) : (o[2] = 0);
+    o[0] = ph; o[1] = t;
+  );
+  bp_mv = o[2] > 0 && t - o[1] < 0.25;
+  bp_mv ? ph + o[2] * (t - o[1]) : ph;
+);
+
+// (⚪116, user's request and choices 2026-10-10: transitions from deck A to B, after After Effects / Premiere / Resolve /
+// Resolume / gl-transitions) blends 9 .. 24: the crossfader's place p (0 = deck A .. 1 = deck B) is how far it has gone,
+// and T is the picture between the ends (no blend of the two). Wipe right / down / diagonal, Split (from the centre),
+// Push, Slide, Blinds (8 bands), Iris box / diamond / circle, Clock (from 12, clockwise), Blocks (16 x 9, each at its
+// own time), Dip to black / white, Pixelate (coarsest in the middle), Zoom. The edges: see tr_m below
+// ((⚪116 follow-up, user's reports 2026-10-10: jagged, then coarse / blurred edges) each pixel of the mask (white =
+// deck B) is worked out from its distance to the shape's edge (px): 0.5 + d / (1 + 40 x key softness), so the edge is
+// smooth at any angle and the softness is exact (before: the shapes drawn in strips, shrunk and grown again - REAPER
+// picks pixels without averaging when it shrinks, so the steps of slanted and round edges stayed, blurred). The mask is
+// worked out at half size (one evalrect, in order: _1 counts the pixels) and grown. Blocks keeps its sharp rects (tr_m,
+// user's choice). QMK = the mask at 1x, QMH = at half. The wipes start and end a blur's width outside the picture
+function tr_m(qx, qy, qw, qh) ( qw > 0 && qh > 0 ? gfx_fillrect(qx, qy, qw, qh); );   // a rect of the mask
+function tr_draw(qm, qp) local(qx, qy, qw, qh, qi, qj, qr, qa, qcx, qcy, qf, qsw, qsh, qs, qmg, i) (
+  qcx = W / 2; qcy = H / 2;
+  qm == 14 || (qm >= 21 && qm <= 24) ? (   // ((⚪150) Push (13) is out of the list: its branch went)
+    clear(T);
+    qm == 14 ? (gfx_dest = T; gfx_mode = 0x100; gfx_a = 1; gfx_blit(imA, 0, 0, 0, W, H); gfx_blit(imB, 0, tr_mr ? W - qp * W : qp * W - W, 0, W, H)) :   // ((user's request 2026-10-12) B in from the left (before: from the right); going back from the right)
+    qm == 21 || qm == 22 ? (gfx_dest = T; gfx_mode = 0x100; gfx_a = 1; gfx_blit(qp < 0.5 ? imA : imB, 0, 0, 0, W, H);
+                            qa = qp < 0.5 ? 2 * qp : 2 - 2 * qp; gfx_mode = 0; gfx_set(qm == 22, qm == 22, qm == 22, qa, 0); gfx_fillrect(0, 0, W, H)) :
+    qm == 23 ? (qf = 1 + 31 * (1 - abs(2 * qp - 1)); qsw = max(1, floor(W / qf)); qsh = max(1, floor(H / qf)); TRP = iget(TRP, qsw, qsh);
+                gfx_dest = TRP; gfx_mode = 0x100; gfx_a = 1; gfx_blit(qp < 0.5 ? imA : imB, 0, 0, 0, qsw, qsh);
+                gfx_dest = T; gfx_mode = 0; gfx_a = 1; gfx_blit(TRP, 0, 0, 0, W, H)) :
+    (gfx_dest = T; gfx_mode = 0x100; qs = 1 + qp; gfx_a = 1; gfx_blit(imA, 0, qcx - qcx * qs, qcy - qcy * qs, W * qs, H * qs);
+     qs = 2 - qp; gfx_a = qp; gfx_blit(imB, 0, qcx - qcx * qs, qcy - qcy * qs, W * qs, H * qs));
+  ) : (
+    QMK = iget(QMK, W, H);
+    qm == 20 ? (
+      gfx_dest = QMK; gfx_mode = 0; gfx_a = 1; gfx_set(0, 0, 0, 1); gfx_fillrect(0, 0, W, H); gfx_set(1, 1, 1, 1);
+      qw = W / 16; qh = H / 9; qj = 0; loop(9, qi = 0; loop(16, qr = hash(qi * 12.9898 + qj * 78.233); qr < qp ? tr_m(qi * qw, qj * qh, qw, qh); qi += 1); qj += 1);
+    ) : (
+      qf = 1 + max(0, min(1, soft)) * 40; qmg = qf + 2;   // the blur's width (px) and the wipes' margin
+      tq_fi = 1 / qf; tq_cx = qcx; tq_cy = qcy;
+      qsw = max(2, floor(W / 2)); qsh = max(2, floor(H / 2));
+      // ((⚪150) the Brush wipe (37) is br_draw's since 2026-10-12: its mask code here (a margin tq_mh round the mask, the
+      // torn edge, the shadow and white edge, the turned stop-motion steps) went; (⚪179) its margin, always 0, too)
+      QMH = iget(QMH, qsw, qsh);
+      tq_mw = qsw; tq_mi = 1 / tq_mw; tq_sx = W / qsw; tq_sy = H / qsh;
+      // the pixel's place in 1x units: _6, _7; the distance into deck B's side: _9
+      strcpy(#tq, "_2=floor((_1+0.5)*tq_mi); _3=_1-_2*tq_mw; _1+=1; _6=(_3+0.5)*tq_sx; _7=(_2+0.5)*tq_sy; ");
+      tr_mr ? (tq_W = W; strcat(#tq, "_6=tq_W-_6; "));   // ((2026-10-12) mirrored left-right going back (see tr_mr))
+      qm == 9 ? (tq_e = -qmg + qp * (W + 2 * qmg); strcat(#tq, "_9=tq_e-_6;")) :
+      qm == 10 ? (tq_e = -qmg + qp * (H + 2 * qmg); strcat(#tq, "_9=tq_e-_7;")) :
+      // the edge slants: x at row y = e + (1 - y / H) * 0.6 H
+      qm == 11 ? (tq_e = -qmg - H * 0.6 + qp * (W + H * 0.6 + 2 * qmg); tq_k = H * 0.6; tq_ih = 1 / H; tq_n = 1 / sqrt(1.36);
+                  strcat(#tq, "_9=(tq_e+(1-_7*tq_ih)*tq_k-_6)*tq_n;")) :
+      qm == 12 ? (tq_e = -qmg + qp * (W / 2 + qmg); strcat(#tq, "_9=tq_e-abs(_6-tq_cx);")) :
+      // 8 bands, each filled from its top
+      qm == 15 ? (tq_bh = H / 8; tq_bi = 1 / tq_bh; tq_e = qp * (tq_bh + qmg) - qmg * 0.5; strcat(#tq, "_9=tq_e-(_7-floor(_7*tq_bi)*tq_bh);")) :
+      qm == 16 ? (tq_w2 = -qmg * 0.5 + qp * (W / 2 + qmg); tq_h2 = tq_w2 * H / W; strcat(#tq, "_9=min(tq_w2-abs(_6-tq_cx),tq_h2-abs(_7-tq_cy));")) :
+      qm == 17 ? (tq_ax = 2 / W; tq_ay = 2 / H; tq_n = 1 / sqrt(tq_ax * tq_ax + tq_ay * tq_ay); qa = qmg / tq_n; tq_e = -qa * 0.5 + qp * (2 + qa);
+                  strcat(#tq, "_9=(tq_e-abs(_6-tq_cx)*tq_ax-abs(_7-tq_cy)*tq_ay)*tq_n;")) :
+      qm == 18 ? (tq_e = -qmg * 0.5 + qp * (sqrt(qcx * qcx + qcy * qcy) + qmg); strcat(#tq, "_4=_6-tq_cx; _5=_7-tq_cy; _9=tq_e-sqrt(_4*_4+_5*_5);")) :
+      // the angle from 12, clockwise (0 .. 2 pi); the distance to the nearer of the two rays, as the arc at that radius
+      (tq_e = qp * 2 * $pi; tq_e >= 2 * $pi - 0.0001 ? tq_e = 100;
+       strcat(#tq, "_4=_6-tq_cx; _5=_7-tq_cy; _8=atan2(_4,-_5); _8<0?_8+=2*$pi; _2=sqrt(_4*_4+_5*_5); _9=tq_e>=100?1000:_8<tq_e?min(_8,tq_e-_8)*_2:-min(_8-tq_e,2*$pi-_8)*_2;"));
+      strcat(#tq, " _9=max(0,min(255,(0.5+_9*tq_fi)*255)); r=_9; g=_9; b=_9; a=255;");
+      gfx_dest = QMH; gfx_evalrect(0, 0, qsw, qsh, #tq, 1, -2, "_1=0;");
+      gfx_dest = QMK; gfx_mode = 0x100; gfx_a = 1; gfx_blit(QMH, 0, 0, 0, W, H, 0, 0, qsw, qsh);
+    );
+    // ((⚪169, lighter) A x (1 - mask) + B x mask by blits (multiply, the mask turned over by a table, add): it was one
+    // per-pixel pass
+    TMP1 = iget(TMP1, W, H); TMP3 = iget(TMP3, W, H);
+    cp(T, imB); gfx_dest = T; gfx_mode = 3; gfx_a = 1; gfx_blit(QMK, 0);
+    cp(TMP1, QMK); i = 0; loop(256, LUT[i] = LUT[256 + i] = LUT[512 + i] = 1 - i / 255; i += 1); gfx_dest = TMP1; gfx_procrect(0, 0, W, H, LUT);
+    cp(TMP3, imA); gfx_dest = TMP3; gfx_mode = 3; gfx_a = 1; gfx_blit(TMP1, 0);
+    gfx_dest = T; gfx_mode = 1; gfx_a = 1; gfx_blit(TMP3, 0);
+  );
+  QMK = ifree(QMK); QMH = ifree(QMH); TRP = ifree(TRP);
+  gfx_mode = 0; gfx_a = 1;
+);
+
+// ((⚪118) moved here, before vfx: VHS calls raster, and EEL2 needs a function defined before it is used)
+// the raster wave (⚪93 / ⚪95 / ⚪97 / ⚪98, user's requests 2026-10-08 / 09; the vibrato fader's picture): the picture bent up and
+// down in waves across it, as AviUtl's raster (vertical): each column moved, and the picture's top and bottom edges wave
+// too (black shows where the picture moved away, as in the picture the user showed). Measured there (2026-10-09): crest
+// to trough 14-16 px of a 540 px tall picture, a wave every 32 px, and from a crest down 0,1,3,5,8,10,12,13,14 px: sharper
+// crests and rounder troughs than a sine -> the shape 0.7 sin + 0.3 (a cusp at the crest), a wave every H / 17, up to
+// 1.6 % of H (against the height: across the width a 4:3 picture in 16:9 got fewer, gentler waves), standing still.
+// The picture is put into one with black margins above and below (TMPR) and read through four grids (quarters of the
+// width) of 32 source points a wave (16 looked jagged on curves, user's report 2026-10-09), 2 rows (gfx_xformblit took nothing at 271 x 2: about 250 columns a call at most).
+// The picture shrinks by the wave's height above and below (up to 3 %), so both its top and bottom edges stay inside the
+// screen and wave all the way (a picture filling the screen showed only the half that moved in, as drops)
+function rs_wave(ph) local(c) ( c = cos(ph); 0.7 * c + 0.3 * (1 - 2 * abs(sin(ph * 0.5))); );
+// one quarter of the width through the grid: dest rect (dx, dy, dw, dh) shows the rows from ya to yb of the warped picture
+// (rows of the output, may be fractional), the columns of quarter q
+function rs_quarter(k, q, n4, nc, m, a0, dx, dy, dw, dh, ya, yb) local(i, gx, ph, sy, sx, f) (
+  f = (H - 1 + 2 * a0) / (H - 1); i = 0; gx = 0;
+  loop(nc,
+    ph = (q + gx / (nc - 1)) * n4 * 2 * $pi;
+    sy = k * 0.016 * H * rs_wave(ph);   // (this way the sharp crests point up, as in the picture the user showed)
+    sx = q * W / 4 + gx / (nc - 1) * (W / 4 - 1);
+    KT[i] = sx; KT[i + 1] = m - a0 + sy + ya * f;
+    KT[2 * nc + i] = sx; KT[2 * nc + i + 1] = m - a0 + sy + yb * f;
+    i += 2; gx += 1;
+  );
+  gfx_xformblit(TMPR, dx, dy, dw, dh, nc, 2, KT);
+);
+function raster(img, k) local(n, n4, nc, m, a0, q, hb, band, yb, ss) (
+  n = max(4, floor(W / (H / 17) * 0.25 + 0.5) * 4); n4 = n / 4; nc = min(250, n4 * 32 + 1);   // (4 parts, 32 points a wave)
+  m = ceil(2 * 0.016 * H) + 2; a0 = k * 0.016 * H;
+  TMPR = iget(TMPR, W, H + 2 * m);
+  gfx_dest = TMPR; gfx_mode = 0; gfx_a = 1; gfx_set(0, 0, 0, 1); gfx_fillrect(0, 0, W, H + 2 * m);
+  gfx_blit(img, 0, 0, m, W, H);
+  // a small picture is warped at 4 x 4 (up to 320 wide) / 2 x 2 (up to 640) its pixels and brought down by halves (2 x 2
+  // averages): at 320 x 240 the warped edges showed the pixels in steps (user's question 2026-10-09: "can supersampling
+  // smooth it at the small size?"). A bigger one is warped at its size, and only its top and bottom edges as below
+  ss = W <= 320 ? 4 : W <= 640 ? 2 : 1;
+  ss > 1 ? (
+    TMPU = iget(TMPU, W * ss, H * ss);
+    gfx_dest = TMPU; gfx_mode = 0x100; gfx_a = 1;
+    q = 0; loop(4, rs_quarter(k, q, n4, nc, m, a0, q * W * ss / 4, 0, W * ss / 4, H * ss, 0, H - 1); q += 1);
+    ss == 4 ? (TMPU2 = iget(TMPU2, W * 2, H * 2); gfx_dest = TMPU2; gfx_mode = 0x100; gfx_blit(TMPU, 0, 0, 0, W * 2, H * 2));
+    gfx_dest = img; gfx_mode = 0x100; gfx_a = 1; gfx_blit(ss == 4 ? TMPU2 : TMPU, 0, 0, 0, W, H);
+  ) : (
+  gfx_dest = img; gfx_mode = 0x100; gfx_a = 1;
+  q = 0; loop(4, rs_quarter(k, q, n4, nc, m, a0, q * W / 4, 0, W / 4, H, 0, H - 1); q += 1);
+  // the top and bottom edges again at 4 x 4 the pixels, brought down by halves (2 x 2 averages): their slopes showed steps
+  // (user's report 2026-10-09: "the top and bottom edges still look rough")
+  hb = ceil(2 * a0) + 4;
+  a0 > 0.3 ? (
+    band = 0;
+    loop(2,
+      yb = band == 0 ? 0 : H - hb;
+      TMPB = iget(TMPB, W * 4, hb * 4); TMPB2 = iget(TMPB2, W * 2, hb * 2);
+      gfx_dest = TMPB; gfx_mode = 0x100; gfx_a = 1;
+      q = 0; loop(4, rs_quarter(k, q, n4, nc, m, a0, q * W, 0, W, hb * 4, yb, yb + hb); q += 1);
+      gfx_dest = TMPB2; gfx_mode = 0x100; gfx_blit(TMPB, 0, 0, 0, W * 2, hb * 2);
+      gfx_dest = img; gfx_mode = 0x100; gfx_blit(TMPB2, 0, 0, yb, W, hb);
+      band += 1;
+    );
+  );
+  );
+  TMPR = ifree(TMPR); TMPU = ifree(TMPU); TMPU2 = ifree(TMPU2); TMPB = ifree(TMPB); TMPB2 = ifree(TMPB2);
+  gfx_mode = 0; gfx_a = 1;
+);
+// ---- video FX on one picture (img, W x H). t = effect, k = amount (0 = off), ph = beat position, col = lamp colour,
+// slot = 0 deck A / 1 deck B / 2 the mix (its own trails picture). EEL2 names ignore case: a local h would hide H, cy
+// would hide cY, and the blend code's x1 would overwrite a picture named X1 - keep names apart. Scratch pictures: TMP1, TMP3 (W x H), TMPS (small).
+// Per-pixel results are clamped to 0..255. Local memory: LUT (768, invert), KT (kaleidoscope grid), TRF (frame each trails picture was last drawn),
+// TRK (it holds a real frame). vok = the picture is a frame REAPER handed over (set before each call)
+// ((⚪151) TRT = when each trails picture was last added to, HLC = when each history was last looked at; the pictures'
+// handles: TPIC [slot] the trails, HPIC [slot] the histories, as TRA / TRB / TRM and HIA / HIB / HIM were)
+LUT = 0; KT = 1000; TRF = 9000; TRK = 9010; HMV = 9020; HSD = 9030; HTM = 9040; STB = 9300;
+HLC = 9050; TRT = 9060; HPIC = 9070; TPIC = 9080; VHP = 9090; VHF = 9094; VNB = 20000;   // ((⚪160) VHS's afterglow: the last frame per picture / when drawn
+fr += 1;
+stb_ft = time_precise(); stb_ft - STB[20] > 0.001 && stb_ft - STB[20] < 0.2 ? STB[21] += (stb_ft - STB[20] - STB[21]) * (STB[21] > 0 ? 0.05 : 1); STB[20] = stb_ft;   // ((⚪114) the frame time, for the Strobe)
+// (⚪151) a picture's trails and history start afresh (no ghost of the last clip or of another size): the size changed,
+// or the deck's clip changed (deck A [270], deck B [271] and [29] below; the mix's with either deck's)
+function pic_reset(slot) ( HSD[slot] = 0; TRF[slot] = -10; );
+sz_ch ? (hasBK = 0; pic_reset(0); pic_reset(1); pic_reset(2));
+gmem[270] != clA ? (clA = gmem[270]; pic_reset(0); pic_reset(2));
+gmem[271] != clB ? (clB = gmem[271]; pic_reset(1); pic_reset(2));
+// (⚪100, user's choice 2026-10-09) the echo fader on a standing picture: trails show only the motion they saw, and a still
+// picture showed nothing at all. So each picture keeps a history of its last frames while it moves, whatever the effects
+// (each frame laid over at 0.07 as the trails at amount 1, at most every 1/30 s; started afresh from the first frame of a move, so a jump
+// or another slot leaves no old ghost), frozen while it stands. Standing, the trails show that history over the picture
+// at the trails' strength: the afterimage of the motion just before it stopped. HPIC [0..2] = deck A / B / the mix,
+// HMV = it moved last frame, HSD = it holds frames, HTM = when it was last added to. mv = it moves now
+// ((⚪151) not looked at for over 1 s (the deck hidden): the history is dropped, not shown again as it was)
+function hist_upd(img, slot, mv) local(hh, t) (
+  t = time_precise();
+  t - HLC[slot] > 1 ? HSD[slot] = 0; HLC[slot] = t;
+  HPIC[slot] = iget(HPIC[slot], W, H); hh = HPIC[slot]; hh <= 0 ? HSD[slot] = 0;
+  hh > 0 && mv && vok && (t - HTM[slot] >= 0.03 || !HMV[slot]) ? (   // (at most every 1/30 s: REAPER draws several times a frame)
+    !HMV[slot] || !HSD[slot] ? cp(hh, img) : (gfx_dest = hh; gfx_mode = 0; gfx_a = 0.07; gfx_blit(img, 0));
+    HSD[slot] = 1; HTM[slot] = t;
+  );
+  HMV[slot] = mv;
+);
+// (⚪114) the Tint's colours: Black, White, the lamp colour (col: 0 yellow, 1 blue), Red, Orange, Yellow, Lime, Green,
+// Cyan, Sky, Blue, Navy, Purple, Magenta, Pink (the JSFX's sliders 249 / 250) -> tp_r / tp_g / tp_b (0..1)
+function tpal(i, col) (
+  i = i | 0;
+  i == 1 ? (tp_r = 1; tp_g = 1; tp_b = 1) :
+  i == 2 ? (col ? (tp_r = 0.31; tp_g = 0.70; tp_b = 0.88) : (tp_r = 0.98; tp_g = 0.84; tp_b = 0.26)) :
+  i == 3 ? (tp_r = 0.95; tp_g = 0.15; tp_b = 0.15) : i == 4 ? (tp_r = 1; tp_g = 0.55; tp_b = 0.1) :
+  i == 5 ? (tp_r = 1; tp_g = 0.9; tp_b = 0.15) : i == 6 ? (tp_r = 0.65; tp_g = 0.95; tp_b = 0.2) :
+  i == 7 ? (tp_r = 0.1; tp_g = 0.75; tp_b = 0.3) : i == 8 ? (tp_r = 0.1; tp_g = 0.9; tp_b = 0.95) :
+  i == 9 ? (tp_r = 0.45; tp_g = 0.75; tp_b = 1) : i == 10 ? (tp_r = 0.15; tp_g = 0.35; tp_b = 1) :
+  i == 11 ? (tp_r = 0.05; tp_g = 0.08; tp_b = 0.35) : i == 12 ? (tp_r = 0.55; tp_g = 0.2; tp_b = 0.9) :
+  i == 13 ? (tp_r = 1; tp_g = 0.15; tp_b = 0.85) : i == 14 ? (tp_r = 1; tp_g = 0.55; tp_b = 0.75) :
+  (tp_r = 0; tp_g = 0; tp_b = 0);
+);
+// (⚪132, user's choice 2026-10-12: the round panels of a motion graphics reel) the Disc: the picture cut out as a record
+// (a circle as high as the picture, a spindle hole, a darker ring at the rim and two faint ones between the tracks: fine
+// grooves made moire, 2026-10-12), turned by the deck's
+// platter (as the sticker on the front page: forward = clockwise, a scratch turns it back), black round it; mixed in by
+// the amount. The mask (DSK, white = the record) is worked out once for each size (one evalrect, in order: _1 counts
+// the pixels); the turn is a gfx_deltablit round the centre (a circle as high as the picture reads only inside it)
+// ((user's request for the camera moves, 2026-10-11, applied here too: an AviUtl-like blur when turning) while the record
+// turns fast (a scratch, a spin back), copies along the arc it turned since the last frame (DSL [slot]: the last turns),
+// as long as the camera moves' blur (gmem [131]) says, averaged (up to 16; at most 1.6 rad)
+DSL = 9620;
+function disc(img, k, turns, slot) local(c, sn, a, x0, q, sp, n, i, aa) (
+  (DSK_w != W || DSK_h != H) ? (
+    DSK = iget(DSK, W, H); DSK_w = DSK > 0 ? W : 0; DSK_h = H;   // ((⚪151) not made: tried again next frame)
+    dk_w = W; dk_iw = 1 / W; dk_cx = W / 2; dk_cy = H / 2; dk_R = H * 0.47; dk_h = H * 0.012;
+    dk_rr = dk_R - H * 0.012; dk_ri = 1 / max(1, H * 0.006); dk_r1 = dk_R * 0.62; dk_r2 = dk_R * 0.8; dk_ti = 1 / max(1, H * 0.003);
+    DSK > 0 ? (gfx_dest = DSK; gfx_evalrect(0, 0, W, H, "_2=floor((_1+0.5)*dk_iw); _3=_1-_2*dk_w; _1+=1; _4=_3+0.5-dk_cx; _5=_2+0.5-dk_cy; _6=sqrt(_4*_4+_5*_5); _7=max(0,min(1,dk_R-_6+0.5))*max(0,min(1,_6-dk_h+0.5)); _8=max(0,1-abs(_6-dk_rr)*dk_ri); _9=max(0,1-abs(_6-dk_r1)*dk_ti)+max(0,1-abs(_6-dk_r2)*dk_ti); _7*=(1-0.5*_8)*(1-0.3*_9)*255; r=_7; g=_7; b=_7; a=255;", 1, -2, "_1=0;"));
+  );
+  DSK > 0 ? (   // ((⚪151) no mask: no Disc this frame)
+  // only the square the record is in (x0 .. x0 + q): the source of a pixel = the centre + its offset turned back by a
+  a = 2 * $pi * turns; q = min(W, H); x0 = floor((W - q) / 2);
+  // (a jump (CUE, a hot cue, the first frame) is more than 0.4 turns a frame: no blur)
+  sp = abs(turns - DSL[slot]) < 0.4 ? 2 * $pi * (turns - DSL[slot]) * max(0, min(1, gmem[131])) : 0; DSL[slot] = turns; sp = max(-1.6, min(1.6, sp));
+  // (while blurring, as the camera moves: the copies at half size (DSH / DST, 0.006 rad apart, up to 24: 0.02 apart at
+  // full size showed steps and took 41 ms) and the mean grown back)
+  n = abs(sp) > 0.012 ? min(24, ceil(abs(sp) / 0.006) + 1) : 1;
+  TMP1 = iget(TMP1, W, H); TMP3 = iget(TMP3, W, H);
+  n == 1 ? (
+    c = cos(a); sn = sin(a); gfx_dest = TMP1; gfx_mode = 0x100; gfx_a = 1;
+    gfx_deltablit(img, x0, 0, q, H, W / 2 + c * (x0 - W / 2) - sn * H / 2, H / 2 - sn * (x0 - W / 2) - c * H / 2, c, -sn, sn, c, 0, 0);
+  ) : (
+    DSH = iget(DSH, floor(q / 2), floor(H / 2)); DST = iget(DST, floor(q / 2), floor(H / 2));
+    i = 0;
+    loop(n,
+      aa = a - sp * i / (n - 1); c = cos(aa); sn = sin(aa);
+      // a half-size pixel (x, y) reads the picture at its centre + (turned back) 2 x its offset from the half square's centre
+      gfx_dest = i == 0 ? DST : DSH; gfx_mode = 0x100; gfx_a = 1;
+      gfx_deltablit(img, 0, 0, floor(q / 2), floor(H / 2), W / 2 - 2 * (c * q / 4 + sn * H / 4), H / 2 - 2 * (-sn * q / 4 + c * H / 4), 2 * c, -2 * sn, 2 * sn, 2 * c, 0, 0);
+      i > 0 ? (gfx_dest = DST; gfx_mode = 0; gfx_a = 1 / (i + 1); gfx_blit(DSH, 0));   // (the running mean)
+      i += 1;
+    );
+    gfx_dest = TMP1; gfx_mode = 0x100; gfx_a = 1; gfx_blit(DST, 0, x0, 0, q, H);
+  );
+  clear(TMP3);
+  gfx_dest = TMP3; gfx_mode = 0; gfx_evalrect(x0, 0, q, H, "_1=s2r*(1/255); r=sr*_1; g=sg*_1; b=sb*_1; a=255;", 0, TMP1, "", DSK);
+  gfx_dest = img; gfx_mode = 0; gfx_a = k; gfx_blit(TMP3, 0); gfx_a = 1;
+  DSH = ifree(DSH); DST = ifree(DST);
+  );
+);
+// (⚪133, user's choice 2026-10-12: a line drawing on purple paper in the reel) Line art: the outlines only, white lines
+// on black (the colours: with the Tint after it, e.g. Purple / White). The picture at half size (each pixel the mean of
+// 2 x 2: less noise, lines about 2 px wide at full size) against copies moved by 1 px right and down (an evalrect reads
+// no other pixel): the brightness steps across and down are the line. la_lines(img) leaves the lines (0..255 grey) in
+// LAF (W x H); ⚪140 uses it too. Pictures LA0 / LA1 / LA2 (half size)
+// ((⚪167, user's choice 2026-10-14) la_lines(img, d): the work picture at 1 / d of the size (d = 2: half, thin
+// lines, the details; up to 8: an eighth, thick lines, only the big outlines). Made smaller by halves first (a mean of
+// 2 x 2 each; LA1 / LA2 lent for it), the last step at most 2 x, so the small picture is a mean, not a few pixels picked
+// ((⚪167, user's report the same day: poor even at the least; asked for a known good method) tried a difference of
+// Gaussians (DoG, from Winnemoeller et al., "XDoG", 2012): crisp, but heavier (about +10..20 ms) and still not the look
+// asked for: ((user's report: "not yet crisp and smooth like an X-ray"; lighter wanted) the X-ray look as the usual
+// recipes make it (After Effects: Find Edges + Invert + Glow, added; the Proto-Monitor shader: the brightness inverted,
+// the steps to the neighbours added): the gradient's size not cut by a threshold (smooth), a little under 3 grey levels
+// dropped (the MJPEG's blocks on flat backgrounds), a curve (^0.8), plus a glow (the edges blurred at half the work
+// size) and the picture's brightness inverted, faint (the "body"). Worked out at 1 / d of the size (d = 2: half, as
+// before: light), grown back; the edges made steep again by d / 2 (the glow and the body left smooth). Tried in Python
+// on the test videos . la_box: a 3 x 3 box, a mean of copies 1 px apart (LA1 the scratch)
+// (the top-left sw x sh of im / LA1 only: the pictures may be larger, e.g. the glow at half size in LA2)
+function la_box(im, sw, sh) (
+  gfx_dest = LA1; gfx_mode = 0; gfx_a = 1; gfx_blit(im, 0, 0, 0, sw, sh, 0, 0, sw, sh);
+  gfx_a = 0.5; gfx_blit(im, 0, -1, 0, sw, sh, 0, 0, sw, sh); gfx_a = 1 / 3; gfx_blit(im, 0, 1, 0, sw, sh, 0, 0, sw, sh);
+  gfx_dest = im; gfx_a = 1; gfx_blit(LA1, 0, 0, 0, sw, sh, 0, 0, sw, sh);
+  gfx_a = 0.5; gfx_blit(LA1, 0, 0, -1, sw, sh, 0, 0, sw, sh); gfx_a = 1 / 3; gfx_blit(LA1, 0, 0, 1, sw, sh, 0, 0, sw, sh); gfx_a = 1;
+);
+function la_lines(img, d) local(sw, sh, gw, gh, src) (
+  d = max(2, min(8, d)); sw = max(4, floor(W / d)); sh = max(4, floor(H / d)); gw = floor(sw / 2); gh = floor(sh / 2);
+  LA1 = iget(LA1, max(2, floor(W / 2)), max(2, floor(H / 2))); gfx_dest = LA1; gfx_mode = 0x100; gfx_a = 1; gfx_blit(img, 0, 0, 0, max(2, floor(W / 2)), max(2, floor(H / 2))); src = LA1;
+  d > 4 ? (LA2 = iget(LA2, max(2, floor(W / 4)), max(2, floor(H / 4))); gfx_dest = LA2; gfx_mode = 0x100; gfx_blit(LA1, 0, 0, 0, max(2, floor(W / 4)), max(2, floor(H / 4))); src = LA2);
+  LA0 = iget(LA0, sw, sh); gfx_dest = LA0; gfx_mode = d > 2.001 ? 0x100 : 0; gfx_a = 1; gfx_blit(src, 0, 0, 0, sw, sh);
+  LA1 = iget(LA1, sw, sh); LA2 = iget(LA2, sw, sh);
+  la_box(LA0, sw, sh);
+  // the steps to the right / lower neighbour (copies moved by 1 px; the last column / row kept); r = the edge, g = inverted
+  gfx_dest = LA1; gfx_mode = 0; gfx_a = 1; gfx_blit(LA0, 0, -1, 0, sw, sh); gfx_blit(LA0, 0, sw - 1, 0, 1, sh, sw - 1, 0, 1, sh);
+  gfx_dest = LA2; gfx_blit(LA0, 0, 0, -1, sw, sh); gfx_blit(LA0, 0, 0, sh - 1, sw, 1, 0, sh - 1, sw, 1);
+  gfx_dest = LA0; gfx_evalrect(0, 0, sw, sh, "_1=0.299*r+0.587*g+0.114*b; _2=abs(_1-0.299*sr-0.587*sg-0.114*sb)+abs(_1-0.299*s2r-0.587*s2g-0.114*s2b); _3=max(0,min(1,(_2-3)*(7/255))); r=255*_3^0.8; g=255-_1; b=0; a=255;", 0, LA1, "", LA2);
+  // the glow: the edges at half the work size, two boxes, grown to the full size (LAF); the edges and the body grown too (LA1)
+  gfx_dest = LA2; gfx_mode = 0x100; gfx_a = 1; gfx_blit(LA0, 0, 0, 0, gw, gh); la_box(LA2, gw, gh); la_box(LA2, gw, gh);
+  LAF = iget(LAF, W, H);
+  // (lighter, user's request) below d = 3 (the edges grown at most 1.5 x: their softness hardly shows) the three put
+  // together at the work size and grown once; from 3 at the full size, the edges made steep there
+  d < 3 ? (
+    gfx_dest = LA1; gfx_mode = 0x100; gfx_a = 1; gfx_blit(LA2, 0, 0, 0, sw, sh, 0, 0, gw, gh);
+    gfx_dest = LA0; gfx_mode = 0; gfx_evalrect(0, 0, sw, sh, "_1=max(0,min(255,r+0.7*sr+0.3*g)); r=_1; g=_1; b=_1; a=255;", 0, LA1);
+    gfx_dest = LAF; gfx_mode = 0x100; gfx_blit(LA0, 0, 0, 0, W, H);
+  ) : (
+    // (r = the edges, g = the glow and the body: grown once together, then the edges made steep and the two added)
+    gfx_dest = LA1; gfx_mode = 0x100; gfx_a = 1; gfx_blit(LA2, 0, 0, 0, sw, sh, 0, 0, gw, gh);
+    gfx_dest = LA0; gfx_mode = 0; gfx_evalrect(0, 0, sw, sh, "g=max(0,min(255,0.7*sr+0.3*g)); b=0; a=255;", 0, LA1);
+    la_g = d / 2; gfx_dest = LAF; gfx_mode = 0x100; gfx_blit(LA0, 0, 0, 0, W, H); gfx_mode = 0;
+    gfx_evalrect(0, 0, W, H, "_1=max(0,min(255,max(0,min(255,(r-110)*la_g+110))+g)); r=_1; g=_1; b=_1; a=255;");
+  );
+  gfx_mode = 0;
+);
+// (⚪134, user's choice 2026-10-12: magenta dots on cream paper in the reel) Halftone: black dots on white, one in each
+// cell of a grid (a 48th of the height), as large as the cell is dark (its area: white = none, black = nearly the whole
+// cell); the colours: with the Tint after it (e.g. Magenta / White). The picture is put into one of whole cells (HTP,
+// its edges stretched round it, as the LoRez), halved (2 x 2 means), read once a cell (HTS) and grown without smoothing
+// (HTU: the cell's brightness); the dot's edge from each pixel's distance to its cell's centre, worked out once for
+// each size (HTD, one evalrect in order: 255 = 0.75 cells), 1 px soft
+// ((user's report on the LoRez, 2026-10-08, applied here too) the grid from the centre: an odd number of cells each way,
+// the middle one on the picture's centre (ox / oy = where the picture sits in HTP)
+function la_free() ( LA0 = ifree(LA0); LA1 = ifree(LA1); LA2 = ifree(LA2); LAF = ifree(LAF); );
+function halftone(img, k) local(c, sw, sh, gw, gh, ox, oy, gw2, gh2) (
+  c = max(4, floor(H / (12 * 8 ^ max(0, min(1, k))) + 0.5));   // ((⚪163) the cells by the amount: 12 down the height at 0 .. 96 at 1 (it was 48)
+  sw = 2 * ceil((W / c - 1) / 2) + 1; sh = 2 * ceil((H / c - 1) / 2) + 1; gw = sw * c; gh = sh * c;
+  ox = floor((gw - W) / 2); oy = floor((gh - H) / 2);
+  gw2 = floor(gw / 2); gh2 = floor(gh / 2);   // ((⚪151) whole pixels: gw / 2 had a half with an odd cell)
+  (HTD_w != gw || HTD_h != gh || HTD_c != c) ? (
+    HTD = iget(HTD, gw, gh); HTD_w = HTD > 0 ? gw : 0; HTD_h = gh; HTD_c = c;   // ((⚪151) not made: tried again next frame)
+    ht_w = gw; ht_iw = 1 / gw; ht_ic = 1 / c;
+    HTD > 0 ? (gfx_dest = HTD; gfx_evalrect(0, 0, gw, gh, "_2=floor((_1+0.5)*ht_iw); _3=_1-_2*ht_w; _1+=1; _4=(_3+0.5)*ht_ic; _4-=floor(_4)+0.5; _5=(_2+0.5)*ht_ic; _5-=floor(_5)+0.5; _6=min(255,sqrt(_4*_4+_5*_5)*(255/0.75)); r=_6; g=_6; b=_6; a=255;", 1, -2, "_1=0;"));
+  );
+  HTD > 0 ? (   // ((⚪151) no dot table: no Halftone this frame)
+  HTP = pad_cp(HTP, img, gw, gh, ox, oy); HTH = iget(HTH, gw2, gh2); HTS = iget(HTS, sw, sh); HTU = iget(HTU, gw, gh);
+  gfx_dest = HTH; gfx_mode = 0x100; gfx_blit(HTP, 0, 0, 0, gw2, gh2);
+  gfx_dest = HTS; gfx_blit(HTH, 0, 0, 0, sw, sh, c * 0.25 - 0.5, c * 0.25 - 0.5, gw2, gh2);
+  // the dot's radius once a cell (in HTD's units), then each pixel: inked where nearer its cell's centre than that
+  gfx_evalrect(0, 0, sw, sh, "_1=max(0,min(1,(0.299*r+0.587*g+0.114*b)*(1/255))); r=sqrt(1-_1)*(0.74*255/0.75);");
+  gfx_dest = HTU; gfx_mode = 0; gfx_blit(HTS, 0, 0, 0, gw, gh);
+  ht_k = 0.75 / 255 * c;
+  gfx_evalrect(0, 0, gw, gh, "_1=255-max(0,min(255,(r-sr)*ht_k*255+127.5)); r=_1; g=_1; b=_1; a=255;", 0, HTD);
+  gfx_dest = img; gfx_mode = 0; gfx_a = 1; gfx_blit(HTU, 0, 0, 0, W, H, ox, oy, W, H);   // ((⚪163) at full, not mixed in by the amount
+  HTP = ifree(HTP); HTH = ifree(HTH); HTS = ifree(HTS); HTU = ifree(HTU);
+  );
+);
+// (⚪138, user's choice 2026-10-12: the CD and the rings of the reel) Zoom blur: the picture streaked out from its centre,
+// up to 35 % at the edges by the amount. At half size (2 x 2 means; ZB0 / ZB1 in turn): 4 passes of 4 copies, each grown
+// round the centre by q ^ (i x 4 ^ pass) and averaged, so 256 steps in all from 1 to 1 + 0.35 x amount with 16 blits (the
+// usual trick for a radial blur; 3 passes left steps on text); then grown back
+function zoomblur(img, k) local(sw, sh, q, j, i, s, src, dst) (
+  sw = max(2, floor(W / 2)); sh = max(2, floor(H / 2));
+  ZB0 = iget(ZB0, sw, sh); ZB1 = iget(ZB1, sw, sh);
+  gfx_dest = ZB0; gfx_mode = 0x100; gfx_a = 1; gfx_blit(img, 0, 0, 0, sw, sh);
+  q = (1 + 0.35 * k) ^ (1 / 255); src = ZB0; dst = ZB1; j = 0;
+  loop(4,
+    gfx_dest = dst; i = 0;
+    loop(4, s = q ^ (i * 4 ^ j); gfx_mode = 0x100; gfx_a = 1 / (i + 1); gfx_blit(src, 0, sw / 2 - sw / 2 * s, sh / 2 - sh / 2 * s, sw * s, sh * s); i += 1);
+    i = src; src = dst; dst = i; j += 1;
+  );
+  gfx_dest = img; gfx_mode = 0x100; gfx_a = 1; gfx_blit(src, 0, 0, 0, W, H); gfx_mode = 0;
+  ZB0 = ifree(ZB0); ZB1 = ifree(ZB1);
+);
+// ((⚪161, user's request 2026-10-13: "ntsc is the most complete" - from the user's retweets) VHS's core after zhuker/ntsc
+// (Python, Apache License 2.0, kit/Effects/ReaScratch/LICENSE_ntsc_zhuker.txt; itself after joncampbell123's
+// composite-video-simulator): the picture taken as an NTSC composite signal, one scan line at a time, left to right.
+// gfx_evalrect runs the pixels in order and keeps the variables from one to the next, so the analogue filters (one-pole
+// lowpasses, three in a row, as ntsc's LowpassFilter at 4 x the colour subcarrier rate) run along each line as in ntsc:
+// 1. RGB to YIQ; the colour lowpassed (I 1.3 MHz, Q 0.6 MHz); 2. the colour put into the brightness on the subcarrier
+// (+I, +Q, -I, -Q per sample, the phase turned by 180 degrees every two lines); pre-emphasis; the video noise (a running
+// half-sum: streaks trailing right); 3. taken out again (a box of 4 samples: what is left over is the colour - the dot
+// crawl and rainbow edges); 4. colour noise (the same streaks), the colour's hue wandering line by line; 5. the tape
+// (SP .. EP by the amount): the brightness lowpassed and boosted after (overshoot), the colour lowpassed (smeared right),
+// blended with the line above (as a VHS deck does), sharpened (more overshoot), some lines' colour lost; 6. the TV's
+// lighter colour lowpass; back to RGB. On img (vh_w x vh_h); k = the amount 0..1. VNB [0 .. 4095] = the line above's colour
+function vn_al(cut) ( (1 / 14318181.8) / (1 / (2 * $pi * cut) + 1 / 14318181.8); );
+function vh_ntsc(img, k) (
+  vn_aI = vn_al(1300000); vn_aQ = vn_al(600000); vn_aP = vn_al(1000000); vn_aT = vn_al(2600000);
+  vn_aY = vn_al(2400000 - 1000000 * k); vn_aC = vn_al(320000 - 40000 * k); vn_aS = vn_al(4 * (2400000 - 1000000 * k));
+  vn_pre = 1.5 * k; vn_vno = 16 * k * sqrt(k) + 0.5; vn_cno = 30 * k * sqrt(k); vn_phn = 2 + 38 * k; vn_clp = 0.05 * k * k;
+  vn_shp = 1 + 2 * k; vn_w = vh_w; vn_x = 0; vn_y = 0; vn_pn = 0; memset(VNB, 0, 4096);
+  gfx_dest = img; gfx_mode = 0;
+  gfx_evalrect(0, 0, vh_w, vh_h, "vn_x == 0 ? ( vn_ph = vn_y & 2; vn_pn = (vn_pn + (rand(2) - 1) * vn_phn) * 0.5; vn_cs = cos(vn_pn * 0.0314159); vn_sn = sin(vn_pn * 0.0314159); vn_cl = rand(1) < vn_clp; vn_i1 = vn_i2 = vn_i3 = vn_q1 = vn_q2 = vn_q3 = 0; vn_y1 = vn_y2 = vn_y3 = vn_yh = 16; vn_s1 = vn_s2 = vn_s3 = 16; vn_pp = 16; vn_c0 = vn_c1 = vn_c2 = vn_c3 = 0; vn_di = vn_dq = 0; vn_k1 = vn_k2 = vn_k3 = vn_m1 = vn_m2 = vn_m3 = 0; vn_t1 = vn_t2 = vn_t3 = vn_u1 = vn_u2 = vn_u3 = 0; vn_nz = vn_ni = vn_nq = 0; ); _1 = 0.30 * r + 0.59 * g + 0.11 * b; _2 = -0.27 * (b - _1) + 0.74 * (r - _1); _3 = 0.41 * (b - _1) + 0.48 * (r - _1); vn_i1 += (_2 - vn_i1) * vn_aI; vn_i2 += (vn_i1 - vn_i2) * vn_aI; vn_i3 += (vn_i2 - vn_i3) * vn_aI; vn_q1 += (_3 - vn_q1) * vn_aQ; vn_q2 += (vn_q1 - vn_q2) * vn_aQ; vn_q3 += (vn_q2 - vn_q3) * vn_aQ; _4 = (vn_x + vn_ph) & 3; _5 = _1 + (_4 == 0 ? vn_i3 : _4 == 1 ? vn_q3 : _4 == 2 ? -vn_i3 : -vn_q3); vn_pp += (_5 - vn_pp) * vn_aP; _5 += (_5 - vn_pp) * vn_pre; _5 += vn_nz; vn_nz = (vn_nz + (rand(2) - 1) * vn_vno) * 0.5; vn_c3 = vn_c2; vn_c2 = vn_c1; vn_c1 = vn_c0; vn_c0 = _5; _1 = (vn_c0 + vn_c1 + vn_c2 + vn_c3) * 0.25; _7 = vn_c1 - _1; _8 = (vn_x + 3 + vn_ph) & 3; _8 == 0 ? vn_di = _7 : _8 == 1 ? vn_dq = _7 : _8 == 2 ? vn_di = -_7 : vn_dq = -_7; _2 = vn_di + vn_ni; vn_ni = (vn_ni + (rand(2) - 1) * vn_cno) * 0.5; _3 = vn_dq + vn_nq; vn_nq = (vn_nq + (rand(2) - 1) * vn_cno) * 0.5; _4 = _2 * vn_cs - _3 * vn_sn; _3 = _2 * vn_sn + _3 * vn_cs; _2 = _4; vn_y1 += (_1 - vn_y1) * vn_aY; vn_y2 += (vn_y1 - vn_y2) * vn_aY; vn_y3 += (vn_y2 - vn_y3) * vn_aY; vn_yh += (vn_y3 - vn_yh) * vn_aY; _1 = vn_y3 + (vn_y3 - vn_yh) * 1.6; vn_k1 += (_2 - vn_k1) * vn_aC; vn_k2 += (vn_k1 - vn_k2) * vn_aC; vn_k3 += (vn_k2 - vn_k3) * vn_aC; vn_m1 += (_3 - vn_m1) * vn_aC; vn_m2 += (vn_m1 - vn_m2) * vn_aC; vn_m3 += (vn_m2 - vn_m3) * vn_aC; _4 = VNB[vn_x]; VNB[vn_x] = vn_k3; _2 = (vn_k3 + _4) * 0.5; _4 = VNB[2048 + vn_x]; VNB[2048 + vn_x] = vn_m3; _3 = (vn_m3 + _4) * 0.5; vn_s1 += (_1 - vn_s1) * vn_aS; vn_s2 += (vn_s1 - vn_s2) * vn_aS; vn_s3 += (vn_s2 - vn_s3) * vn_aS; _1 += (_1 - vn_s3) * vn_shp; vn_cl ? (_2 = 0; _3 = 0); vn_t1 += (_2 - vn_t1) * vn_aT; vn_t2 += (vn_t1 - vn_t2) * vn_aT; vn_t3 += (vn_t2 - vn_t3) * vn_aT; vn_u1 += (_3 - vn_u1) * vn_aT; vn_u2 += (vn_u1 - vn_u2) * vn_aT; vn_u3 += (vn_u2 - vn_u3) * vn_aT; r = max(0, min(255, _1 + 0.956 * vn_t3 + 0.621 * vn_u3)); g = max(0, min(255, _1 - 0.272 * vn_t3 - 0.647 * vn_u3)); b = max(0, min(255, _1 - 1.106 * vn_t3 + 1.703 * vn_u3)); vn_x += 1; vn_x >= vn_w ? (vn_x = 0; vn_y += 1);");
+);
+// ((⚪160) VHS's straight overlays, drawn after everything else on the picture (deck_fx: after the vibrato's raster;
+// the mix: after its effect): the fine grain, the scan lines and the on-screen text. (user's report 2026-10-13: with
+// the raster before VHS its top and bottom wave was smeared away; with the grain inside VHS the raster smoothed it)
+function vh_over(img, k, slot) local(n, x, y) (
+  // ((⚪161) the fine grain that was here went: ntsc's noise (streaks trailing right) replaced it
+  // ((⚪160) scan lines over 30 % of the amount (every other line of 240, up to 10 % darker), then the on-screen
+  // text (setup More > Video FX "VHS on-screen text": gmem [275] deck A and the mix / [276] B), drawn last: straight
+  vh_sl = (k - 0.3) / 0.7 * 0.1;
+  vh_sl > 0.002 ? (
+    vh_sp = max(2, floor(H / 240 + 0.5)); gfx_dest = img; gfx_mode = 0; gfx_set(0, 0, 0, vh_sl); n = 0;
+    loop(floor(H / vh_sp), gfx_fillrect(0, n * vh_sp, W, max(1, floor(vh_sp / 2))); n += 1);
+    gfx_a = 1;
+  );
+  gmem[slot == 1 ? 276 : 275] > 0.5 ? (
+    vh_fs = max(10, floor(H / 16)); gfx_dest = img; gfx_mode = 0; gfx_setfont(vh_fs, "Courier New");
+    x = floor(W * 0.06); y = floor(H * 0.07);
+    gfx_set(0, 0, 0, 0.6); gfx_str_draw("PLAY ▶", x + 2, y + 2); gfx_str_draw("SP", W - x - vh_fs * 1.3 + 2, y + 2);
+    gfx_set(1, 1, 1, 0.92); gfx_str_draw("PLAY ▶", x, y); gfx_str_draw("SP", W - x - vh_fs * 1.3, y);
+    gfx_a = 1;
+  );
+);
+function vfx(img, t, k, ph, col, slot) local(stp, i, a, c, s, n, d, sw, sh, gx, gy, x, y, r, ang, seg, sx, sy, kx, ky, kqx, kqy, kdir, rot, trh, tn) (
+  t >= 1 && k > 0.001 ? (
+    t == 1 ? (
+      // tint: the picture's brightness from the dark colour to the light colour (⚪114, user's request 2026-10-10: two
+      // colours; before, black to the deck's lamp colour, which is the default still), mixed in by the amount. The light
+      // colour x 1.3 as before (the mid greys come out bright). [121] / [122] deck A dark / light, [123] / [124] deck B
+      // (the mix: deck A's); each a number in tpal's list (2 = the lamp colour)
+      tpal(gmem[slot == 1 ? 123 : 121], col); vdr = tp_r; vdg = tp_g; vdb = tp_b;
+      tpal(gmem[slot == 1 ? 124 : 122], col); vr = tp_r * 1.3 - vdr; vg = tp_g * 1.3 - vdg; vb = tp_b * 1.3 - vdb; vk = k;
+      vdr *= 255; vdg *= 255; vdb *= 255;
+      gfx_dest = img; gfx_evalrect(0, 0, W, H, "_1=0.299*r+0.587*g+0.114*b; r=max(0,min(255,r+(vdr+_1*vr-r)*vk)); g=max(0,min(255,g+(vdg+_1*vg-g)*vk)); b=max(0,min(255,b+(vdb+_1*vb-b)*vk));");
+    ) : t == 2 ? (
+      // hue rotate: the usual hue-rotation matrix (as CSS hue-rotate); amount 1 = once round
+      a = k * 2 * $pi; c = cos(a); s = sin(a);
+      h00 = 0.213 + 0.787 * c - 0.213 * s; h01 = 0.715 - 0.715 * c - 0.715 * s; h02 = 0.072 - 0.072 * c + 0.928 * s;
+      h10 = 0.213 - 0.213 * c + 0.143 * s; h11 = 0.715 + 0.285 * c + 0.140 * s; h12 = 0.072 - 0.072 * c - 0.283 * s;
+      h20 = 0.213 - 0.213 * c - 0.787 * s; h21 = 0.715 - 0.715 * c + 0.715 * s; h22 = 0.072 + 0.928 * c + 0.072 * s;
+      gfx_dest = img; gfx_evalrect(0, 0, W, H, "_1=r;_2=g;_3=b; r=max(0,min(255,h00*_1+h01*_2+h02*_3)); g=max(0,min(255,h10*_1+h11*_2+h12*_3)); b=max(0,min(255,h20*_1+h21*_2+h22*_3));");
+    ) : t == 3 ? (
+      // invert: a lookup table per channel (fast), mixed by the amount
+      i = 0; loop(256, a = i / 255; LUT[i] = a + (1 - 2 * a) * k; i += 1); lut_fill(1, 1, 1);
+      gfx_dest = img; gfx_procrect(0, 0, W, H, LUT);
+    ) : t == 4 ? (
+      // threshold: black / white at half brightness, mixed by the amount
+      // ((⚪168, 2026-10-14) tried: the steps of brightness by the amount (many .. 2), at full as soon as on; back to the mix
+      // (user: the fade looked more natural)
+      // ((⚪169) tried: the brightness by channel-to-channel blits (gfx_mode 0xf0 | source | target x 4; gfx_a does not blend
+      // there, so the weights by a table and three copies added: 13 passes) and black / white by a table: the same picture,
+      // but slower (about 15.5 ms against 13.5 at 1280 x 720): a blit is about 0.6 ms, one per-pixel pass about 6.5 ms)
+      vk = k;
+      gfx_dest = img; gfx_evalrect(0, 0, W, H, "_1=(0.299*r+0.587*g+0.114*b)>127?255:0; r+=(_1-r)*vk; g+=(_1-g)*vk; b+=(_1-b)*vk;");
+    ) : t == 5 ? (
+      // mirror: the left half onto the right; from half the amount on also the top half onto the bottom (4 ways)
+      TMP1 = iget(TMP1, W, H); cp(TMP1, img);
+      d = floor(W / 2); gfx_dest = img; gfx_mode = 0; gfx_a = 1;
+      gfx_deltablit(TMP1, d, 0, W - d, H, d - 1, 0, -1, 0, 0, 1, 0, 0);
+      k >= 0.5 ? (
+        cp(TMP1, img); d = floor(H / 2); gfx_dest = img;
+        gfx_deltablit(TMP1, 0, d, W, H - d, 0, d - 1, 1, 0, 0, -1, 0, 0);
+      );
+    ) : t == 6 ? (
+      // kaleidoscope: 4 .. 14 mirrored wedges round the centre (more with the amount), turning slowly with the beat;
+      // drawn through a 49 x 29 grid of source points (gfx_xformblit). (2026-10-09, user's request: the effect was hard to
+      // see) the wedge is cut from a point 12 % of the height below the centre (kqx, kqy), pointing up (kdir): a subject in
+      // the middle of the picture (a face in the upper third) lands on the outer part of the ring. It was cut from the centre
+      // pointing right, mostly the background
+      n = 2 * (2 + floor(k * 5.99)); seg = 2 * $pi / n;
+      rot = ph >= 0 ? ph * $pi / 16 : time_precise() * 0.3;
+      kx = W / 2; ky = H / 2; kqx = W / 2; kqy = H * 0.62; kdir = -$pi / 2; i = 0; gy = 0;
+      loop(29,
+        gx = 0;
+        loop(49,
+          x = gx / 48 * W - kx; y = gy / 28 * H - ky;
+          r = sqrt(x * x + y * y) * 0.85; ang = atan2(y, x) + rot;
+          ang -= floor(ang / seg) * seg; ang > seg / 2 ? ang = seg - ang;
+          sx = kqx + r * cos(ang - seg / 4 + kdir); sy = kqy + r * sin(ang - seg / 4 + kdir);
+          sx < 0 ? sx = -sx; sx > W - 1 ? sx = 2 * (W - 1) - sx; sy < 0 ? sy = -sy; sy > H - 1 ? sy = 2 * (H - 1) - sy;
+          KT[i] = max(0, min(W - 1, sx)); KT[i + 1] = max(0, min(H - 1, sy)); i += 2;
+          gx += 1;
+        );
+        gy += 1;
+      );
+      TMP1 = iget(TMP1, W, H); cp(TMP1, img);
+      gfx_dest = img; gfx_mode = 0x100; gfx_a = 1; gfx_xformblit(TMP1, 0, 0, W, H, 49, 29, KT);
+    ) : t == 7 ? (
+      // LoRez: blocks of 2 .. 32 pixels at 480 high (average down, then up without smoothing), the grid from the centre (⚪93, user's
+      // request 2026-10-08: it grew from the top left): an odd number of blocks each way, the middle one on the centre.
+      // The picture is put into a larger one first (its edges stretched round it), so the edge blocks are not darkened
+      // (⚪100, user's report and choice 2026-10-09: the blocks' size changed with the video's resolution) the size is in
+      // proportion to the picture's height, as 2 .. 32 pixels on a 640 x 480 video (at the most about 15 blocks up and down)
+      d = max(2, floor((2 + k * 30) * H / 480 + 0.5)); sw = 2 * ceil((W / d - 1) / 2) + 1; sh = 2 * ceil((H / d - 1) / 2) + 1;
+      gx = sw * d; gy = sh * d; x = floor((gx - W) / 2); y = floor((gy - H) / 2);
+      TMPP = pad_cp(TMPP, img, gx, gy, x, y); TMPS = iget(TMPS, sw, sh);
+      // (⚪98) the small picture reads each block at its middle: read from the corner, the picture drifted half a block to
+      // the bottom right (user's report 2026-10-09; measured: +30 / +16 px at the most)
+      gfx_dest = TMPS; gfx_mode = 0x100; gfx_blit(TMPP, 0, 0, 0, sw, sh, d * 0.5 - 0.5, d * 0.5 - 0.5, gx, gy);
+      gfx_dest = TMPP; gfx_mode = 0; gfx_blit(TMPS, 0, 0, 0, gx, gy);
+      gfx_dest = img; gfx_mode = 0; gfx_a = 1; gfx_blit(TMPP, 0, 0, 0, W, H, x, y, W, H); TMPP = ifree(TMPP);
+    ) : t == 8 ? (
+      // shift RGB: red to the left, blue to the right, up to 3 % of the width
+      d = floor(k * W * 0.03 + 0.5);
+      // ((⚪169, user's request 2026-10-14: lighter) one channel written at a time (gfx_mode 0xfa red / 0xf0 blue, as REAPER's
+      // own "RGB decompose" preset does): green stays where it is, red and blue come from a copy, moved. It was each
+      // channel kept by a multiply and added back (about 13 full passes, now about 5)
+      TMP1 = iget(TMP1, W, H);
+      d >= 1 ? (
+        cp(TMP1, img); gfx_dest = img; gfx_a = 1;
+        // (⚪100, user's report 2026-10-09: the left and right edges were coloured) the strip a moved channel leaves gets
+        // that channel where it was (red at the right edge, blue at the left one), 3 px wider than the move: the moved
+        // channel's own edge columns (often darker) left a thin line at the seam
+        gfx_mode = 0xfa; gfx_blit(TMP1, 0, 0, 0, W - d - 3, H, d, 0, W - d - 3, H); gfx_blit(TMP1, 0, W - d - 3, 0, d + 3, H, W - d - 3, 0, d + 3, H);
+        gfx_mode = 0xf0; gfx_blit(TMP1, 0, d + 3, 0, W - d - 3, H, 3, 0, W - d - 3, H); gfx_blit(TMP1, 0, 0, 0, d + 3, H, 0, 0, d + 3, H);
+        gfx_mode = 0;
+      );
+    ) : t == 9 ? (
+      // strobe: black on every other step; steps of 1, 1/2, 1/4, 1/8, 1/16 beat by the amount (no BPM: 2 .. 16 per s)
+      // (⚪101) the step by the knob (gmem[102] deck A and the mix / [103] B: 0..4 = 1..16 a beat, -1 = by the amount)
+      stp = gmem[slot == 1 ? 103 : 102];
+      ph >= 0 ? (a = ph * 2 ^ (stp >= 0 ? stp : floor(k * 4.99))) : (a = time_precise() * (2 + k * 14));
+      // (⚪114, user's report 2026-10-10: the flashes did not look even) the beat position comes in steps (one per audio
+      // block, about 23 ms; frames often came faster) and was read at each frame: light / dark runs of different lengths.
+      // While the deck plays forward: the position between its steps from the time since it came (stb_ps) at the beats a
+      // second it moves (smoothed), and each half step a whole number of frames (by the frame time, at least 2) counted from
+      // the frame where the beat began. STB: [slot] the beat, [3 + slot] its first frame, [20] / [21] the last frame's time /
+      // frame time (smoothed, set at the top); [24 + slot] / [27 + slot] / [30 + slot] below; ((⚪151) bp_est's three at
+      // [40 + 3 slot]: the last position, when it changed, beats a second). Standing or going back: as before (by the position)
+      ph >= 0 ? (
+        stb_ps = bp_est(STB + 40 + 3 * slot, ph);
+        bp_mv && STB[21] > 0 ? (
+          stb_sp = 2 ^ (stp >= 0 ? stp : floor(k * 4.99));
+          // the frames a half step: worked out at the beat's first frame (or a new step) and kept through the beat (the frame
+          // time wobbles: worked out each frame it went 10 / 11 / 10 and the count jumped) [24 + slot], the step [27 + slot]
+          floor(stb_ps) > STB[slot] || stb_ps < STB[slot] - 0.5 || stb_sp != STB[27 + slot] ? (   // (a step back under half a beat: the guess ran ahead)
+            // the frames the last beat had (counted, [30 + slot] smoothed: the frame counter and the clock did not agree, the
+            // runs came short and the beat's last one long); before a whole beat was counted, by the frame time
+            floor(stb_ps) == STB[slot] + 1 && stb_sp == STB[27 + slot] && fr - STB[3 + slot] > 0 ?
+              STB[30 + slot] += (fr - STB[3 + slot] - STB[30 + slot]) * (STB[30 + slot] > 0 ? 0.3 : 1);
+            STB[slot] = floor(stb_ps); STB[3 + slot] = fr; STB[27 + slot] = stb_sp;
+            // ((⚪114 follow-up, user's report: near the top the flashes looked ragged) at least 2 frames light, 2 dark: every other
+            // frame flickered unevenly (REAPER's frames do not come at an even pace, and an odd count a beat doubled one each beat)
+            STB[24 + slot] = max(2, floor((STB[30 + slot] > 0 ? STB[30 + slot] / (2 * stb_sp) : 0.5 / stb_sp / STB[42 + 3 * slot] / STB[21]) + 0.5));
+          );
+          a = floor((fr - STB[3 + slot]) / STB[24 + slot]) * 0.5;
+        );
+      );
+      a - floor(a) >= 0.5 ? (gfx_dest = img; gfx_set(0, 0, 0, 1, 0); gfx_fillrect(0, 0, W, H));
+    ) : t == 15 ? (
+      zoomblur(img, k);
+    ) : t == 14 ? (
+      // ((⚪163, user's choice 2026-10-14) at full as soon as it is on; the amount sets the cells: coarse at first, fine at 1
+      halftone(img, k);
+    ) : t == 13 ? (
+      // ((⚪167, user's choice 2026-10-14) at full as soon as it is on (it was mixed in by the amount); the amount sets the
+      // lines: thin with the details at first, thick with only the big outlines at 1
+      la_lines(img, 2 + 6 * k); gfx_dest = img; gfx_mode = 0; gfx_a = 1; gfx_blit(LAF, 0); la_free();
+    ) : t == 12 ? (
+      // ((⚪162, user's choice 2026-10-14) at full as soon as it is on: the amount changes only its sound
+      disc(img, 1, gmem[slot == 1 ? 135 : 134], slot);   // ((⚪132) the mix: deck A's platter)
+    ) : t == 11 ? (
+      // (⚪118, user's request 2026-10-10: the "old 2000s quality" VHS look of an After Effects tutorial the user sent) VHS,
+      // by the amount. (⚪159) the brightness kept, more noise and shifting the more there is. (⚪160) from the VHS posts
+      // the user retweeted: colour fringes, ringing, generation loss, afterglow, scan lines, on-screen text.
+      // ((⚪161, user's request 2026-10-13: at full it looked like plain digital noise, not a tape's irregular shifting;
+      // "ntsc is the most complete" in the retweets) the core is now zhuker/ntsc's composite signal (vh_ntsc), at 640 x
+      // the picture's height to that, as ntsc runs on a 640-wide frame. The steps:
+      // 1. down to vh_w x vh_h; 2. a slight ghost; 3. the edge wave: every line moved right at random (0 .. about 8 px at
+      // full), each line a little toward the last (ntsc's vhs_edge_wave: irregular, not a smooth wave or bands); 4. the
+      // signal (vh_ntsc); over 60 % of the amount it is dubbed again (a second, weaker pass: generation loss); 5. a little
+      // less colour (the reds less again for blue-white); 6. the cast (blue-white cold, pink fringes slight magenta);
+      // 7. back up (soft), the afterglow (the last frame of this picture, 5 % .. 15 %); then vh_over (after the vibrato's
+      // raster): scan lines and the on-screen text. ((user's choice 2026-10-10) no head switching band and no tracking line.)
+      // Names: vh_ / vn_ (EEL2 ignores case), pictures TMPV2, TMPV4 (let go at the end) and VHP [slot] (kept while drawn)
+      // ((⚪158) the colour: setup More > Video FX "VHS colour", gmem [273] deck A and the mix / [274] B: 1 = blue-white
+      // (the default), 0 = pink fringes)
+      vh_c = gmem[slot == 1 ? 274 : 273] > 0.5;
+      // ((⚪169, user's choice 2026-10-14: VHS dropped frames with a 4:3 video at 960 x 720, 640 x 480 inside) at most 360
+      // lines inside (16:9 as before, 640 x 360; 4:3 480 x 360: 73 -> 48.5 ms, the look about the same)
+      // ((⚪169, user's choices the same day: still heavy) 300 lines, then 240 (too coarse), then 270 (4:3 360 x 270, 16:9 480 x 270)
+      vh_w = min(W, min(640, floor(270 * W / max(1, H)))); vh_h = max(2, floor(H * vh_w / W)); vh_g2 = max(0, (k - 0.6) / 0.4);
+      TMPV4 = iget(TMPV4, vh_w, vh_h);
+      gfx_dest = TMPV4; gfx_mode = 0x100; gfx_a = 1; gfx_blit(img, 0, 0, 0, vh_w, vh_h);
+      TMPV2 = iget(TMPV2, vh_w, vh_h); cp(TMPV2, TMPV4);
+      gfx_dest = TMPV4; gfx_mode = 0x100; gfx_a = 0.25 * k; gfx_blit(TMPV2, 0, 2, 0, vh_w, vh_h); gfx_a = 1;
+      // the edge wave: a grid of 2 points a line, each line its own offset (ntsc: random 0 .. wave, lowpassed line to line)
+      vh_j = 1 + 7 * k * k; a = 0; i = 0; n = 0;
+      loop(vh_h + 1, a += (rand(vh_j) - a) * 0.513; y = n;
+        KT[i] = a; KT[i + 1] = y; KT[i + 2] = vh_w + a; KT[i + 3] = y; i += 4; n += 1);
+      cp(TMPV2, TMPV4); gfx_dest = TMPV4; gfx_mode = 0; gfx_a = 1; gfx_xformblit(TMPV2, 0, 0, vh_w, vh_h, 2, vh_h + 1, KT);
+      vh_ntsc(TMPV4, k);
+      vh_g2 > 0.01 ? vh_ntsc(TMPV4, 0.5 * vh_g2);
+      vh_ds = 0.2 * k + 0.15 * vh_g2; vh_dr = vh_c ? 0.25 * (0.5 + 0.5 * k) : 0;
+      gfx_dest = TMPV4; gfx_mode = 0;
+      gfx_evalrect(0, 0, vh_w, vh_h, "_1=0.299*r+0.587*g+0.114*b; r+=(_1-r)*(vh_ds+vh_dr); g+=(_1-g)*vh_ds; b+=(_1-b)*vh_ds;");
+      // the cast
+      vh_m = 0.5 + 0.5 * k; i = 0;
+      vh_c ? loop(256, a = i / 255; LUT[i] = a * (1 - 0.12 * vh_m) + 0.03 * vh_m * (1 - a); LUT[256 + i] = a * (1 - 0.04 * vh_m) + 0.05 * vh_m * (1 - a);
+                       LUT[512 + i] = a + 0.14 * vh_m * (1 - a); i += 1)
+           : loop(256, a = i / 255; LUT[i] = a + 0.06 * vh_m * (1 - a); LUT[256 + i] = a * (1 - 0.05 * vh_m); LUT[512 + i] = a + 0.05 * vh_m * (1 - a); i += 1);
+      gfx_dest = TMPV4; gfx_mode = 0; gfx_a = 1; gfx_procrect(0, 0, vh_w, vh_h, LUT);
+      // back to full size (soft), the afterglow
+      gfx_dest = img; gfx_mode = 0x100; gfx_a = 1; gfx_blit(TMPV4, 0, 0, 0, W, H);
+      VHP[slot] = iget(VHP[slot], W, H);
+      VHP[slot] > 0 ? (
+        VHF[slot] == fr - 1 ? (gfx_dest = img; gfx_mode = 0; gfx_a = 0.05 + 0.1 * k; gfx_blit(VHP[slot], 0); gfx_a = 1);
+        cp(VHP[slot], img); VHF[slot] = fr;
+      );
+      TMPV4 = ifree(TMPV4); TMPV2 = ifree(TMPV2);
+      // ((user's choice 2026-10-10) no head switching band at the bottom and no tracking line: the wear only)
+    ) : (
+      // trails: each picture laid over the last ones at 1 - amount (amount 1 = long trails). A frame REAPER did not hand
+      // over (vok = 0: at a start / stop it often has none, the picture is black) is left out: laid over, it darkened
+      // the trails picture and the screen stayed dark for a while (⚪52, 2026-10-06); the trails are shown as they are
+      // ((⚪151) laid over by the time, as the history (hist_upd): at most every 1/30 s (TRT). Laid over at each draw, the
+      // sync script's extra redraws made the trails shorter. Between, this picture is shown over the trails, not kept)
+      HMV[slot] || !HSD[slot] ? (
+        TPIC[slot] = iget(TPIC[slot], W, H); trh = TPIC[slot];
+        trh > 0 ? (
+          tn = time_precise();
+          TRF[slot] != fr - 1 ? (cp(trh, img); TRK[slot] = vok; TRT[slot] = tn);   // not drawn last frame: start from this picture (no old ghosts)
+          vok && TRK[slot] && tn - TRT[slot] < 0.03 ? (
+            gfx_dest = img; gfx_mode = 0; gfx_a = k * 0.93; gfx_blit(trh, 0); gfx_a = 1;
+          ) : (
+            vok ? (
+              !TRK[slot] ? cp(trh, img) : (gfx_dest = trh; gfx_mode = 0; gfx_a = 1 - k * 0.93; gfx_blit(img, 0));
+              TRK[slot] = 1; TRT[slot] = tn;                          // TRK: the trails picture holds a real frame
+            );
+            cp(img, trh);
+          );
+          TRF[slot] = fr;
+        );
+      ) : (   // (⚪100) standing: the history of the last move over the picture (see hist_upd)
+        gfx_dest = img; gfx_mode = 0; gfx_a = k * 0.93;
+        gfx_blit(HPIC[slot], 0);
+        gfx_a = 1;
+      );
+    );
+  );
+);
+
+// the filter's look on the mix (⚪91, user's requests 2026-10-08). |v| = how far.
+// Toward the lows (v < 0), night: the subject squirming in the dark - the picture slowly waves (a moving grid, as the
+// kaleidoscope's), blurred, the darks sink to black (only the lit parts of the subject stay), cold, breathing a little,
+// the edges dark (vignette).
+// Toward the highs (v > 0), morning: backlight - the subject a little in shadow, its bright parts glow out (bloom), rays
+// from a light behind it (upper middle: the bright parts blown up round that point), all white (the flash on each beat: gone, ⚪114); then
+// a worn-out JPEG over it (ringing, 4 x 4 blocks, smeared colour, banding), the flash as exposure.
+// Scratch pictures: TMP1 / TMP3 (W x H), LKM / LKR (a quarter size), TMPS. LUT and KT as the effects (one after another)
+function look(img, v) local(b, i, a, n, gx, gy, sx, sy, tt, lth, ga, br, sw, sh, lx, ly, s, bw) (
+  tt = time_precise();
+  v < 0 ? (
+    b = -v;
+    // the wave: a 25 x 15 grid of source points, each moving on its own slow sine (up to 1.5 % of the picture)
+    a = 0.015 * b; i = 0; gy = 0;
+    loop(15,
+      gx = 0;
+      loop(25,
+        sx = gx / 24 * W + a * W * sin(gy * 0.8 + tt * 1.9 + gx * 0.35);
+        sy = gy / 14 * H + a * H * sin(gx * 0.6 + tt * 1.6 + gy * 0.4);
+        KT[i] = max(0, min(W - 1, sx)); KT[i + 1] = max(0, min(H - 1, sy)); i += 2;
+        gx += 1;
+      );
+      gy += 1;
+    );
+    TMP1 = iget(TMP1, W, H); cp(TMP1, img);
+    gfx_dest = img; gfx_mode = 0x100; gfx_a = 1; gfx_xformblit(TMP1, 0, 0, W, H, 25, 15, KT);
+    // the blur (down to 1 / (1 + 12 |v|) and back, smoothed both ways; kept with the rest, user's choice 2026-10-08)
+    sw = max(1, floor(W / (1 + b * 12))); sh = max(1, floor(H / (1 + b * 12)));
+    TMPS = iget(TMPS, sw, sh);
+    gfx_dest = TMPS; gfx_mode = 0x100; gfx_a = 1; gfx_blit(img, 0, 0, 0, sw, sh);
+    gfx_dest = img; gfx_mode = 0x100; gfx_a = 1; gfx_blit(TMPS, 0, 0, 0, W, H);
+    // the dark: below a threshold black, a steeper curve above it (a grey wall sinks to dark), cold (less red), breathing
+    lth = 0.22 * b; ga = 1 + 1.3 * b; br = (1 - 0.05 * b) * (1 - 0.1 * b * (0.5 + 0.5 * sin(tt * 2.3)));
+    i = 0; loop(256, n = max(0, (i / 255 - lth) / (1 - lth)); LUT[i] = n ^ ga * br; i += 1);
+    lut_fill(1 - 0.3 * b, 1 - 0.15 * b, 1 + 0.1 * b);
+    gfx_dest = img; gfx_procrect(0, 0, W, H, LUT);
+    // the vignette: black from each edge over a third of the way in
+    gfx_mode = 0; bw = 0.35; a = 0.65 * b;
+    gfx_gradrect(0, 0, W * bw, H, 0, 0, 0, a, 0, 0, 0, -a / (W * bw), 0, 0, 0, 0);
+    gfx_gradrect(W * (1 - bw), 0, W * bw, H, 0, 0, 0, 0, 0, 0, 0, a / (W * bw), 0, 0, 0, 0);
+    gfx_gradrect(0, 0, W, H * bw, 0, 0, 0, a, 0, 0, 0, 0, 0, 0, 0, -a / (H * bw));
+    gfx_gradrect(0, H * (1 - bw), W, H * bw, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, a / (H * bw));
+  ) : (
+    b = v; sw = max(2, floor(W / 4)); sh = max(2, floor(H / 4));
+    LKM = iget(LKM, sw, sh); LKR = iget(LKR, sw, sh);
+    // the bright parts (a quarter size, smoothed): above a threshold, white (a flash, not warm: user's choice 2026-10-08)
+    gfx_dest = LKM; gfx_mode = 0x100; gfx_a = 1; gfx_blit(img, 0, 0, 0, sw, sh);
+    lth = 0.5 - 0.2 * b;
+    i = 0; loop(256, LUT[i] = max(0, (i / 255 - lth) / (1 - lth)); i += 1); lut_fill(1, 1, 1.05);
+    gfx_procrect(0, 0, sw, sh, LUT);
+    // the rays: the bright parts blown up round the light (upper middle) 8 times, fainter each time
+    lx = sw * 0.5; ly = sh * 0.3;
+    gfx_dest = LKR; gfx_set(0, 0, 0, 1, 0); gfx_fillrect(0, 0, sw, sh);
+    gfx_mode = 1 | 0x100; i = 0;
+    loop(8, s = 1 + 0.1 * i; gfx_a = 0.45 * (1 - i / 8); gfx_blit(LKM, 0, lx - lx * s, ly - ly * s, sw * s, sh * s); i += 1);
+    // the subject a little in shadow, then the glow and the rays added on (full size, smoothed)
+    i = 0; loop(256, LUT[i] = i / 255 * (1 - 0.45 * b); i += 1); lut_fill(1, 1, 1);
+    gfx_dest = img; gfx_procrect(0, 0, W, H, LUT);
+    gfx_mode = 1 | 0x100; gfx_a = 1.3 * b; gfx_blit(LKM, 0, 0, 0, W, H);
+    gfx_a = 1.4 * b; gfx_blit(LKR, 0, 0, 0, W, H);
+    // the blinding flash: white over the whole picture, a burst on each beat of deck A fading out fast (no BPM: twice a
+    // second), never quite gone (user's choice 2026-10-08: a dazzle full of flash, rather than warmth)
+    // ((⚪114, user's choice 2026-10-10) no burst on the beat any more: the exposure stays at the burst's mean over a beat,
+    // 0.2 (it was (1 - the place in the beat) ^ 4, from deck A's beat position))
+    a = 0.2;
+    // a worn-out JPEG over it all, stronger toward the highs (user's choice 2026-10-08, in place of the fine mosaic):
+    // ringing round the edges (over-sharpened: + k x (picture - its blur)), 4 x 4 blocks (block averages laid over),
+    // the colour in 8 x 8 blocks (smeared), and the colours in few steps (banding)
+    TMP1 = iget(TMP1, W, H); TMP3 = iget(TMP3, W, H); cp(TMP1, img);
+    sw = max(1, floor(W / 3)); sh = max(1, floor(H / 3)); TMPS = iget(TMPS, sw, sh);
+    gfx_dest = TMPS; gfx_mode = 0x100; gfx_a = 1; gfx_blit(TMP1, 0, 0, 0, sw, sh);
+    gfx_dest = TMP3; gfx_mode = 0x100; gfx_a = 1; gfx_blit(TMPS, 0, 0, 0, W, H);
+    // ((⚪114, user's report 2026-10-10: a little short of the highs' end looked brighter than the end) the blur taken off
+    // first, then the picture added: added first, the bright parts stopped at white and lost the blur after, more toward
+    // the end (worked out on a frame: the mean 0.93 at 0.6 -> 0.85 at 1; now it only grows))
+    gfx_dest = img; gfx_mode = 1; gfx_a = -0.5 * b; gfx_blit(TMP3, 0); gfx_a = 0.5 * b; gfx_blit(TMP1, 0);
+    sw = max(1, floor(W / 8)); sh = max(1, floor(H / 8)); TMPS = iget(TMPS, sw, sh);
+    gfx_dest = TMPS; gfx_mode = 0x100; gfx_a = 1; gfx_blit(img, 0, 0, 0, sw, sh);
+    gfx_dest = img; gfx_mode = 0; gfx_a = 0.15 * b; gfx_blit(TMPS, 0, 0, 0, W, H);
+    sw = max(1, floor(W / 4)); sh = max(1, floor(H / 4)); TMPS = iget(TMPS, sw, sh);
+    gfx_dest = TMPS; gfx_mode = 0x100; gfx_a = 1; gfx_blit(img, 0, 0, 0, sw, sh);
+    gfx_dest = img; gfx_mode = 0; gfx_a = 0.3 * b; gfx_blit(TMPS, 0, 0, 0, W, H);
+    // the colours in steps (32 -> 8), then the exposure: x1.8 at the highs' end (whites to white)
+    // ((⚪114, user's report: the brightness wobbled) the steps change only when the knob has moved more than a little:
+    // a knob wavering by one step moved n by 1 and back, and the picture with it. LKN = the steps in use)
+    abs(32 - 24 * b - LKN) > 0.8 ? LKN = floor(32 - 24 * b + 0.5);
+    n = max(8, LKN); ga = 1 + b * (0.5 + 1.5 * a);
+    i = 0; loop(256, LUT[i] = floor(i / 255 * n + 0.5) / n * ga; i += 1); lut_fill(1, 1, 1);
+    gfx_a = 1; gfx_procrect(0, 0, W, H, LUT);
+  );
+  LKM = ifree(LKM); LKR = ifree(LKR);
+  gfx_mode = 0; gfx_a = 1;
+);
+
+// (⚪128, user's request and choices 2026-10-11: camera moves as in text animations and AviUtl, picked on a sample page)
+// blends 25 .. 36: the picture itself moves. p (0 = deck A .. 1 = deck B) as for the transitions: deck A's picture up to
+// 0.5, deck B's from there. 25 Punch zoom (A pulls back a little and zooms in, B comes from zoomed in, past 1x and back),
+// 26-29 Whip right / left / up / down (A flies out, B flies in the same way, past its place and back), 30 Shake cut (the
+// shake grows to the cut and dies away, a small zoom at the cut), 31 Spin zoom, 32 Drop bounce (A falls out, B falls in and
+// bounces, a shake as it lands), 33-36 Tilt right / left / up / down (A tips and leaves on a slant, B the other way in).
+// The setup's three values (deck A's; gmem [131] blur 0..1, [132] overshoot 0..2 (1 = the usual "back" ease: c = 1.70158),
+// [133] shake 0..1). Blur = the states a little before and after p drawn over each other, each weighing 1 / n; a turning
+// picture also spread along its arc by how fast it turns (AviUtl-like). Shake = smooth noise on the clock x the amount
+// squared (Eiserloh, "Juicing Your Cameras With Math", GDC 2016), with a colour split (Shift RGB) by the shake.
+// The moves are drawn with gfx_deltablit from a copy of the picture with a black border 1 px wide (the source outside the
+// picture reads the border: black around a turned or shrunk picture)
+function cm_noise(x, sd) local(i, f, u, a, b) (
+  i = floor(x); f = x - i; u = f * f * (3 - 2 * f);
+  a = hash(i * 127.1 + sd * 311.7) * 2 - 1;
+  b = hash((i + 1) * 127.1 + sd * 311.7) * 2 - 1;
+  a + (b - a) * u;
+);
+function cm_inback(x, c) ( (c + 1) * x * x * x - c * x * x; );
+function cm_outback(x, c) local(y) ( y = x - 1; 1 + (c + 1) * y * y * y + c * y * y; );
+function cm_bounce(x) (
+  x < 1 / 2.75 ? 7.5625 * x * x :
+  x < 2 / 2.75 ? (x -= 1.5 / 2.75; 7.5625 * x * x + 0.75) :
+  x < 2.5 / 2.75 ? (x -= 2.25 / 2.75; 7.5625 * x * x + 0.9375) :
+  (x -= 2.625 / 2.75; 7.5625 * x * x + 0.984375);
+);
+function cm_shake(env) local(tr, k) (   // -> cm_kx, cm_ky (parts of W / H), cm_kr (rad), cm_ks (zoom), cm_kc (colour split, part of W)
+  tr = env * env * cm_sh; k = cm_t * 18;
+  cm_kx = tr * 0.05 * cm_noise(k, 1); cm_ky = tr * 0.05 * cm_noise(k, 2); cm_kr = tr * 0.07 * cm_noise(k, 3);
+  cm_ks = tr * 0.14; cm_kc = tr * 0.018;
+);
+// the state at p: cm_b (0 = deck A's picture, 1 = B's), its centre moved by cm_x / cm_y (parts of W / H), zoom cm_s,
+// turn cm_r (rad), colour split cm_c (part of W)
+// ((user's request 2026-10-12: the picture's edges showed as it turned) the zoom at which a picture turned by r still
+// covers the screen (|cos r| + the long side / the short side x |sin r|, a little more)
+function cm_cov(r) ( abs(cos(r)) + (max(W, H) / max(1, min(W, H)) + 0.03) * abs(sin(r)); );
+function cm_state(qm, p) local(q, c1, e, d, dx, dy, px, py, land) (
+  cm_b = p >= 0.5; q = cm_b ? (p - 0.5) * 2 : p * 2;
+  cm_x = 0; cm_y = 0; cm_r = 0; cm_c = 0; cm_s = 1;
+  c1 = 1.70158 * cm_ov;
+  dx = qm == 26 || qm == 33 ? 1 : 0;   // ((⚪150) 27 / 34 / 35 are out of the list: their moves went)
+  dy = qm == 28 ? -1 : qm == 29 || qm == 36 ? 1 : 0;
+  qm == 25 ? (
+    cm_s = max(0.55, cm_b ? 1 + 2.5 * (1 - cm_outback(q, c1)) : 1 + 2.5 * cm_inback(q, c1));
+  ) : qm <= 29 ? (
+    d = cm_b ? -(1 - cm_outback(q, c1 * 0.6)) * 1.15 : q * q * q * 1.15;
+    cm_x = dx * d; cm_y = dy * d;
+  ) : qm == 30 ? (
+    // ((user's request 2026-10-12: too faint) the shake 1.8 x, the colour split 1.5 x, zoomed to cover its move and turn
+    cm_shake(max(0, 1 - abs(p - 0.5) * 2));
+    cm_x = cm_kx * 1.8; cm_y = cm_ky * 1.8; cm_r = cm_kr * 1.8; cm_c = cm_kc * 1.5;
+    cm_s = 1 + cm_ks + 0.18 * exp(-abs(p - 0.5) * 28) * (0.4 + cm_sh);
+    cm_s = max(cm_s, cm_cov(cm_r) + 2 * max(abs(cm_x), abs(cm_y)));
+  ) : qm == 31 ? (
+    cm_b ? (e = 1 - q; cm_r = -0.8 * $pi * (1 - cm_outback(q, c1 * 0.7)); cm_s = 1 + e * e * e * 2) :
+           (e = q * q * q; cm_r = e * 0.8 * $pi; cm_s = 1 + e * 2);
+    cm_s = max(cm_s, cm_cov(cm_r));   // ((2026-10-12) no edges as it turns)
+  ) : qm == 32 ? (
+    cm_b ? (
+      cm_y = -1.1 * (1 - cm_bounce(q)); land = 1 / 2.75;
+      q > land ? (cm_shake(exp(-(q - land) * 6) * (0.6 + 0.2 * cm_ov));
+                  cm_x = cm_kx * 0.6; cm_y += cm_ky; cm_r = cm_kr * 0.5; cm_s = 1 + cm_ks * 0.5; cm_c = cm_kc * 0.7);
+    ) : cm_y = cm_inback(q, c1 * 0.5) * 1.1;
+  ) : (
+    // a slant toward the chosen way
+    px = dx != 0 ? dx : 0.45 * dy; py = dy != 0 ? dy : -0.5 * dx;
+    e = cm_b ? -(1 - cm_outback(q, c1 * 0.7)) : cm_inback(q, c1 * 0.7);
+    cm_x = px * 0.95 * e; cm_y = py * 0.95 * e; cm_r = 0.38 * e * (dx != 0 ? dx : -dy);
+    // ((user's request 2026-10-12: the top and bottom edges showed) zoomed in to cover the turn and the drift across the
+    // way it leaves (Tilt right: up / down, Tilt up: sideways); before: shrunk to 0.78
+    cm_s = cm_cov(cm_r) + 2 * (dx != 0 ? abs(cm_y) : abs(cm_x));
+  );
+  // ((2026-10-12) going back from B: Whip right / Tilt right mirrored left-right, Tilt up both ways (set by the caller))
+  cm_x *= cm_mx; cm_y *= cm_my; cm_r *= cm_mx * cm_my;
+);
+// draws the state into dst (already black, cw x ch: the mix's size, or half of it while blurring): a plain zoom / move as
+// a blit, a turn through the bordered copy (made once a frame at this size)
+// (cm_om: a margin round the screen in dst (0 = none): the picture is drawn into it too, as it goes past the screen)
+CMI = 9690;
+function cm_put(dst, cw, ch) local(src, c, sn, is, cx, ccy, sw, sh) (
+  cx = cw / 2 + cm_x * cw + cm_om; ccy = ch / 2 + cm_y * ch + cm_om;
+  // at half size: the deck's picture shrunk once a frame (CMI [cm_b]; each copy shrinking the full one cost about 2 ms)
+  // ((⚪151) CMI: [0] / [1] deck A / B at half size, [2] / [3] bordered, [4..7] made this frame (they were CMHA / CMHB,
+  // CMA / CMB and four flags, the two decks' branches written twice))
+  src = cm_b ? imB : imA;
+  cw < W ? (!CMI[4 + cm_b] ? (CMI[cm_b] = iget(CMI[cm_b], cw, ch); gfx_dest = CMI[cm_b]; gfx_mode = 0x100; gfx_a = 1; gfx_blit(src, 0, 0, 0, cw, ch); CMI[4 + cm_b] = 1); src = CMI[cm_b]);
+  gfx_dest = dst; gfx_mode = 0x100; gfx_a = 1;
+  abs(cm_r) < 0.0005 ? (
+    sw = cw * cm_s; sh = ch * cm_s; gfx_blit(src, 0, cx - sw / 2, ccy - sh / 2, sw, sh);
+  ) : (
+    !CMI[6 + cm_b] ? (CMI[2 + cm_b] = iget(CMI[2 + cm_b], cw + 2, ch + 2); gfx_dest = CMI[2 + cm_b]; gfx_mode = 0; gfx_set(0, 0, 0, 1); gfx_fillrect(0, 0, cw + 2, ch + 2); gfx_mode = 0; gfx_blit(src, 0, 1, 1, cw, ch); CMI[6 + cm_b] = 1);
+    src = CMI[2 + cm_b];
+    // the source of a destination pixel: the picture's centre + (turned back by r, divided by the zoom) its offset from cx, ccy
+    c = cos(cm_r); sn = sin(cm_r); is = 1 / max(0.05, cm_s);
+    gfx_dest = dst; gfx_mode = 0x100; gfx_a = 1;
+    gfx_deltablit(src, 0, 0, cw + 2 * cm_om, ch + 2 * cm_om, 1 + cw / 2 + (-c * cx - sn * ccy) * is, 1 + ch / 2 + (sn * cx - c * ccy) * is, c * is, -sn * is, sn * is, c * is, 0, 0);
+  );
+);
+// (until 2026-10-12, see cm_mb below) (2026-10-11, measured in the isolated REAPER: 8 copies at 1280 x 720 took 40 - 60 ms a frame, a spin's 16 copies 105 ms,
+// and the copies showed as steps) while blurring, the copies are drawn and averaged at half size (CMT) and the mean grown
+// to T: a quarter of the work, so more copies (up to 12, a turn's arc up to 24)
+// ((2026-10-12, a check of the rough edges after the user's report on the Brush wipe) the blur's copies showed as steps on
+// the fast moves (Whip: an edge in about 10 bands, Punch zoom / Spin zoom: ghosts). Now the state at p is drawn once (at
+// half size) and smeared by the move between the window's ends (cm_mb): 4 passes of 3 copies, each moved / turned /
+// grown round the picture's centre by (i - 1) x 3 ^ pass / 80 of the move, averaged - 81 steps with 12 copies, as the
+// Zoom blur. The ends are kept on the same side of the cut (A's or B's picture), the move scaled up to the window. The
+// smear works on a picture with a margin of an eighth of the size round it (CMM), the state drawn into the margin too
+// (what is just past the screen): read past the edge, a turned picture smeared the edge's colours (a black edge 1 px wide
+// drawn at each pass left thin lines; a black margin darkened the edges of a zoom))
+function cm_mb(cw, ch, m, dx, dy, dr, ds, qcx, qcy) local(j, i, f, k, c, sn, ox, oy, src, dst, t, mw, mh) (   // (CMM drawn, margin m)
+  mw = cw + 2 * m; mh = ch + 2 * m; qcx += m; qcy += m;
+  CMU = iget(CMU, mw, mh); CMS = iget(CMS, mw, mh);
+  src = CMM; dst = CMU; j = 0;
+  loop(4,
+    i = 0;
+    loop(3,
+      f = (i - 1) * 3 ^ j / 80; k = exp(-ds * f); c = cos(dr * f); sn = sin(dr * f); ox = dx * f; oy = dy * f;
+      // a pixel P reads the centre C + (P - C - offset) turned back and shrunk
+      // (no turn or zoom (Whip, Drop): a plain move, cheaper)
+      abs(dr) < 0.0001 && abs(ds) < 0.0001 ? (
+        gfx_dest = CMS; gfx_mode = 0; gfx_a = 1; gfx_set(0, 0, 0, 1); gfx_fillrect(0, 0, mw, mh); gfx_mode = 0x100; gfx_blit(src, 0, ox, oy, mw, mh);
+        gfx_dest = dst; gfx_mode = 0; gfx_a = 1 / (i + 1); gfx_blit(CMS, 0);   // (the running mean)
+      ) : (
+        // ((⚪169, lighter) a turn or zoom drawn straight into the mean at its share (it went through CMS first), the
+        // middle copy (no move at all) a plain blit
+        gfx_dest = dst; gfx_a = 1 / (i + 1);
+        i == 1 ? (gfx_mode = 0; gfx_blit(src, 0)) : (
+          gfx_mode = 0x100;
+          gfx_deltablit(src, 0, 0, mw, mh, qcx + k * (c * (-qcx - ox) + sn * (-qcy - oy)), qcy + k * (-sn * (-qcx - ox) + c * (-qcy - oy)), k * c, -k * sn, k * sn, k * c, 0, 0);
+        );
+      );
+      i += 1;
+    );
+    t = src; src = dst; dst = t; j += 1;
+  );
+  gfx_dest = CMT; gfx_mode = 0; gfx_a = 1; gfx_blit(src, 0, 0, 0, cw, ch, m, m, cw, ch);
+  CMT;
+);
+function cm_draw(qm, p) local(n, win, mul, ang, r1, r2, cs, cw, ch, lo, hi, pa, pb, xa, ya, ra, sa, sc, res, qcx, qcy, i, dp) (
+  cm_t = time_precise(); cm_bl = max(0, min(1, gmem[131])); cm_ov = max(0, min(2, gmem[132])); cm_sh = max(0, min(1, gmem[133]));
+  memset(CMI + 4, 0, 4);
+  mul = qm == 25 ? 1 : qm <= 29 ? 2.2 : qm == 30 ? 1 : qm == 32 ? 0.8 : 1;   // how wide each move's blur is
+  // ((⚪169, user's choice 2026-10-14: was the blur made for 30 fps?) it was a fixed width of crossfader travel (5 % x mul)
+  // round p, the same at any frame rate and while standing still. Now as a film camera's shutter: the travel since the
+  // frame before (cm_pl: the last place, cm_pp: the one before it, cm_tc: when it changed), times the blur setting (the
+  // shutter, 1 = the whole frame) and mul, behind p; none 0.1 s after the crossfader stopped, none across a jump (half
+  // the travel or more); at most a quarter of the travel. The turn's arc then comes from the window itself (ang 0)
+  cm_t - cm_tc > 0.2 ? (cm_pl = cm_pp = p; cm_tc = cm_t);   // (standing a while: no history, so the next move does not start with a jump's blur)
+  p != cm_pl ? (cm_pp = cm_pl; cm_pl = p; cm_tc = cm_t);
+  dp = cm_t - cm_tc < 0.1 && abs(p - cm_pp) < 0.5 ? p - cm_pp : 0;
+  win = min(0.25, abs(dp) * cm_bl * mul); ang = 0;
+  // the window's ends on this side of the cut
+  lo = p < 0.5 ? 0 : 0.5; hi = p < 0.5 ? 0.4999 : 1;
+  pa = max(lo, dp >= 0 ? p - win : p); pb = min(hi, dp >= 0 ? p : p + win); sc = pb - pa > 0.0001 ? win / (pb - pa) : 0;
+  cm_state(qm, pa); xa = cm_x; ya = cm_y; ra = cm_r; sa = cm_s;
+  cm_state(qm, pb);
+  n = cm_bl > 0 && (abs(cm_x - xa) + abs(cm_y - ya) + abs(cm_r - ra) + abs(cm_s - sa) > 0.002 || abs(ang) > 0.01);
+  cm_state(qm, p); cs = cm_c;
+  n ? (
+    cw = max(2, floor(W / 4) * 2); ch = max(2, floor(H / 4) * 2);
+    CMT = iget(CMT, cw, ch); cm_om = ceil(max(cw, ch) / 8); CMM = iget(CMM, cw + 2 * cm_om, ch + 2 * cm_om);
+    gfx_dest = CMM; gfx_mode = 0; gfx_a = 1; gfx_set(0, 0, 0, 1); gfx_fillrect(0, 0, cw + 2 * cm_om, ch + 2 * cm_om); cm_put(CMM, cw, ch);
+    qcx = cw / 2 + cm_x * cw; qcy = ch / 2 + cm_y * ch;
+    cm_state(qm, pb); r1 = cm_x; r2 = cm_y; cs = max(cs, cm_c);
+    res = cm_mb(cw, ch, cm_om, (r1 - xa) * cw * sc, (r2 - ya) * ch * sc, (cm_r - ra) * sc + ang, log(max(0.05, cm_s) / max(0.05, sa)) * sc, qcx, qcy);
+    cm_om = 0; gfx_dest = T; gfx_mode = 0x100; gfx_a = 1; gfx_blit(res, 0, 0, 0, W, H);
+  ) : (cm_om = 0; clear(T); cm_put(T, W, H));
+  cs > 0.0005 ? vfx(T, 8, min(1, cs / 0.03), -1, 0, 2);
+  i = 0; loop(4, CMI[i] = ifree(CMI[i]); i += 1); CMS = ifree(CMS); CMT = ifree(CMT); CMM = ifree(CMM); CMU = ifree(CMU);
+  gfx_mode = 0; gfx_a = 1;
+);
+
+// ((user's request 2026-10-12: the picture itself moved sideways as in kamishibai (paper theatre), in stop motion with
+// the card set down a little off each time) the Brush wipe as a card: deck A's picture is a card with the cut-paper edge
+// on its left (cut into the picture up to 14 % of the width: knots at random lengths, 10 .. 35 % of the height, joined by
+// straight cuts) that is pulled out to the right in 12 steps, deck B under it. At each step the whole card (picture,
+// edge, its shadow on B and its white cut edge) is turned a little round a point of its own on the edge (up to 0.05
+// rad) and nudged (0.5 % of the width / height), the same each time the step comes back. The card's mask (QBM, half size
+// with a 6 % margin: r = B; (⚪151) g / b, the shadow and white edge, went) is made once for each size; each frame A (put into one
+// with a margin, its edges stretched: TAP) and the mask are drawn turned and moved (gfx_deltablit: a destination pixel
+// reads the card at R(-a) (P - pivot - nudge) + pivot - the move), then mixed as before
+function br_draw(qp) local(qq, qi, qr, qa, qy, qw, qh, c, sn, dx, x0, y0, k, ma, sw, sh, rv, u, top, bot, dsg, qcx, xa, xb) (
+  sw = max(2, floor(W / 2)); sh = max(2, floor(H / 2));
+  (BKC_w != W || BKC_h != H) ? (
+    bk_am = W * 0.07; bk_mh = ceil(0.03 * max(W, H)); bk_sx = W / sw; bk_sy = H / sh; bk_mo = bk_mh * bk_sx;
+    bk_mw = sw + 2 * bk_mh; bk_mi = 1 / bk_mw; bk_isy = 1 / bk_sy;
+    bk_fi = 1 / (1 + 2 * H / 720);
+    bk_kl = H; bk_kn = 0; bk_ky0 = -bk_mo - 1; bk_ky1 = bk_ky0 + H * (0.1 + 0.25 * hash(2.71));
+    bk_kx0 = 2 * hash(5.13) - 1; bk_kx1 = 2 * hash(12.9898 + 5.13) - 1;
+    bk_zz = bk_am; bk_row = -1;
+    QBM = iget(QBM, sw + 2 * bk_mh, sh + 2 * bk_mh);
+    BKC_w = QBM > 0 ? W : 0; BKC_h = H;   // ((⚪151) not made: tried again next frame)
+    strcpy(#bk, "_2=floor((_1+0.5)*bk_mi); _3=_1-_2*bk_mw; _1+=1; _6=(_3+0.5)*bk_sx-bk_mo; _7=(_2+0.5)*bk_sy-bk_mo; _2!=bk_row?(bk_row=_2; while(_7>bk_ky1?(bk_kn+=1; bk_ky0=bk_ky1; bk_kx0=bk_kx1; bk_h=sin((bk_kn)*12.9898+2.71)*43758.5453; bk_h-=floor(bk_h); bk_ky1=bk_ky0+bk_kl*(0.1+0.25*bk_h); ");
+    strcat(#bk, "bk_h=sin((bk_kn)*12.9898+5.13)*43758.5453; bk_h-=floor(bk_h); bk_kx1=2*bk_h-1; 1):0); bk_zp=bk_zz; bk_zz=bk_am+(bk_kx0+(bk_kx1-bk_kx0)*(_7-bk_ky0)/max(1,bk_ky1-bk_ky0))*bk_am; bk_n=_2>0?1/sqrt(1+((bk_zz-bk_zp)*bk_isy)^2):1); _9=(bk_zz-_6)*bk_n; _8=max(0,min(1,0.5+_9*bk_fi)); ");
+    // ((⚪151) only r (deck B) is used: the shadow (g) and the white edge (b) are no longer worked out)
+    strcat(#bk, "r=_8*255; g=0; b=0; a=255;");
+    QBM > 0 ? (gfx_dest = QBM; gfx_evalrect(0, 0, sw + 2 * bk_mh, sh + 2 * bk_mh, #bk, 1, -2, "_1=0;"));
+  );
+  // ((user's request 2026-10-12) going back (tr_dir, the crossfader last moved toward A) a new card: the one on top now,
+  // deck B's, pulled out to the left (its cut edge on its right, the mask read mirrored), deck A under it
+  rv = tr_dir; u = rv ? 1 - qp : qp; top = rv ? imB : imA; bot = tb_on ? TBL : rv ? imA : imB;   // ((2026-10-13) tb_on: the blend comes in)
+  dsg = rv ? -1 : 1;   // ((⚪150) this had gone into the comment above on 2026-10-13: the card stood still, a straight wipe)
+  qq = floor(u * 12 + 0.5) / 12; qi = floor(qq * 12 + 0.5) + (rv ? 50 : 0);
+  dx = qq * (W + 2 * bk_am + 4);   // (the card's cut edge, 0 .. 2 x bk_am in, goes past the far end)
+  qa = (hash(qi * 91.7 + 1.3) - 0.5) * 0.1; qy = hash(qi * 47.3 + 2.9) * H;
+  qw = (hash(qi * 13.1 + 4.7) - 0.5) * 0.01 * W; qh = (hash(qi * 71.9 + 6.1) - 0.5) * 0.01 * H;
+  c = cos(qa); sn = sin(qa);
+  // the card's place (x' from its own left; the reverse card's mask read at W - x') of a screen pixel P:
+  // x' = cx + c (Px - cx - qw) + sn (Py - qy - qh) - dsg * dx ... with the pivot cx on the edge
+  qcx = rv ? W - dx - bk_am : dx + bk_am;
+  x0 = qcx + c * (-qcx - qw) + sn * (-qy - qh) - dsg * dx; y0 = qy - sn * (-qcx - qw) + c * (-qy - qh);
+  // the card covers the screen from xa to xb (gfx_deltablit repeats its source past the edges: only there, the rest is
+  // the picture under it; a little inside the masks' margins, the turn and the nudge allowed for)
+  ma = ceil(0.06 * max(W, H)); qr = H * abs(sn) + abs(qw) + 2;
+  xa = rv ? 0 : max(0, floor(dx - bk_mo + qr)); xb = rv ? min(W, ceil(W - dx + bk_mo - qr)) : W;
+  k = sw / W;
+  QMK = iget(QMK, W, H); gfx_dest = QMK; gfx_mode = 0; gfx_a = 1; gfx_set(1, 0, 0, 1); gfx_fillrect(0, 0, W, H);
+  cp(T, bot);   // ((⚪151) T is made by the caller (it was resized here too))
+  xb > xa && QBM > 0 ? (
+    gfx_dest = QMK; gfx_mode = 0x100; gfx_a = 1;
+    rv ? gfx_deltablit(QBM, xa, 0, xb - xa, H, k * (W - (x0 + c * xa) + bk_mo), k * (y0 - sn * xa + bk_mo), -k * c, -k * sn, -k * sn, k * c, 0, 0)
+       : gfx_deltablit(QBM, xa, 0, xb - xa, H, k * (x0 + c * xa + bk_mo), k * (y0 - sn * xa + bk_mo), k * c, -k * sn, k * sn, k * c, 0, 0);
+    TAP = pad_cp(TAP, top, W + 2 * ma, H + 2 * ma, ma, ma);
+    gfx_dest = T; gfx_mode = 0x100; gfx_a = 1;
+    gfx_deltablit(TAP, xa, 0, xb - xa, H, x0 + c * xa + ma, y0 - sn * xa + ma, c, -sn, sn, c, 0, 0);
+  );
+  // ((user's choice 2026-10-12) no shadow or white cut edge: the mask's g / b are not used)
+  gfx_dest = T; gfx_evalrect(0, 0, W, H, "_1=s2r*(1/255); r+=(sr-r)*_1; g+=(sg-g)*_1; b+=(sb-b)*_1;", 0, bot, "", QMK);
+  QMK = ifree(QMK); TAP = ifree(TAP);
+  gfx_mode = 0; gfx_a = 1;
+);
+// (⚪137 ..) blends 38 ..: more transitions, p (0 = deck A .. 1 = deck B) as for the others. Pictures by level: DFI (memory)
+DFI = 9500;
+// (⚪137, user's choice 2026-10-12: the reel's text coming into focus) Defocus: deck A goes out of focus, the picture
+// changes to deck B while it is blurred most (0.4 .. 0.6), and B comes into focus. The blur: the picture halved again and
+// again (each 2 x 2 means: REAPER picks pixels without averaging when it shrinks by more) and grown back by doubles (each
+// smoothed: smoother than one big step); a level between two whole ones = the two mixed. Up to level 6 (1 / 64) in the middle
+// ((2026-10-12, the 32 images) the two levels are mixed at the finer one (growing back is linear, so the same as mixing
+// the two grown pictures), then grown back by doubles in place over the finer levels, into T: 7 pictures at most, let go)
+function nt_defocus(p) local(c, lev, n, f, i, qw, qh) (
+  c = max(0, min(1, (p - 0.4) / 0.2)); c = c * c * (3 - 2 * c);
+  lev = 6 * (1 - abs(2 * p - 1)) ^ 0.8; n = floor(lev); f = lev - n;
+  clear(T); gfx_dest = T; gfx_mode = 0; gfx_a = 1; gfx_blit(imA, 0); gfx_a = c; gfx_blit(imB, 0);
+  DFI[0] = T;
+  i = 1; loop(min(7, n + 1), qw = max(2, floor(W / 2 ^ i)); qh = max(2, floor(H / 2 ^ i)); DFI[i] = iget(DFI[i], qw, qh);
+                          gfx_dest = DFI[i]; gfx_mode = 0x100; gfx_a = 1; gfx_blit(DFI[i - 1], 0, 0, 0, qw, qh); i += 1);
+  // level n + 1 grown onto level n by f
+  n + 1 <= 7 && f > 0.001 ? (qw = max(2, floor(W / 2 ^ n)); qh = max(2, floor(H / 2 ^ n));
+    gfx_dest = DFI[n]; gfx_mode = 0x100; gfx_a = f; gfx_blit(DFI[n + 1], 0, 0, 0, qw, qh));
+  // level n back to full size by doubles, each over the next finer level (T last)
+  i = n; loop(n, i -= 1; qw = max(2, floor(W / 2 ^ i)); qh = max(2, floor(H / 2 ^ i));
+                 gfx_dest = DFI[i]; gfx_mode = 0x100; gfx_a = 1; gfx_blit(DFI[i + 1], 0, 0, 0, qw, qh));
+  i = 1; loop(7, DFI[i] = ifree(DFI[i]); i += 1);
+  gfx_mode = 0; gfx_a = 1;
+);
+// (⚪139, user's choice 2026-10-12: a photo shrinking into the lower right corner in the reel) Picture in picture: deck B
+// is there behind from the start; deck A shrinks into a small window with a white frame and a shadow (to 0.32 of the
+// screen by 0.6: ease in and out). Blend 39 (user's choice 2026-10-12: the centre as the default): it stays in the centre
+// and then shrinks away to nothing (ease in). Blend 41, PiP to corner: it goes to the lower right corner and then slides
+// out past that corner (ease in)
+function nt_pip(p, corner) local(e, q, qs, qw, qh, pcx, pcy, qx, qy) (   // (no cy: it would hide cY)
+  e = min(1, p / 0.6); e = e < 0.5 ? 4 * e * e * e : 1 - (2 - 2 * e) ^ 3 / 2;
+  q = max(0, (p - 0.6) / 0.4); q *= q;
+  qs = (1 - 0.68 * e) * (corner ? 1 : 1 - q); qw = W * qs; qh = H * qs;
+  pcx = W / 2; pcy = H / 2;
+  corner ? (
+    pcx += (W / 2 - H * 0.04 - W * 0.16) * e; pcy += (H / 2 - H * 0.04 - H * 0.16) * e;
+    pcx += (W * 0.32 + H * 0.04 + 2) * q; pcy += (H * 0.32 + H * 0.04 + 2) * q;   // out past the corner
+    tr_mr ? pcx = W - pcx;   // ((2026-10-12) going back: to the bottom left)
+  );
+  qx = pcx - qw / 2; qy = pcy - qh / 2;
+  clear(T); gfx_dest = T; gfx_mode = 0x100; gfx_a = 1; gfx_blit(imB, 0);
+  qw >= 1 ? (gfx_mode = 0x100; gfx_a = 1; gfx_blit(imA, 0, qx, qy, qw, qh));
+);
+// (⚪140, user's choice 2026-10-12: a line drawing breaking up into the next picture in the reel) Shatter: deck A sinks to
+// black while its lines (Line art's la_lines, white) come up (to 0.35), then the lines break into 12 x 7 pieces that fly
+// out from the centre, each at its own time, way and speed, turning, shrinking, falling a little and fading (0.3 .. 1),
+// while deck B comes up behind (0.35 .. 0.8). The pieces are added (lines on black: no mask needed). Each piece is copied
+// with a black border 1 px wide (TL) and drawn turned with gfx_deltablit from it (the source outside reads the border)
+function sh_h(x) ( hash(x * 12.9898 + 4.1); );   // ((⚪151) through hash)
+function nt_shatter(p) local(c1, u, cb, tw, sth, i, j, k, r1, r2, r3, uu, tcx, tcy, dx, dy, dl, dist, ang, sc, al, c, sn, hf, px, py, isc, x0, y0) (
+  la_lines(imA, 2);
+  c1 = min(1, p / 0.35); c1 = c1 * c1 * (3 - 2 * c1); u = max(0, (p - 0.3) / 0.7);
+  cb = max(0, min(1, (p - 0.35) / 0.45)); cb = cb * cb * (3 - 2 * cb);
+  clear(T); gfx_dest = T; gfx_mode = 0;
+  c1 < 1 ? (gfx_a = 1 - c1; gfx_blit(imA, 0));
+  cb > 0 ? (gfx_a = cb; gfx_blit(imB, 0));
+  u <= 0 ? (gfx_mode = 1; gfx_a = c1; gfx_blit(LAF, 0)) : (
+    tw = W / 12; sth = H / 7; TL = iget(TL, ceil(tw) + 2, ceil(sth) + 2);
+    j = 0;
+    loop(7, i = 0;
+      loop(12,
+        k = j * 12 + i; r1 = sh_h(k * 3); r2 = sh_h(k * 3 + 1); r3 = sh_h(k * 3 + 2);
+        uu = max(0, min(1, (u - r3 * 0.3) / 0.7)); al = 1 - uu ^ 1.5;
+        uu <= 0 ? (gfx_dest = T; gfx_mode = 1; gfx_a = 1; gfx_blit(LAF, 0, floor(i * tw), floor(j * sth), ceil(tw), ceil(sth), floor(i * tw), floor(j * sth), ceil(tw), ceil(sth))) :
+        al > 0.01 ? (
+          gfx_dest = TL; gfx_mode = 0; gfx_a = 1; gfx_set(0, 0, 0, 1); gfx_fillrect(0, 0, ceil(tw) + 2, ceil(sth) + 2);
+          gfx_blit(LAF, 0, 1, 1, ceil(tw), ceil(sth), floor(i * tw), floor(j * sth), ceil(tw), ceil(sth));
+          tcx = (i + 0.5) * tw; tcy = (j + 0.5) * sth;
+          dx = tcx - W / 2 + (r1 - 0.5) * tw; dy = tcy - H / 2 + (r2 - 0.5) * sth; dl = sqrt(dx * dx + dy * dy) + 1;
+          dist = uu * uu * (0.5 + r3) * W * 0.8;
+          px = tcx + dx / dl * dist; py = tcy + dy / dl * dist + uu * uu * H * 0.3;
+          ang = uu * (r1 - 0.5) * 7; sc = 1 - 0.5 * uu; isc = 1 / sc; c = cos(ang); sn = sin(ang);
+          hf = (tw + sth) * 0.5 * sc + 2; x0 = px - hf; y0 = py - hf;
+          gfx_dest = T; gfx_mode = 1 | 0x100; gfx_a = al;
+          gfx_deltablit(TL, x0, y0, 2 * hf, 2 * hf, 1 + tw / 2 + (c * (x0 - px) + sn * (y0 - py)) * isc, 1 + sth / 2 + (-sn * (x0 - px) + c * (y0 - py)) * isc,
+                        c * isc, -sn * isc, sn * isc, c * isc, 0, 0);
+        );
+        i += 1);
+      j += 1);
+  );
+  la_free(); TL = ifree(TL);
+);
+function nt_draw(qm, p) (
+  qm == 38 ? nt_defocus(p) : qm == 39 ? nt_pip(p, 0) : qm == 40 ? nt_shatter(p) : qm == 41 ? nt_pip(p, 1);
+  gfx_mode = 0; gfx_a = 1;
+);
+
+imA = iget(imA, W, H); imB = iget(imB, W, H);
+// ((⚪169, user's request 2026-10-14: lighter) a deck's picture only while it shows (alone or in the blend / transition);
+// hidden, imA / imB keep what they had and are not drawn (the kept picture BKEEP below still follows deck B)
+// ((⚪174) and while it is hidden but has a video effect on: its picture in the record's label shows the effect)
+function fx_any(o, o2, o3, slot) local(t, i, r) (
+  t = gmem[o] | 0; r = t >= 1 && t <= VN_ALL && gmem[o + 1] > 0.001;
+  r = r || gmem[o2] > 0.001 || gmem[o2 + 1] > 0.001 || gmem[o2 + 2] > 0.001 || gmem[slot == 1 ? 127 : 126] > 0.001;
+  i = 0; loop(8, r = r || gmem[o3 + i] > 0.001; i += 1);
+  i = 0; loop(4, r = r || gmem[(slot == 1 ? 174 : 170) + i] > 0.001; i += 1);
+  r;
+);
+VN_ALL = 15;
+shA = cA > 0 || cY > 0 || fx_any(10, 76, 82, 0); shB = cB > 0 || cY > 0 || fx_any(20, 79, 91, 1);
+!shA && okA ? pv_take(inA, wA, hA, 9000000);   // (⚪174: hidden, no effect: the picture as it comes; input 0 is still deck A's own picture here)
+shA ? (clear(imA); okA ? put(inA, 1, 0));
+// deck B's picture: kept from the last frame REAPER handed over. While deck B stands still and deck A moves, the sync
+// script moves the "video B view" item every frame and REAPER often has no frame for it -> okB = 0, and B flashed
+// black (user's report, 2026-10-05). BKEEP holds the last one (separate from imB: the effects are drawn into imB).
+BKEEP = iget(BKEEP, W, H); BKEEP <= 0 ? hasBK = 0;   // ((⚪151) not made: nothing kept; a new size: hasBK = 0 above, taken again)
+// [26] = deck B's head moved in this block: while it stands still, the kept picture (REAPER's frame may be black).
+// [29] (the video sync script): 1 = deck B's slot has no video, 2 + slot = it has: the kept picture goes when the slot
+// changes or has none (it stayed: a sound-only slot showed the last video's still, user's report 2026-10-08)
+gmem[29] != bstL ? (bstL = gmem[29]; hasBK = 0; pic_reset(1); pic_reset(2)); gmem[29] == 1 ? hasBK = 0;   // ((⚪151) + the trails and history)
+okB && BKEEP > 0 && gmem[26] ? (clear(BKEEP); put(inB, 1, 0); hasBK = 1);          // kept from frames while B moves
+// (⚪100) and, until B has moved, from its first frame while it stands: after a restart B had no kept picture, and with
+// deck A playing B's standing picture went back and forth between two neighbouring frames of its video, the view item
+// placed again every frame landing on either side of a frame's edge (user's report 2026-10-09: "Wario blinks";
+// reproduced in the isolated REAPER, 48 of 68 grabs changed). Taken again from every frame while deck A stands still too
+// (then the view item is not placed again every frame): the first frame alone was sometimes black, and B stayed black at
+// start with both decks stopped (user's report 2026-10-09)
+okB && BKEEP > 0 && !gmem[26] && (!hasBK || (hasBK == 2 && !gmem[16])) ? (clear(BKEEP); put(inB, 1, 0); hasBK = 2);
+shB ? (clear(imB); hasBK && !gmem[26] ? cp(imB, BKEEP) : okB ? put(inB, 1, 0));  // standing: the kept one (if any yet)
+!shB ? (hasBK && !gmem[26] && BKEEP > 0 ? pv_take(BKEEP, W, H, 9010000) : okB ? pv_take(inB, wB, hB, 9010000));   // (⚪174, as deck A's above)
+// a deck's own FX, then (⚪92 / ⚪93) its faders' sounds as video FX: [76..78] deck A / [79..81] B = echo -> Trails,
+// bitcrusher -> LoRez (the same FX as its own: the larger amount), vibrato -> the raster wave
+// (⚪94) and the FX knobs: [82..89] deck A / [91..98] B = Tint, Hue rotate, Invert, Threshold, Mirror, Kaleidoscope, Shift
+// RGB, Strobe. Every FX by the largest of its amounts (FXA [1..VN]). ((⚪151) drawn in this order: Line art, Halftone,
+// Zoom blur (they make a new picture), Tint .. Shift RGB, Trails, Strobe, VHS, Disc; then the vibrato's raster
+FXA = 9100; VN = 15;
+// (⚪135, user's choice 2026-10-12: in the reel a blue Threshold went on and off with the beat) the video FX LFO: every
+// amount of a deck's video FX (the chosen one, the knobs, the echo / bitcrusher faders, the pads and (⚪151) the vibrato's raster: all but the Strobe, whose amount is
+// its speed) times 1 - depth x (1 - wave), the wave 0..1 in the shape over the cycle from the deck's beat position (no BPM:
+// the clock as 120 BPM): 0 sine, 1 triangle, 2 square (on the first half), 3 saw down, 4 saw up, each full on the beat.
+// b = [136] deck A (the master's too) / [139] B, ph = the beat position
+// ((user's reports on the Strobe, 2026-10-10, applied here too) the beat position comes in steps (one an audio block, about
+// 23 ms): while it moves forward, the place between its steps from the time since it came at the beats a second it moves
+// (LFS: [k] the last position, [k + 1] when it changed, [k + 2] beats a second, smoothed; k = 0 deck A / 4 B). A Square's
+// halves are at least 2 frames (the frame time STB [21]): a faster cycle is made 2, 4 .. times longer
+LFS = 9600;
+function lfo(b, ph) local(dp, x, f, sh, k, t, cb) (
+  dp = max(0, min(1, gmem[b + 2]));
+  dp <= 0.001 ? 1 : (
+    k = b == 139 ? 4 : 0; t = time_precise();
+    ph >= 0 ? ph = bp_est(LFS + k, ph);   // ((⚪151) the same as the Strobe's: bp_est)
+    sh = gmem[b] | 0; cb = 2 ^ (max(0, min(5, gmem[b + 1] | 0)) - 2);
+    sh == 2 && STB[21] > 0 ? loop(6, cb * 0.5 / (ph >= 0 ? (LFS[k + 2] > 0 ? LFS[k + 2] : 2) : 2) < 2 * STB[21] ? cb *= 2);
+    x = (ph >= 0 ? ph : t * 2) / cb; f = x - floor(x);
+    1 - dp * (1 - (sh == 0 ? 0.5 + 0.5 * cos(2 * $pi * f) : sh == 1 ? abs(2 * f - 1) : sh == 2 ? f < 0.5 : sh == 3 ? 1 - f : f));
+  );
+);   // ((⚪133) VN = the number of video FX types)
+function deck_fx(img, o, o2, o3, slot) local(t, i, l, lf) (
+  memset(FXA, 0, 16);
+  t = gmem[o] | 0; t >= 1 && t <= VN ? FXA[t] = gmem[o + 1];   // ((⚪118) 11 = VHS, (⚪132) 12 = Disc, (⚪133) 13 = Line art, (⚪134) 14 = Halftone, (⚪138) 15 = Zoom blur)
+  FXA[10] = max(FXA[10], gmem[o2]); FXA[7] = max(FXA[7], gmem[o2 + 1]);
+  i = 0; loop(8, t = i < 6 ? i + 1 : i + 2; FXA[t] = max(FXA[t], gmem[o3 + i]); i += 1);
+  FXA[11] = max(FXA[11], gmem[slot == 1 ? 127 : 126]);   // ((⚪120) the VHS knob: [126] deck A / [127] B)
+  // ((2026-10-13) TOUCH FX row 2 pads 4-7: Disc, Line art, Halftone, Zoom blur: [170..173] deck A / [174..177] B)
+  i = 0; loop(4, FXA[12 + i] = max(FXA[12 + i], gmem[(slot == 1 ? 174 : 170) + i]); i += 1);
+  lf = lfo(slot == 1 ? 139 : 136, gmem[o + 2]); lf < 1 ? (t = 1; loop(VN, t != 9 ? FXA[t] *= lf; t += 1));   // ((⚪135))
+  // ((user's choice 2026-10-13) the helper APC40's crossfader (gmem [241]): every effect that is on pushed toward full
+  l = gmem[241]; l > 0.001 ? (t = 1; loop(VN, t != 9 && FXA[t] > 0.001 ? FXA[t] += l * (1 - FXA[t]); t += 1));
+  // ((⚪161, user's choice 2026-10-13, compared on every effect) the vibrato fader's raster
+  // before the effects when one of those that draw a medium or a grid over the picture is on: VHS (11; the tape then
+  // records the shaking picture), LoRez (7; square blocks), Disc (12; a round record), Line art (13; clean lines),
+  // Halftone (14; a regular dot screen); (user's choice, the same day) Shift RGB (8) and Zoom blur (15) too. With only
+  // the others it stays last, as before (little difference; Mirror and Kaleidoscope then wave as a pattern)
+  l = gmem[o2 + 2] * lf; l = l > 0.001 ? l + gmem[241] * (1 - l) : 0;
+  l > 0 && (FXA[7] > 0.001 || FXA[8] > 0.001 || FXA[11] > 0.001 || FXA[12] > 0.001 || FXA[13] > 0.001 || FXA[14] > 0.001 || FXA[15] > 0.001) ? (raster(img, l); l = 0);
+  // ((⚪133) the ones that make a new picture of it (13 Line art ..) first: the Tint and the rest colour them after)
+  // ((⚪151, user's choice) the Strobe (9) after the Trails (10): its black frames went into the trails picture)
+  i = 0; loop(VN, t = i < VN - 12 ? 13 + i : i - (VN - 12) + 1; t == 9 ? t = 10 : t == 10 ? t = 9;
+                  FXA[t] > 0.001 ? vfx(img, t, FXA[t], gmem[o + 2], gmem[o + 3], slot); i += 1);
+  // ((⚪151, user's choice) the vibrato fader's raster by the LFO too, as the other effects (then the helper's push); last
+  // ((⚪160) it was put before VHS for a while: VHS then smeared its top and bottom wave away); then VHS's overlays
+  l > 0 ? raster(img, l);
+  FXA[11] > 0.001 ? vh_over(img, FXA[11], slot);
+);
+vok = okA; shA ? (hist_upd(imA, 0, gmem[16]); deck_fx(imA, 10, 76, 82, 0));
+vok = okB || (hasBK && !gmem[26]); shB ? (hist_upd(imB, 1, gmem[26]); deck_fx(imB, 20, 79, 91, 1));
+shA ? pv_take(imA, W, H, 9000000); shB ? pv_take(imB, W, H, 9010000);   // (⚪174: with its effects)
+// (⚪188, user's request 2026-10-16) a file of the Media Explorer previewed (P key in a deck's JSFX; reascratch_browser.lua):
+// its picture is the item on the "preview view" track, the next video track after "video B view" (input_track(1)), which
+// the video sync moves as deck B's view. Read into the label grid [9020000 ..] (+ PVN * PVN = count) and never drawn: the
+// video window shows only the decks. gmem [372] = the deck previewing (0 none), [373] = the preview has a picture
+gmem[372] > 0 && gmem[373] > 0 ? (
+  prv_in = input_track(1);
+  prv_in > 0 && input_info(prv_in, prv_w, prv_h) ? pv_take(prv_in, prv_w, prv_h, 9020000);
+);
+
+// the blend (only while it shows: the crossfader between the ends). The simple ones are blits; the others are
+// per pixel (gfx_evalrect), about twice the time of the others (measured 2026-10-04).
+// ((user's request 2026-10-12: every transition, once deck B shows, goes back to A as a new turn, as the Brush wipe) the
+// end the crossfader was last at: 1 = deck B's. From there the transitions and camera moves run from B to A: the two
+// pictures swapped and the progress turned round (Wipe right: A wipes in over B from the left; Whip right: B flies out
+// to the right, A in). The way does not change between the ends. The Brush wipe keeps its own way back (B's card to the
+// left, br_draw reads tr_dir)
+// the blends 1 .. 8 of imA and imB into dst (it was inline below; ((user's choice 2026-10-13) a transition uses it too)
+function bl_draw(dst, bm) (
+  bm <= 3 || bm == 8 ? (
+    clear(dst); put(imA, 1, 0);
+    bm == 1 ? put(imB, 1, 1);                                       // add
+    bm == 2 ? (gfx_mode = 1; gfx_a = -1; gfx_blit(imB, 1));         // subtract: negative alpha, additive (no filter flag)
+    bm == 3 ? put(imB, 1, 3);                                       // multiply
+    bm == 8 ? (gfx_mode = 0; gfx_a = 1;                             // chroma key (green); threshold 0.3 = REAPER's default
+      gfx_keyedblit(imB, 0, 0, W, H, 0, 0, 5.7, -3, (th - 0.3) * 4, 1));
+  ) : (
+    ith = th; isoft = 1 / max(soft, 0.001);
+    strcpy(#bl, bm == 4 ? "y=x1<128?x1*x2*(2/255):255-(255-x1)*(255-x2)*(2/255);" :
+          bm == 5 ? "y=(255-2*x2)*x1*x1*(1/65025)+2*x2*x1*(1/255);" :
+          bm == 6 ? "y=x2<128?x1*x2*(2/255):255-(255-x1)*(255-x2)*(2/255);" :
+          "y=x1+(x2-x1)*k;");
+    strcpy(#key, bm == 7 ? "k=((0.299*s2r+0.587*s2g+0.114*s2b)*(1/255)-ith)*isoft; k=max(0,min(1,k));" : "");
+    sprintf(#code, "%s x1=sr;x2=s2r;%s r=y; x1=sg;x2=s2g;%s g=y; x1=sb;x2=s2b;%s b=y; a=255;", #key, #bl, #bl, #bl);
+    gfx_dest = dst; gfx_evalrect(0, 0, W, H, #code, 0, imA, "", imB);
+  );
+  gfx_mode = 0; gfx_a = 1;
+);
+xf <= 0.0001 ? tr_from = 0 : xf >= 0.9999 ? tr_from = 1;
+// ((user's report 2026-10-12) a fast move touched the end between two frames: the end deck A's JSFX saw (gmem [143])
+m >= 9 && gmem[142] >= 0 ? tr_from = gmem[143] >= 0.5;
+cY > 0 ? (
+  T = iget(T, W, H);
+  m >= 9 ? (
+    tr_dir = tr_from;
+    // ((user's choice 2026-10-13) a blend with the transition (deck A's, gmem [188]: 1 .. 8; 0 = none): the picture that
+    // comes in is the blend of A and B (TBL) in place of B (going back: in place of A); at the far end the deck alone
+    tb_m = gmem[188] | 0; tb_on = tb_m >= 1 && tb_m <= 8;
+    tb_on ? (TBL = iget(TBL, W, H); bl_draw(TBL, tb_m));
+    m == 37 ? br_draw(xf) : (   // ((2026-10-12) the Brush wipe as a card: br_draw; its old mask code in tr_draw is not reached)
+      tr_from ? (tr_t = imA; imA = imB; imB = tr_t; tr_p = 1 - xf) : (tr_p = xf);
+      tb_on ? (tb_k = imB; imB = TBL);   // (the blend in place of the one coming in)
+      // ((user's requests 2026-10-12) going back from B the way turned round (so the move goes with the crossfader):
+      // Wipe right, Wipe diagonal, Slide, Clock and PiP to corner mirrored left-right (tr_mr: the mask's x in tr_draw,
+      // Slide's and PiP's places), Whip right and Tilt right mirrored, Tilt up mirrored both ways (cm_mx / cm_my in
+      // cm_state). (Mirroring both pictures and the result with gfx_deltablit cost 25 - 50 ms a frame)
+      cm_mx = tr_from && (m == 26 || m == 33 || m == 36) ? -1 : 1; cm_my = 1;   // ((2026-10-12) Tilt down (36): upper left -> lower right, back upper right -> lower left)
+      tr_mr = tr_from && (m == 9 || m == 11 || m == 14 || m == 19 || m == 41);
+      m >= 38 ? nt_draw(m, tr_p) :   // ((⚪137 ..) more transitions)
+      m >= 25 && m <= 36 ? cm_draw(m, tr_p) :   // ((⚪128) a camera move)
+      tr_draw(m, tr_p);   // ((⚪116) a transition)
+      cm_mx = 1; cm_my = 1; tr_mr = 0;
+      tb_on ? imB = tb_k;
+      tr_from ? (tr_t = imA; imA = imB; imB = tr_t);
+    );
+    TBL = ifree(TBL); tb_on = 0;
+  ) :
+  bl_draw(T, m);
+);
+// the mix: straight into the output when it is the same size and there is no master effect, else into Oimg first
+mfx = gmem[5] | 0; (mfx < 0 || mfx > VN) ? mfx = 0;   // ((⚪150) out of range: none, not the last branch (Trails))
+mk = gmem[6]; mfx != 9 ? mk *= lfo(136, gmem[12]);   // ((⚪135) deck A's LFO)
+mfx != 9 && mk > 0.001 ? mk += gmem[241] * (1 - mk);   // ((2026-10-13) the helper's FX boost
+same = OW == W && OH == H && !(mfx >= 1 && mk > 0.001) && tlt == 0;
+!same ? (Oimg = iget(Oimg, W, H); Oimg <= 0 ? same = 1);   // ((⚪151) not made: straight into the output, no master effect)
+clear(same ? -1 : Oimg);
+put(imA, cA, 1);
+cY > 0 ? put(T, cY, 1);
+put(imB, cB, 1);
+!same ? (
+  vok = okA || okB || hasBK; hist_upd(Oimg, 2, gmem[16] || gmem[26]); vfx(Oimg, mfx, mk, gmem[12], gmem[13], 2); mfx == 11 && mk > 0.001 ? vh_over(Oimg, mk, 2);
+  tlt != 0 ? look(Oimg, tlt);
+  gfx_dest = -1; gfx_mode = 0; gfx_a = 1; gfx_set(0, 0, 0, 1); gfx_fillrect(0, 0, OW, OH);
+  gfx_mode = OW == W && OH == H ? 0 : 0x100; gfx_a = 1; gfx_blit(Oimg, 1);
+);
+gfx_dest = -1;
+// ((user's choice 2026-10-13) the helper APC40's master fader: the whole picture darker as the sound goes down (gmem [242]
+// = how much is cut)
+bo_a = gmem[243] ? 1 : max(0, min(1, gmem[242]));   // ((2026-10-13) + MASTER's blackout (gmem [243]): all black
+bo_a > 0.001 ? (gfx_mode = 0; gfx_set(0, 0, 0, bo_a); gfx_fillrect(0, 0, OW, OH); gfx_mode = 0; gfx_a = 1);
+// (⚪100) a deck that shows but has no picture: REAPER handed no frame of it (while both decks stand still it hands one
+// only after the item is touched; ⚪99 stopped moving items on every change). The video sync script then touches it
+gmem[100] = (cB > 0 || cY > 0) && !okB && !(hasBK && !gmem[26]); gmem[101] = (cA > 0 || cY > 0) && !okA;
+// ((⚪160) a VHS afterglow picture not drawn this frame: let go (the 32 pictures, see iget)
+i = 0; loop(3, VHP[i] > 0 && VHF[i] != fr ? VHP[i] = ifree(VHP[i]); i += 1);
+gmem[99] = time_precise() - t_draw0;   // (⚪99) the time this took: the video sync script spaces the redraws of a standing picture by it
