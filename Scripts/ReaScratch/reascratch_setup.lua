@@ -38,7 +38,7 @@ loadfile(HERE .. "reascratch_browser.lua")(L).ensure_files()   -- the slots' own
 -- scripts into the action list, and their command names ("_RS..." - they hang on where the kit is, so the toolbar
 -- below is made here, not shipped). ((⚪179) one list: the names were asked for by adding the scripts a second time)
 local CMD, ids = {}, {}
-for _, name in ipairs({ "reascratch_import_video.lua", "reascratch_reencode_mjpeg.lua", "reascratch_video_sync.lua", "reascratch_load_test.lua", "reascratch_pattern.lua", "reascratch_pattern_save.lua", "reascratch_record_lanes.lua", "reascratch_perf_play.lua", "reascratch_perf_play_decks.lua", "reascratch_take.lua", "reascratch_video_reopen.lua", "reascratch_rekordbox.lua", "reascratch_export.lua", "reascratch_setup.lua" }) do
+for _, name in ipairs({ "reascratch_import_video.lua", "reascratch_reencode_mjpeg.lua", "reascratch_video_sync.lua", "reascratch_load_test.lua", "reascratch_pattern.lua", "reascratch_pattern_save.lua", "reascratch_record_lanes.lua", "reascratch_lanes.lua", "reascratch_perf_play.lua", "reascratch_perf_play_decks.lua", "reascratch_take.lua", "reascratch_video_reopen.lua", "reascratch_rekordbox.lua", "reascratch_export.lua", "reascratch_setup.lua" }) do
   local p = HERE .. name
   if reaper.file_exists(p) then ids[name] = reaper.AddRemoveReaScript(true, 0, p, false) end
 end
@@ -350,7 +350,7 @@ if yes then
   L.log("video sync: starts with REAPER (" .. startup .. ")")
 end
 -- (⚪100, user's request 2026-10-09: the author's layout as the kit's default) the ReaScratch window layout. A window
--- layout is REAPER's, not the project's (a template cannot carry it): toolbar 3 gets the kit's 10 buttons (reaper-menu.ini;
+-- layout is REAPER's, not the project's (a template cannot carry it): toolbar 3 gets the kit's 11 buttons (reaper-menu.ini;
 -- REAPER reads a toolbar's buttons from there when it opens) and reaper-screensets.ini a window set "ReaScratch" (the kit's
 -- copy of the author's), which is then loaded. Someone else's toolbar 3 or window sets are not replaced without asking
 local function layout()
@@ -373,7 +373,7 @@ local function layout()
   if others then keep(menu, txt) end
   local B = { { "reascratch_setup.lua", "SETUP" }, { "reascratch_import_video.lua", "IMPORT VIDEO" }, { "reascratch_reencode_mjpeg.lua", "MJPEG" },
     { "reascratch_video_sync.lua", "VIDEO SYNC" }, { "reascratch_video_reopen.lua", "VIDEO REOPEN" }, { "reascratch_pattern.lua", "PATTERN" },
-    { "reascratch_pattern_save.lua", "PATTERN SAVE" }, { "reascratch_record_lanes.lua", "REC LANES" }, { "reascratch_take.lua", "TAKE" },
+    { "reascratch_pattern_save.lua", "PATTERN SAVE" }, { "reascratch_record_lanes.lua", "REC LANES" }, { "reascratch_lanes.lua", "LANES" }, { "reascratch_take.lua", "TAKE" },
     { "reascratch_perf_play.lua", "PERF PLAY" } }
   local sec, n = { "[Floating toolbar 3]" }, 0
   for _, b in ipairs(B) do

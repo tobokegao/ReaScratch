@@ -22,96 +22,293 @@ desc: DJ performance lanes
 // MIDI and audio pass through untouched.
 options:gmem=ReaScratch_video
 
-slider1:1<1,2,1>Deck (1 = A, 2 = B; set by the setup script)
-slider2:-1<-1,1,1>Perf transport (-1 = none, 0 stop, 1 play)
-slider3:-1<-1,3600,0.000001>Perf head (s of the sample, -1 = none)
-slider4:-1<-1,1,1>Perf driven (-1 = none, 1 = hand / spin / reverse / seek)
-slider5:-1<-1,8,1>Perf slot (-1 = none, 1-8)
-slider6:-51<-51,50,0.0001>Perf tempo (%, -51 = none)
-slider7:-13<-13,12,1>Perf key (semitones, -13 = none)
-slider8:-1<-1,1,1>Perf loop on (-1 = none, 0 off, 1 on)
-slider9:-1<-1,3600,0.000001>Perf loop start (s of the sample, -1 = none)
-slider10:-1<-1,3600,0.000001>Perf loop end (s of the sample, -1 = none)
-slider11:-1<-1,1,1>Perf loop roll (-1 = none, 1 = a roll)
-slider12:-1<-1,1,1>Perf sync (-1 = none; recorded only, not played)
-slider13:-1<-1,3600,0.000001>Perf cue position (s of the sample, -1 = none)
-slider14:-2<-2,3600,0.000001>Perf hot cue 1 (s, -1 = empty, -2 = none)
-slider15:-2<-2,3600,0.000001>Perf hot cue 2 (s, -1 = empty, -2 = none)
-slider16:-2<-2,3600,0.000001>Perf hot cue 3 (s, -1 = empty, -2 = none)
-slider17:-2<-2,3600,0.000001>Perf hot cue 4 (s, -1 = empty, -2 = none)
-slider18:-2<-2,3600,0.000001>Perf hot cue 5 (s, -1 = empty, -2 = none)
-slider19:-2<-2,3600,0.000001>Perf hot cue 6 (s, -1 = empty, -2 = none)
-slider20:-2<-2,3600,0.000001>Perf hot cue 7 (s, -1 = empty, -2 = none)
-slider21:-2<-2,3600,0.000001>Perf hot cue 8 (s, -1 = empty, -2 = none)
-slider22:-3602<-3602,3601,0.000001>Perf memory cue (event: t + 1 = added at t s, -(t + 1) = deleted, 0 = none, -3602 = none)
-slider23:-25<-25,24,0.0001>Perf pitch play (PITCH PLAY's key, semitones, -25 = none)
-slider24:-2<-2,1,0.0001>Perf xfader position (0 left .. 1 right; -2 = none)
-slider25:-2<-2,1,1>Perf xfader cut (1 = cut: the Z key; -2 = none)
-slider26:-2<-2,2,1>Perf xfader side (slider 33: 0 off, 1 left, 2 right; -2 = none)
-slider27:-2<-2,1,0.0001>Perf channel volume (the volume fader; -2 = none)
-slider28:-2<-2,1,1>Perf mute (slider 196; -2 = none)
-slider29:-2<-2,1,0.0001>Perf video opacity (slider 195; -2 = none)
-slider30:-2<-2,37,1>Perf video blend (slider 78, deck A; -2 = none)
-slider31:-2<-2,1,0.0001>Perf blend key threshold (slider 79, deck A; -2 = none)
-slider32:-2<-2,1,0.0001>Perf blend key softness (slider 80, deck A; -2 = none)
-slider33:-2<-2,7,1>Perf filter type (slider 153; -2 = none)
-slider34:-2<-2,1,0.0001>Perf filter cutoff (slider 152; -2 = none)
-slider35:-2<-2,1,0.0001>Perf filter resonance (slider 154; -2 = none)
-slider36:-2<-2,0.5,0.0001>Perf filter morph (slider 150; -2 = none)
-slider37:-2<-2,15,1>Perf video FX type (slider 82; -2 = none)
-slider38:-2<-2,1,0.0001>Perf video FX amount (slider 83; -2 = none)
-slider39:-2<-2,15,1>Perf master FX type (slider 86, deck A; -2 = none)
-slider40:-2<-2,1,0.0001>Perf master FX amount (slider 87, deck A; -2 = none)
-slider41:-2<-2,1,0.0001>Perf FX knob 1 (slider 200; -2 = none)
-slider42:-2<-2,1,0.0001>Perf FX knob 2 (slider 201; -2 = none)
-slider43:-2<-2,1,0.0001>Perf FX knob 3 (slider 202; -2 = none)
-slider44:-2<-2,1,0.0001>Perf FX knob 4 (slider 203; -2 = none)
-slider45:-2<-2,1,0.0001>Perf FX knob 5 (slider 204; -2 = none)
-slider46:-2<-2,1,0.0001>Perf FX knob 6 (slider 205; -2 = none)
-slider47:-2<-2,1,0.0001>Perf FX knob 7 (slider 206; -2 = none)
-slider48:-2<-2,1,0.0001>Perf FX knob 8 (slider 151; -2 = none)
-slider49:-2<-2,1,0.0001>Perf Strobe knob (slider 207; -2 = none)
-slider50:-2<-2,1,0.0001>Perf echo amount (slider 197; -2 = none)
-slider51:-2<-2,1,0.0001>Perf bitcrusher amount (slider 198; -2 = none)
-slider52:-2<-2,1,0.0001>Perf vibrato amount (slider 199; -2 = none)
-slider53:-2<-2,1,0.0001>Perf sound of video FX (slider 209; -2 = none)
-slider54:-2<-2,255,1>Perf touch FX row 1 (pads 1-8 on: bits; -2 = none)
-slider55:-2<-2,255,1>Perf touch FX row 2 (SHIFT pads 1-8 on: bits; -2 = none)
-slider56:-2<-2,1,0.0001>Perf touch FX 1-1 amount (row 1 pad 1; -2 = none)
-slider57:-2<-2,1,0.0001>Perf touch FX 1-2 amount (row 1 pad 2; -2 = none)
-slider58:-2<-2,1,0.0001>Perf touch FX 1-3 amount (row 1 pad 3; -2 = none)
-slider59:-2<-2,1,0.0001>Perf touch FX 1-4 amount (row 1 pad 4; -2 = none)
-slider60:-2<-2,1,0.0001>Perf touch FX 1-5 amount (row 1 pad 5; -2 = none)
-slider61:-2<-2,1,0.0001>Perf touch FX 1-6 amount (row 1 pad 6; -2 = none)
-slider62:-2<-2,1,0.0001>Perf touch FX 1-7 amount (row 1 pad 7; -2 = none)
-slider63:-2<-2,1,0.0001>Perf touch FX 1-8 amount (row 1 pad 8; -2 = none)
-slider64:-2<-2,1,0.0001>Perf touch FX 2-1 amount (row 2 pad 1; -2 = none)
-slider65:-2<-2,1,0.0001>Perf touch FX 2-2 amount (row 2 pad 2; -2 = none)
-slider66:-2<-2,1,0.0001>Perf touch FX 2-3 amount (row 2 pad 3; -2 = none)
-slider67:-2<-2,1,0.0001>Perf touch FX 2-4 amount (row 2 pad 4; -2 = none)
-slider68:-2<-2,1,0.0001>Perf touch FX 2-5 amount (row 2 pad 5; -2 = none)
-slider69:-2<-2,1,0.0001>Perf touch FX 2-6 amount (row 2 pad 6; -2 = none)
-slider70:-2<-2,1,0.0001>Perf touch FX 2-7 amount (row 2 pad 7; -2 = none)
-slider71:-2<-2,1,0.0001>Perf touch FX 2-8 amount (row 2 pad 8; -2 = none)
-slider72:-2<-2,1,0.0001>Perf pitch mode (slider 52; -2 = none)
-slider73:-2<-2,5,1>Perf vibrato step (slider 220; -2 = none)
-slider74:-2<-2,12,1>Perf vibrato width (SHIFT + the vibrato step knob; -2 = none)
-slider75:-2<-2,1,0.0001>Perf fader lanes gain (the fader lane / a pattern pad's fader; -2 = none)
-slider76:-2<-2,255,1>Perf CLIP STOP held (the helper APC40's CLIP STOP 1-8 held: bits; -2 = none)
-slider77:-2<-2,4,1>Perf video FX LFO shape (-2 = none)
-slider78:-2<-2,5,1>Perf video FX LFO rate (-2 = none)
-slider79:-2<-2,1,0.0001>Perf video FX LFO depth (-2 = none)
-slider80:-2<-2,1,1>Perf picture mute (the picture only, the sound stays; -2 = none)
-slider81:-2<-2,1,0.0001>Perf FX boost (the helper APC40, deck A; -2 = none)
-slider82:-2<-2,1,0.0001>Perf master level (the helper APC40, deck A; -2 = none)
-slider83:-2<-2,1,1>Perf blackout (the helper APC40, deck A; -2 = none)
+// (2026-10-17) the slider names are kept short (REAPER cut the long ones off in the FX window and the envelope list;
+// reascratch_lib.lua finds a lane by the start of its name, so only what is in brackets was cut). Each lane's "none"
+// mark is its minimum (-1, -2, -13, -25, -51, -3602). The names as they were, with their notes:
+//   slider1: Deck (1 = A, 2 = B; set by the setup script)
+//   slider2: Perf transport (-1 = none, 0 stop, 1 play)
+//   slider3: Perf head (s of the sample, -1 = none)
+//   slider4: Perf driven (-1 = none, 1 = hand / spin / reverse / seek)
+//   slider5: Perf slot (-1 = none, 1-8)
+//   slider6: Perf tempo (%, -51 = none)
+//   slider7: Perf key (semitones, -13 = none)
+//   slider8: Perf loop on (-1 = none, 0 off, 1 on)
+//   slider9: Perf loop start (s of the sample, -1 = none)
+//   slider10: Perf loop end (s of the sample, -1 = none)
+//   slider11: Perf loop roll (-1 = none, 1 = a roll)
+//   slider12: Perf sync (-1 = none; recorded only, not played)
+//   slider13: Perf cue position (s of the sample, -1 = none)
+//   slider14: Perf hot cue 1 (s, -1 = empty, -2 = none)
+//   slider15: Perf hot cue 2 (s, -1 = empty, -2 = none)
+//   slider16: Perf hot cue 3 (s, -1 = empty, -2 = none)
+//   slider17: Perf hot cue 4 (s, -1 = empty, -2 = none)
+//   slider18: Perf hot cue 5 (s, -1 = empty, -2 = none)
+//   slider19: Perf hot cue 6 (s, -1 = empty, -2 = none)
+//   slider20: Perf hot cue 7 (s, -1 = empty, -2 = none)
+//   slider21: Perf hot cue 8 (s, -1 = empty, -2 = none)
+//   slider22: Perf memory cue (event: t + 1 = added at t s, -(t + 1) = deleted, 0 = none, -3602 = none)
+//   slider23: Perf pitch play (PITCH PLAY's key, semitones, -25 = none)
+//   slider24: Perf xfader position (0 left .. 1 right; -2 = none)
+//   slider25: Perf xfader cut (1 = cut: the Z key; -2 = none)
+//   slider26: Perf xfader side (slider 33: 0 off, 1 left, 2 right; -2 = none)
+//   slider27: Perf channel volume (the volume fader; -2 = none)
+//   slider28: Perf mute (slider 196; -2 = none)
+//   slider29: Perf video opacity (slider 195; -2 = none)
+//   slider30: Perf video blend (slider 78, deck A; -2 = none)
+//   slider31: Perf blend key threshold (slider 79, deck A; -2 = none)
+//   slider32: Perf blend key softness (slider 80, deck A; -2 = none)
+//   slider33: Perf filter type (slider 153; -2 = none)
+//   slider34: Perf filter cutoff (slider 152; -2 = none)
+//   slider35: Perf filter resonance (slider 154; -2 = none)
+//   slider36: Perf filter morph (slider 150; -2 = none)
+//   slider37: Perf video FX type (slider 82; -2 = none)
+//   slider38: Perf video FX amount (slider 83; -2 = none)
+//   slider39: Perf master FX type (slider 86, deck A; -2 = none)
+//   slider40: Perf master FX amount (slider 87, deck A; -2 = none)
+//   slider41: Perf FX knob 1 (slider 200; -2 = none)
+//   slider42: Perf FX knob 2 (slider 201; -2 = none)
+//   slider43: Perf FX knob 3 (slider 202; -2 = none)
+//   slider44: Perf FX knob 4 (slider 203; -2 = none)
+//   slider45: Perf FX knob 5 (slider 204; -2 = none)
+//   slider46: Perf FX knob 6 (slider 205; -2 = none)
+//   slider47: Perf FX knob 7 (slider 206; -2 = none)
+//   slider48: Perf FX knob 8 (slider 151; -2 = none)
+//   slider49: Perf Strobe knob (slider 207; -2 = none)
+//   slider50: Perf echo amount (slider 197; -2 = none)
+//   slider51: Perf bitcrusher amount (slider 198; -2 = none)
+//   slider52: Perf vibrato amount (slider 199; -2 = none)
+//   slider53: Perf sound of video FX (slider 209; -2 = none)
+//   slider54: Perf touch FX row 1 (pads 1-8 on: bits; -2 = none)
+//   slider55: Perf touch FX row 2 (SHIFT pads 1-8 on: bits; -2 = none)
+//   slider56: Perf touch FX 1-1 amount (row 1 pad 1; -2 = none)
+//   slider57: Perf touch FX 1-2 amount (row 1 pad 2; -2 = none)
+//   slider58: Perf touch FX 1-3 amount (row 1 pad 3; -2 = none)
+//   slider59: Perf touch FX 1-4 amount (row 1 pad 4; -2 = none)
+//   slider60: Perf touch FX 1-5 amount (row 1 pad 5; -2 = none)
+//   slider61: Perf touch FX 1-6 amount (row 1 pad 6; -2 = none)
+//   slider62: Perf touch FX 1-7 amount (row 1 pad 7; -2 = none)
+//   slider63: Perf touch FX 1-8 amount (row 1 pad 8; -2 = none)
+//   slider64: Perf touch FX 2-1 amount (row 2 pad 1; -2 = none)
+//   slider65: Perf touch FX 2-2 amount (row 2 pad 2; -2 = none)
+//   slider66: Perf touch FX 2-3 amount (row 2 pad 3; -2 = none)
+//   slider67: Perf touch FX 2-4 amount (row 2 pad 4; -2 = none)
+//   slider68: Perf touch FX 2-5 amount (row 2 pad 5; -2 = none)
+//   slider69: Perf touch FX 2-6 amount (row 2 pad 6; -2 = none)
+//   slider70: Perf touch FX 2-7 amount (row 2 pad 7; -2 = none)
+//   slider71: Perf touch FX 2-8 amount (row 2 pad 8; -2 = none)
+//   slider72: Perf pitch mode (slider 52; -2 = none)
+//   slider73: Perf vibrato step (slider 220; -2 = none)
+//   slider74: Perf vibrato width (SHIFT + the vibrato step knob; -2 = none)
+//   slider75: Perf fader lanes gain (the fader lane / a pattern pad's fader; -2 = none)
+//   slider76: Perf CLIP STOP held (the helper APC40's CLIP STOP 1-8 held: bits; -2 = none)
+//   slider77: Perf video FX LFO shape (-2 = none)
+//   slider78: Perf video FX LFO rate (-2 = none)
+//   slider79: Perf video FX LFO depth (-2 = none)
+//   slider80: Perf picture mute (the picture only, the sound stays; -2 = none)
+//   slider81: Perf FX boost (the helper APC40, deck A; -2 = none)
+//   slider82: Perf master level (the helper APC40, deck A; -2 = none)
+//   slider83: Perf blackout (the helper APC40, deck A; -2 = none)
+slider1:1<1,2,1>-Deck (1 = A, 2 = B)
+slider2:-1<-1,1,1>-Perf transport (1 play, 0 stop)
+slider3:-1<-1,3600,0.000001>-Perf head (s)
+slider4:-1<-1,1,1>-Perf driven (1 = hand)
+slider5:-1<-1,8,1>-Perf slot (1-8)
+slider6:-51<-51,50,0.0001>-Perf tempo (%)
+slider7:-13<-13,12,1>-Perf key (semitones)
+slider8:-1<-1,1,1>-Perf loop on
+slider9:-1<-1,3600,0.000001>-Perf loop start (s)
+slider10:-1<-1,3600,0.000001>-Perf loop end (s)
+slider11:-1<-1,1,1>-Perf loop roll
+slider12:-1<-1,1,1>-Perf sync (not played)
+slider13:-1<-1,3600,0.000001>-Perf cue position (s)
+slider14:-2<-2,3600,0.000001>-Perf hot cue 1 (s, -1 = empty)
+slider15:-2<-2,3600,0.000001>-Perf hot cue 2 (s, -1 = empty)
+slider16:-2<-2,3600,0.000001>-Perf hot cue 3 (s, -1 = empty)
+slider17:-2<-2,3600,0.000001>-Perf hot cue 4 (s, -1 = empty)
+slider18:-2<-2,3600,0.000001>-Perf hot cue 5 (s, -1 = empty)
+slider19:-2<-2,3600,0.000001>-Perf hot cue 6 (s, -1 = empty)
+slider20:-2<-2,3600,0.000001>-Perf hot cue 7 (s, -1 = empty)
+slider21:-2<-2,3600,0.000001>-Perf hot cue 8 (s, -1 = empty)
+slider22:-3602<-3602,3601,0.000001>-Perf memory cue (event)
+slider23:-25<-25,24,0.0001>-Perf pitch play (semitones)
+slider24:-2<-2,1,0.0001>-Perf xfader position (0 L .. 1 R)
+slider25:-2<-2,1,1>-Perf xfader cut
+slider26:-2<-2,2,1>-Perf xfader side (0 off, 1 L, 2 R)
+slider27:-2<-2,1,0.0001>-Perf channel volume
+slider28:-2<-2,1,1>-Perf mute
+slider29:-2<-2,1,0.0001>-Perf video opacity
+slider30:-2<-2,37,1>-Perf video blend
+slider31:-2<-2,1,0.0001>-Perf blend key threshold
+slider32:-2<-2,1,0.0001>-Perf blend key softness
+slider33:-2<-2,7,1>-Perf filter type
+slider34:-2<-2,1,0.0001>-Perf filter cutoff
+slider35:-2<-2,1,0.0001>-Perf filter resonance
+slider36:-2<-2,0.5,0.0001>-Perf filter morph
+slider37:-2<-2,15,1>-Perf video FX type
+slider38:-2<-2,1,0.0001>-Perf video FX amount
+slider39:-2<-2,15,1>-Perf master FX type
+slider40:-2<-2,1,0.0001>-Perf master FX amount
+slider41:-2<-2,1,0.0001>-Perf FX knob 1
+slider42:-2<-2,1,0.0001>-Perf FX knob 2
+slider43:-2<-2,1,0.0001>-Perf FX knob 3
+slider44:-2<-2,1,0.0001>-Perf FX knob 4
+slider45:-2<-2,1,0.0001>-Perf FX knob 5
+slider46:-2<-2,1,0.0001>-Perf FX knob 6
+slider47:-2<-2,1,0.0001>-Perf FX knob 7
+slider48:-2<-2,1,0.0001>-Perf FX knob 8
+slider49:-2<-2,1,0.0001>-Perf Strobe knob
+slider50:-2<-2,1,0.0001>-Perf echo amount
+slider51:-2<-2,1,0.0001>-Perf bitcrusher amount
+slider52:-2<-2,1,0.0001>-Perf vibrato amount
+slider53:-2<-2,1,0.0001>-Perf sound of video FX
+slider54:-2<-2,255,1>-Perf touch FX row 1 (bits)
+slider55:-2<-2,255,1>-Perf touch FX row 2 (bits)
+slider56:-2<-2,1,0.0001>-Perf touch FX 1-1 amount
+slider57:-2<-2,1,0.0001>-Perf touch FX 1-2 amount
+slider58:-2<-2,1,0.0001>-Perf touch FX 1-3 amount
+slider59:-2<-2,1,0.0001>-Perf touch FX 1-4 amount
+slider60:-2<-2,1,0.0001>-Perf touch FX 1-5 amount
+slider61:-2<-2,1,0.0001>-Perf touch FX 1-6 amount
+slider62:-2<-2,1,0.0001>-Perf touch FX 1-7 amount
+slider63:-2<-2,1,0.0001>-Perf touch FX 1-8 amount
+slider64:-2<-2,1,0.0001>-Perf touch FX 2-1 amount
+slider65:-2<-2,1,0.0001>-Perf touch FX 2-2 amount
+slider66:-2<-2,1,0.0001>-Perf touch FX 2-3 amount
+slider67:-2<-2,1,0.0001>-Perf touch FX 2-4 amount
+slider68:-2<-2,1,0.0001>-Perf touch FX 2-5 amount
+slider69:-2<-2,1,0.0001>-Perf touch FX 2-6 amount
+slider70:-2<-2,1,0.0001>-Perf touch FX 2-7 amount
+slider71:-2<-2,1,0.0001>-Perf touch FX 2-8 amount
+slider72:-2<-2,1,0.0001>-Perf pitch mode
+slider73:-2<-2,5,1>-Perf vibrato step
+slider74:-2<-2,12,1>-Perf vibrato width
+slider75:-2<-2,1,0.0001>-Perf fader lanes gain
+slider76:-2<-2,255,1>-Perf CLIP STOP held
+slider77:-2<-2,4,1>-Perf video FX LFO shape
+slider78:-2<-2,5,1>-Perf video FX LFO rate
+slider79:-2<-2,1,0.0001>-Perf video FX LFO depth
+slider80:-2<-2,1,1>-Perf picture mute
+slider81:-2<-2,1,0.0001>-Perf FX boost
+slider82:-2<-2,1,0.0001>-Perf master level
+slider83:-2<-2,1,1>-Perf blackout
 
 @init
 ext_noinit = 1;
 PL_N = 82;   // lanes (sliders 2 .. PL_N + 1)
+// the window's table (@gfx): each lane's short name (string 100 + slider) and its "none" mark (pg_lo[slider]),
+// made from the slider lines (tools/check.py compares them, #15)
+function pg_nm(n, lo, s) ( strcpy(100 + n, s); pg_lo[n] = lo; );
+pg_lo = 2000;
+pg_nm(2, -1, "transport");
+pg_nm(3, -1, "head");
+pg_nm(4, -1, "driven");
+pg_nm(5, -1, "slot");
+pg_nm(6, -51, "tempo");
+pg_nm(7, -13, "key");
+pg_nm(8, -1, "loop on");
+pg_nm(9, -1, "loop start");
+pg_nm(10, -1, "loop end");
+pg_nm(11, -1, "loop roll");
+pg_nm(12, -1, "sync");
+pg_nm(13, -1, "cue position");
+pg_nm(14, -2, "hot cue 1");
+pg_nm(15, -2, "hot cue 2");
+pg_nm(16, -2, "hot cue 3");
+pg_nm(17, -2, "hot cue 4");
+pg_nm(18, -2, "hot cue 5");
+pg_nm(19, -2, "hot cue 6");
+pg_nm(20, -2, "hot cue 7");
+pg_nm(21, -2, "hot cue 8");
+pg_nm(22, -3602, "memory cue");
+pg_nm(23, -25, "pitch play");
+pg_nm(24, -2, "xfader position");
+pg_nm(25, -2, "xfader cut");
+pg_nm(26, -2, "xfader side");
+pg_nm(27, -2, "channel volume");
+pg_nm(28, -2, "mute");
+pg_nm(29, -2, "video opacity");
+pg_nm(30, -2, "video blend");
+pg_nm(31, -2, "blend key threshold");
+pg_nm(32, -2, "blend key softness");
+pg_nm(33, -2, "filter type");
+pg_nm(34, -2, "filter cutoff");
+pg_nm(35, -2, "filter resonance");
+pg_nm(36, -2, "filter morph");
+pg_nm(37, -2, "video FX type");
+pg_nm(38, -2, "video FX amount");
+pg_nm(39, -2, "master FX type");
+pg_nm(40, -2, "master FX amount");
+pg_nm(41, -2, "FX knob 1");
+pg_nm(42, -2, "FX knob 2");
+pg_nm(43, -2, "FX knob 3");
+pg_nm(44, -2, "FX knob 4");
+pg_nm(45, -2, "FX knob 5");
+pg_nm(46, -2, "FX knob 6");
+pg_nm(47, -2, "FX knob 7");
+pg_nm(48, -2, "FX knob 8");
+pg_nm(49, -2, "Strobe knob");
+pg_nm(50, -2, "echo amount");
+pg_nm(51, -2, "bitcrusher amount");
+pg_nm(52, -2, "vibrato amount");
+pg_nm(53, -2, "sound of video FX");
+pg_nm(54, -2, "touch FX row 1");
+pg_nm(55, -2, "touch FX row 2");
+pg_nm(56, -2, "touch FX 1-1 amount");
+pg_nm(57, -2, "touch FX 1-2 amount");
+pg_nm(58, -2, "touch FX 1-3 amount");
+pg_nm(59, -2, "touch FX 1-4 amount");
+pg_nm(60, -2, "touch FX 1-5 amount");
+pg_nm(61, -2, "touch FX 1-6 amount");
+pg_nm(62, -2, "touch FX 1-7 amount");
+pg_nm(63, -2, "touch FX 1-8 amount");
+pg_nm(64, -2, "touch FX 2-1 amount");
+pg_nm(65, -2, "touch FX 2-2 amount");
+pg_nm(66, -2, "touch FX 2-3 amount");
+pg_nm(67, -2, "touch FX 2-4 amount");
+pg_nm(68, -2, "touch FX 2-5 amount");
+pg_nm(69, -2, "touch FX 2-6 amount");
+pg_nm(70, -2, "touch FX 2-7 amount");
+pg_nm(71, -2, "touch FX 2-8 amount");
+pg_nm(72, -2, "pitch mode");
+pg_nm(73, -2, "vibrato step");
+pg_nm(74, -2, "vibrato width");
+pg_nm(75, -2, "fader lanes gain");
+pg_nm(76, -2, "CLIP STOP held");
+pg_nm(77, -2, "video FX LFO shape");
+pg_nm(78, -2, "video FX LFO rate");
+pg_nm(79, -2, "video FX LFO depth");
+pg_nm(80, -2, "picture mute");
+pg_nm(81, -2, "FX boost");
+pg_nm(82, -2, "master level");
+pg_nm(83, -2, "blackout");
 
 @block
 pl_b = 14000000 + (slider1 == 2 ? 256 : 0);
 gmem[pl_b] += 1; gmem[pl_b + 1] = play_position; gmem[pl_b + 2] = play_state; gmem[pl_b + 3] = (play_state & 1) ? 1 : 0;
 pl_i = 1;
 loop(PL_N, gmem[pl_b + 8 + pl_i] = slider(pl_i + 1); pl_i += 1);
+
+@gfx 900 400
+// (2026-10-17, user's request) the window: the lanes' values in columns (the sliders are hidden: one column of 83 was
+// taller than the screen). A lane at its "none" mark (its minimum) is greyed. Read only: the values are edited as
+// envelopes. The names and minimums: pg_nm in @init
+gfx_set(0.11, 0.12, 0.13); gfx_rect(0, 0, gfx_w, gfx_h);
+gfx_setfont(1, "Arial", 14);
+gfx_set(0.85, 0.85, 0.85); gfx_x = 8; gfx_y = 6;
+gfx_drawstr(slider1 == 2 ? "DJ performance lanes - deck B" : "DJ performance lanes - deck A");
+gfx_set(0.55, 0.55, 0.55); gfx_drawstr("   (values on REAPER's timeline; edit them as envelopes)");
+pg_cw = 190; pg_rh = gfx_texth + 3;
+pg_nc = max(1, floor((gfx_w - 8) / pg_cw)); pg_nr = ceil(PL_N / pg_nc);
+pg_k = 0;
+loop(PL_N,
+  pg_n = pg_k + 2; pg_v = slider(pg_n);
+  pg_x = 8 + floor(pg_k / pg_nr) * pg_cw; pg_y = 28 + (pg_k % pg_nr) * pg_rh;
+  pg_none = pg_v <= pg_lo[pg_n] + 0.0000001;
+  pg_none ? gfx_set(0.42, 0.42, 0.42) : gfx_set(0.85, 0.85, 0.85);
+  gfx_x = pg_x; gfx_y = pg_y; gfx_drawstr(100 + pg_n);
+  pg_none ? strcpy(#pg_s, "-") : pg_v == floor(pg_v) ? sprintf(#pg_s, "%d", pg_v) : sprintf(#pg_s, "%.3f", pg_v);
+  pg_none ? gfx_set(0.42, 0.42, 0.42) : gfx_set(1, 0.82, 0.3);
+  gfx_measurestr(#pg_s, pg_sw, pg_sh);
+  gfx_x = pg_x + pg_cw - 16 - pg_sw; gfx_y = pg_y; gfx_drawstr(#pg_s);
+  pg_k += 1;
+);

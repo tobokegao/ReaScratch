@@ -30,6 +30,7 @@ Runs on REAPER 7.x (Windows / macOS) alone. The basic features need no extension
 | `Scripts/ReaScratch/reascratch_pattern.lua` | Places a scratch pattern on a deck (as envelope automation items). See “Scratching from envelopes (patterns)” |
 | `Scripts/ReaScratch/reascratch_pattern_save.lua` | Saves a pattern you rearranged under a name and adds it to the pattern menu |
 | `Scripts/ReaScratch/reascratch_record_lanes.lua` | Turns writing recorded performance movements into envelopes on or off (on by default). See “Recording a performance into envelopes” |
+| `Scripts/ReaScratch/reascratch_lanes.lua` | Shows or hides the envelope lanes by group (hand-made scratch, recorded effects, performance lanes). See “Showing only the lanes you use” |
 | `Scripts/ReaScratch/reascratch_take.lua` | Turns performance capture on/off (each deck's audio and video, and the finished mix as seen on screen). See “Capturing a performance” |
 | `Scripts/ReaScratch/reascratch_perf_play.lua` | Turns performance playback mode (`PERF PLAY` on the toolbar) on/off. While it is on, REAPER's playback plays the performance lanes back. See “Recording and playing a performance on REAPER's timeline” |
 | `Scripts/ReaScratch/reascratch_perf_play_decks.lua` | Chooses which decks performance playback mode plays (both, deck A only or deck B only) |
@@ -108,7 +109,7 @@ You can install with ReaPack or copy the kit's folders by hand. Use one of the t
    - A box titled “ReaScratch setup: video conversion height (smaller = lighter, coarser)” asks for `Height (720 / 540 / 360)` (default 720; another number becomes the nearest of the three). This is the height used when converting videos to all-intra; smaller is lighter on the PC and coarser. Choose 540 or 360 on a slower PC. The value is kept in REAPER's settings on this PC and applies to all projects (Cancel keeps the current value).
    - If REAPER is set to draw the video ahead and cache it (REAPER's default), a notice “REAPER is set to draw the video ahead and cache it.” appears. With this, the crossfader and video effects show up about 0.2–0.5 s late. Right-click the video window (`View` > `Video`) and choose `Performance tweaks (experimental)` > `Video cache` > `All media and video FX are not cached`. It works at once; no need to restart REAPER.
    - Next you are asked “Start the video sync (reascratch_video_sync.lua) automatically when REAPER starts?”. **We recommend Yes.** A few lines are added to REAPER's `Scripts/__startup.lua` (a file REAPER runs every time it starts), and from then on the picture follows automatically as soon as you open a project that contains ReaScratch, without starting the sync script by hand. Projects without ReaScratch are left alone. To stop auto-sync, run setup again and answer No; only the added lines are removed (the rest of `__startup.lua` stays as it was).
-   - Then you are asked “Use the ReaScratch window layout?”. Yes puts ReaScratch's 10 buttons on toolbar 3 (SETUP, IMPORT VIDEO, MJPEG, VIDEO SYNC, VIDEO REOPEN, PATTERN, PATTERN SAVE, REC LANES, TAKE, PERF PLAY) and adds a window set “ReaScratch” (this toolbar at the top left, the video window at the top right at 16:9) in a free slot. If toolbar 3 already has other buttons, or window sets #01-#10 are all in use, you are asked before they are replaced (what was there is kept; see “Things that depend on your setup”). REAPER reads window sets when it starts, so **restart REAPER**, then switch with the action `Screenset: Load window set #NN` (NN = the number in the message). The same kind of action switches back to another layout.
+   - Then you are asked “Use the ReaScratch window layout?”. Yes puts ReaScratch's 11 buttons on toolbar 3 (SETUP, IMPORT VIDEO, MJPEG, VIDEO SYNC, VIDEO REOPEN, PATTERN, PATTERN SAVE, REC LANES, LANES, TAKE, PERF PLAY) and adds a window set “ReaScratch” (this toolbar at the top left, the video window at the top right at 16:9) in a free slot. If toolbar 3 already has other buttons, or window sets #01-#10 are all in use, you are asked before they are replaced (what was there is kept; see “Things that depend on your setup”). REAPER reads window sets when it starts, so **restart REAPER**, then switch with the action `Screenset: Load window set #NN` (NN = the number in the message). The same kind of action switches back to another layout.
 4. Open the video window with `View` > `Video`.
 5. Choose your controller. Open the JSFX window with the [FX] button of the `scratch engine` track, press `setup` in a bottom corner (usually the bottom right; when you made deck B, deck A's window is mirrored and it is at the bottom left) and pick your model from the `Preset` menu (manufacturer → model → `deck 1` / `deck 2`; see “Preset list”). If you made deck B, pick `deck 2` in the JSFX window of `scratch engine B`. For a controller without a preset, make one in setup's `Learn` tab (see “Check by touch / make a preset”). Without a controller, `Custom` is fine.
 
@@ -117,7 +118,7 @@ You can install with ReaPack or copy the kit's folders by hand. Use one of the t
 
 ### ReaScratch buttons (toolbar 3)
 
-If you answer Yes to the window layout prompt, the following 10 buttons appear at the top left of the window set “ReaScratch” (it is REAPER's toolbar 3; with another layout, open it with the action `Toolbar: Open/close toolbar 3`). Each button does the same as running the script of the same name from the action list.
+If you answer Yes to the window layout prompt, the following 11 buttons appear at the top left of the window set “ReaScratch” (it is REAPER's toolbar 3; with another layout, open it with the action `Toolbar: Open/close toolbar 3`). Each button does the same as running the script of the same name from the action list.
 
 | Button | Script it runs | What it does |
 |---|---|---|
@@ -129,6 +130,7 @@ If you answer Yes to the window layout prompt, the following 10 buttons appear a
 | `PATTERN` | `reascratch_pattern.lua` | Places a scratch pattern on a deck (“Placing a pattern”) |
 | `PATTERN SAVE` | `reascratch_pattern_save.lua` | Saves a rearranged pattern under a name (“Saving a rearranged pattern”) |
 | `REC LANES` | `reascratch_record_lanes.lua` | Switches whether the performance being recorded is written to envelopes. The button is lit while on (on by default; “Recording a performance into envelopes”) |
+| `LANES` | `reascratch_lanes.lua` | Shows or hides the envelope lanes by group (“Showing only the lanes you use”) |
 | `TAKE` | `reascratch_take.lua` | Turns performance capturing on / off. The button is lit while on (“Capturing a performance”) |
 | `PERF PLAY` | `reascratch_perf_play.lua` | Turns “play the performance” on / off. The button is lit while on (“Recording and playing a performance on REAPER's timeline”) |
 
