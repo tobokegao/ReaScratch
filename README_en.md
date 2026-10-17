@@ -74,6 +74,18 @@ Runs on REAPER 7.x (Windows / macOS) alone. The basic features need no extension
 
 ### 1. Copy the files
 
+You can install with ReaPack or copy the kit's folders by hand. Use one of the two.
+
+**With ReaPack** (you can also get updates via ReaPack)
+
+1. In REAPER, choose `Extensions` > `ReaPack` > `Import repositories...`, paste this URL and click `OK`:
+   `https://raw.githubusercontent.com/tobokegao/ReaScratch/main/index.xml`
+2. In `Extensions` > `ReaPack` > `Browse packages...`, find `ReaScratch`, right-click it, choose `Install`, then click `Apply`.
+3. The installed files and their locations are the same as when copied by hand. The manual PDFs and the HID bridge are not included; get them from the GitHub Releases if you need them.
+4. Restart REAPER and proceed to "2. Initial setup".
+
+**By hand**
+
 1. Connect your MIDI controller to the PC and start REAPER.
 2. In REAPER, choose `Options` > `Show REAPER resource path in explorer/finder`. This opens the **REAPER resource folder** where plug-ins and scripts live (it contains folders such as `Effects` and `Scripts`).
 3. Copy the kit's **`Effects` / `Scripts` / `Data` / `ProjectTemplates`** folders into that folder as they are (merging with the folders of the same name).
@@ -86,6 +98,7 @@ Runs on REAPER 7.x (Windows / macOS) alone. The basic features need no extension
    - To light the controller's buttons, also enable the same controller under `MIDI Outputs`. Setup points the deck tracks' MIDI output there (if you enable it later, run setup again; see “Button lights”).
 2. Open `Actions` > `Show action list...`.
 3. Click `New action...` > `Load ReaScript...`, load `Scripts/ReaScratch/reascratch_setup.lua`, select it in the list and click `Run`.
+   - If you installed with ReaPack, `reascratch_setup.lua` is already in the list: type `reascratch_setup` in the filter box, select it and click `Run`.
    - First (after checking that the JSFX is installed), a menu “Language / 言語 (ReaScratch messages)” appears with three choices: `Auto (follows REAPER's language pack: …)` (the end shows the language Auto gives right now), `English` and `日本語`. The current setting is checked. `Auto` gives Japanese when the filename of the language pack chosen in REAPER (`langpack=` under `[REAPER]` in reaper.ini) is a Japanese one (it contains `Japanese`, `jpn` or `日本`, or starts with `ja_`, `jp_` and the like), and English otherwise (also when no language pack is used). Closing the menu without choosing keeps the current setting. The setting is stored in REAPER on this PC (for all projects); the rest of this setup run and the messages of the other scripts use it. The menu appears every time you run setup.
    - Three tracks, `video`, `audio` and `scratch engine`, are created, and the JSFX is inserted on `scratch engine`.
    - The MIDI input of `scratch engine` is set to "All MIDI inputs". You choose your controller with the JSFX's `Preset` (see below).

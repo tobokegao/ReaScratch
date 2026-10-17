@@ -75,6 +75,18 @@ REAPER 7.x（Windows / macOS）単体で動作します。基本の機能には�
 
 ### 1. ファイルの配置
 
+ReaPackで入れる方法と、キットのフォルダを手でコピーする方法があります。どちらか一方を使います。
+
+**ReaPackで入れる場合**（新しいバージョンもReaPackで受け取れます）
+
+1. REAPERのメニューから`Extensions` > `ReaPack` > `Import repositories...`を選び、次のURLを貼り付けて`OK`をクリックします。
+   `https://raw.githubusercontent.com/tobokegao/ReaScratch/main/index.xml`
+2. `Extensions` > `ReaPack` > `Browse packages...`で`ReaScratch`を探し、右クリックして`Install`を選んでから`Apply`をクリックします。
+3. 入るファイルと場所は、手でコピーした場合と同じです。説明書のPDFとHID bridgeは入りません。必要な場合はGitHubのReleasesから入手してください。
+4. REAPERを再起動し、「2. 初期セットアップ」へ進みます。
+
+**手でコピーする場合**
+
 1. 使用するMIDIコントローラーをPCに接続し、REAPERを起動します。
 2. REAPERのメニューから`Options` > `Show REAPER resource path in explorer/finder`を選びます。REAPERのプラグインやスクリプトが保存されている**REAPERの設定フォルダ**が開きます（中に`Effects`や`Scripts`というフォルダがあります）。
 3. その設定フォルダの中に、本キットの**`Effects` / `Scripts` / `Data` / `ProjectTemplates`**の4フォルダをそのままコピー（同名フォルダに統合）します。
@@ -87,6 +99,7 @@ REAPER 7.x（Windows / macOS）単体で動作します。基本の機能には�
    - コントローラーのボタンを光らせるには、`MIDI Outputs`でも同じコントローラーを有効にしておきます。セットアップが、デッキのトラックのMIDIの出力先をそこに設定します（あとから有効にしたときは、セットアップをもう一度実行します。「ボタンを光らせる」を参照）。
 2. メニュー`Actions` > `Show action list...`を開きます。
 3. `New action...` > `Load ReaScript...`をクリックして`Scripts/ReaScratch/reascratch_setup.lua`を読み込み、リストで選択して`Run`をクリックします。
+   - ReaPackで入れた場合は、`reascratch_setup.lua`がすでにリストにあります。検索欄に`reascratch_setup`と入力して選び、`Run`をクリックします。
    - 最初に（JSFXが入っているかを確かめたあと）、メッセージの言語を選ぶメニュー「言語 / Language（ReaScratch のメッセージ）」が出ます。選択肢は`自動（REAPER の言語パックに合わせる: …）`（…は今`自動`で選ばれる言語）・`English`・`日本語`の3つで、今の設定に印が付きます（英語の表示では`Auto (follows REAPER's language pack: …)`）。`自動`は、REAPERで選んでいる言語パック（reaper.iniの`[REAPER]`の`langpack=`）のファイル名で決まります。日本語のもの（`Japanese`・`jpn`を含む、`ja_`・`jp_`などで始まる、`日本`を含む）なら日本語、それ以外（言語パックを使っていないときも）は英語です。選ばずにメニューを閉じると今の設定のままです。設定はこのPCのREAPERに保存されてすべてのプロジェクトに効き、このセットアップの続きと各スクリプトのメッセージがその言語になります。メニューはセットアップを実行するたびに出ます。
    - `video`、`audio`、`scratch engine`の3トラックが自動生成され、`scratch engine`にJSFXがインサートされます。
    - `scratch engine`のMIDI入力は「すべてのMIDI入力」になります。機種の選択はJSFXの`Preset`（後述）で行います。
