@@ -2,7 +2,7 @@
 
 ReaScratch is free software, released under the GNU General Public License v3.0 or later (see `LICENSE`).
 
-It was built with extensive AI assistance (Claude, Anthropic). Every preset marked as untested in the preset menu has not been tried on real hardware yet; reports from owners are welcome.
+It was made with help from Claude (Anthropic). Every preset marked as untested in the preset menu has not been tried on real hardware yet; reports from owners are welcome.
 
 ## Code ported into ReaScratch
 
