@@ -1953,14 +1953,15 @@ function pz_grid() local(st, b, r) (
   pz_f = b - floor(b);
 );
 function pz_ready() ( slider40 == 0 && slider233 > 0 && slider3 && !tch && !ui_seek && len > 0 && !spin_on; );
-// quantized PLAY (⚪36, user's request): from stop with Q on, the start waits for the next beat of the other deck while
-// it plays with a BPM (its beat position in gmem, as SYNC reads it; a press up to Q_LATE s after its beat = at once).
+// quantized PLAY (⚪36, user's request): from stop with Q on, the start waits for the next bar of the other deck while
+// it plays with a BPM (4 beats from its grid, as the metronome counts; its beat position in gmem, as SYNC reads it; a
+// press up to Q_LATE s after its bar = at once). The bar, not the beat: starting on beat 2 sounded off (user 2026-10-21).
 // PLAY again while waiting = never mind. No other deck playing: at once.
-function pq_frac() local(b) ( b = gmem[te_ob + 2] * te_k; b - floor(b); );
+function pq_frac() local(b) ( b = gmem[te_ob + 2] / 4; b - floor(b); );
 function play_btn() (
   hc_held ? hc_keep = 1 : cue_prev ? cue_keep = 1 : pq_wait ? pq_wait = 0 : pz_wait ? (pz_wait = 0; pz_cnt = 0) :
   pz_ready() && (pz_grid(); pz_src > 0 && pz_f * pz_sps > Q_LATE) ? (pz_wait = 1; pz_last = pz_f) :
-  !slider3 && slider40 == 0 && slider63 > 0 && len > 0 && te_obpm > 0 && gmem[te_ob + 6] && pq_frac() * 60 / te_obpm > Q_LATE ?
+  !slider3 && slider40 == 0 && slider63 > 0 && len > 0 && te_obpm > 0 && gmem[te_ob + 6] && pq_frac() * 240 / te_obpm > Q_LATE ?
     (pq_wait = 1; pq_last = pq_frac()) : play_go();
 );
 function cue_press() (
@@ -2443,17 +2444,29 @@ function rd6(p, c) local(ip, d, cc, o, a, b, e, f, g, h) (
 
 // WSOLA: pick the start near `nominal` whose first `wl` frames (step 4) best match the natural
 // continuation at `natural` (normalised cross-correlation). Returns the chosen start.
-function align(nominal, ndir, natural, pdir, wl, srch) local(c, best, bestc, s, e, i, k, k2, cstep) (
+// ((⚪204, from the web version: the same result, lighter) the natural stretch is read once into AL_R (2500 values at
+// 41400..43899, free between WZ_L's 2064 and CXL; wl / 8 is at most 2400: grain 200 ms, half of it, at 192 kHz) instead
+// of again for every candidate
+AL_R = 41400; AL_N = 2500;
+function align(nominal, ndir, natural, pdir, wl, srch) local(c, best, bestc, s, e, i, j, n, k, cstep) (
   best = nominal; bestc = -1000000000;
   cstep = 8;
+  n = min(AL_N, wl / 8); j = 0; i = 0;   // (as before: loop(wl / 8); AL_N is above the most wl / 8 can be, so the cap never cuts)
+  loop(n, AL_R[j] = rdi(floor(natural + pdir * i)); j += 1; i += 8);
+  // (2026-10-21) nominal first, the others only when better: on silence every place scores 0 and the first of the scan
+  // (nominal - srch) won, after which each grain followed its neighbour there; the sound settled 10 ms behind the head
+  // and a PLAY (whose first grains sit on the head) came in that much early against the other deck (user's report)
+  s = 0; e = 0.000000001; i = 0; j = 0;
+  loop(n, k = rdi(floor(nominal + ndir * i)); s += AL_R[j] * k; e += k * k; i += 8; j += 1);
+  bestc = s / sqrt(e);
   c = nominal - srch;
   while (c <= nominal + srch) (
-    s = 0; e = 0.000000001; i = 0;
-    loop(wl / 8,
+    s = 0; e = 0.000000001; i = 0; j = 0;
+    loop(n,
       k = rdi(floor(c + ndir * i));
-      s += rdi(floor(natural + pdir * i)) * k;
+      s += AL_R[j] * k;
       e += k * k;
-      i += 8;
+      i += 8; j += 1;
     );
     s = s / sqrt(e);
     s > bestc ? (bestc = s; best = c);
@@ -2462,12 +2475,12 @@ function align(nominal, ndir, natural, pdir, wl, srch) local(c, best, bestc, s, 
   // refine +-7 frames around the coarse winner (covers the step-8 grid gap)
   c = best - 7; k = best;
   while (c <= k + 7) (
-    s = 0; e = 0.000000001; i = 0;
-    loop(wl / 8,
-      k2 = rdi(floor(c + ndir * i));
-      s += rdi(floor(natural + pdir * i)) * k2;
-      e += k2 * k2;
-      i += 8;
+    s = 0; e = 0.000000001; i = 0; j = 0;
+    loop(n,
+      cstep = rdi(floor(c + ndir * i));
+      s += AL_R[j] * cstep;
+      e += cstep * cstep;
+      i += 8; j += 1;
     );
     s = s / sqrt(e);
     s > bestc ? (bestc = s; best = c);
@@ -5246,6 +5259,13 @@ ax_gs = 2 ^ (slider221 >= 0 ? slider221 : floor(ax_gate * 4.99));   // (⚪101: 
 vt_st = slider220 < 0.5 ? 1 : slider220 < 1.5 ? 0.5 : slider220 < 2.5 ? 1 / 3 : slider220 < 3.5 ? 0.25 : slider220 < 4.5 ? 1 / 6 : 0.125;   // ((⚪123) beats a note)
 // (⚪101, user's choice 2026-10-09) BANK held: every effect off (the sounds here, the pictures by the amounts sent below)
 fx_kill || fx_kill_d ? (ax_tint = ax_ring = ax_clip = ax_mir = ax_cho = ax_haas = ax_gate = ax_crush = ax_echo = ax_vib = 0; ax_hd = 0);
+// ((⚪204, from the web version, user's choice 2026-10-21) the echo's tail: the echo taken off stops feeding it, and what
+// is in it rings out at the last amount (wet and feedback) until it has died away (ax_een, @sample); it was cut at once.
+// ax_elv = the amount now: the echo's, or the last one while the tail rings out. Every effect off (BANK): no tail
+ax_echo > 0.001 ? (ax_elast = ax_echo; ax_etail = 1) : ax_etail && ax_een < 0.000000001 ? ax_etail = 0;
+fx_kill || fx_kill_d ? ax_etail = 0;
+ax_elv = ax_echo > 0.001 ? ax_echo : ax_etail ? ax_elast : 0;
+slider219 < 0 ? ax_fb = 0.25 + 0.5 * ax_elv;   // (the feedback by the amount: the tail's too)
 vfx_b2 = slider76 == 2 ? 79 : 76;
 gmem[vfx_b2] = fe_e * !(fx_kill || fx_kill_d); gmem[vfx_b2 + 1] = fe_c * !(fx_kill || fx_kill_d); gmem[vfx_b2 + 2] = fe_v * !(fx_kill || fx_kill_d);
 gmem[slider76 == 2 ? 103 : 102] = slider221;   // (⚪101) the Strobe step for the picture: -1 = by the amount, 0..4 = 1..16 a beat
@@ -5322,7 +5342,7 @@ mt_dk = exp(-1 / (0.015 * srate));
 // (the video sync script: 2 = REAPER follows this deck)
 rt_ps = play_state & 1; rt_ps && !rt_was && slider91 && slider231 == 1 && slider3 ? rt_align(); rt_was = rt_ps;
 gmem[slider76 == 2 ? 114 : 113] = slider231;
-// a waiting quantized PLAY: start when the other deck's beat comes round (or at once if it stopped / Q went off)
+// a waiting quantized PLAY: start when the other deck's bar comes round (or at once if it stopped / Q went off)
 pq_wait ? (
   !(te_obpm > 0 && gmem[te_ob + 6]) || slider40 != 0 || slider3 ? (pq_wait = 0; !slider3 ? play_go()) : (
     pq_f = pq_frac(); pq_f < pq_last - 0.5 ? (pq_wait = 0; play_go()) : pq_last = pq_f;
@@ -5554,7 +5574,9 @@ len > 0 ? (
       !ui_was ? (ui_pos = target; ui_rate = 0; ui_seen = ui_gen; ui_cnt = 0);
       ui_cnt += 1;
       ui_gen != ui_seen ? (
-        ui_seen = ui_gen; ui_avg += (min(ui_cnt, srate * 0.1) - ui_avg) * 0.3;
+        // ((⚪204, from the web version) a gap longer than 80 ms is the hand holding still, not the time between moves (the
+        // GUI's frames come every 33 .. 50 ms): averaged in (as 100 ms), the first move after a hold crept in)
+        ui_seen = ui_gen; ui_cnt <= srate * 0.08 ? ui_avg += (ui_cnt - ui_avg) * 0.3;
         ui_rate = (ui_goal - ui_pos) / max(ui_avg, 32); ui_cnt = 0;
       );
       ui_pos += ui_rate;
@@ -5621,6 +5643,23 @@ len > 0 ? (
     );
     hopcnt = hop; head_grain = head; sm_jump = 0;
   );
+  // (2026-10-21) PLAY from silence, pitch-locked (pf_a 0): the grains left from the stop sat at jittered / searched
+  // places, so the first ~20 ms sounded ahead of where the playing sound is (a quantized PLAY came in before the other
+  // deck's bar, user's report). A full set of grains instead, each as far into its life as if the deck had been playing
+  ss_go = gain < 0.00001 && pf_a == 0 && (slider3 || spin_on) && !tch && !ui_seek && !ended && len > 0;
+  ss_go ? (
+    i = 0; loop(NSLOT, vp = VOICE + i; vp[24] = 0; i += 1);
+    ss_g = overlap - 1;
+    loop(overlap,
+      ss_t = ss_g * hop;                                // age (output samples)
+      vp = VOICE + pick_v();
+      vp[0] = head - ss_t * te_1x() - glen * 0.5 * kshift + ss_t * fsr / srate * kshift;
+      vp[8] = ss_t * fsr / srate; vp[16] = 1; vp[24] = 1; vp[32] = glen; vp[40] = 0; vp[48] = 1; vp[56] = 0; vp[64] = sm_cur;
+      ss_g == 0 ? (prev_start = vp[0]; prev_dir = 1; prev_v = nextv);
+      nextv = (nextv + 1) % NSLOT; ss_g -= 1;
+    );
+    hopcnt = hop; head_grain = head;
+  );
 
   hopcnt <= 0 ? (
     ui_seek ? (
@@ -5663,7 +5702,7 @@ len > 0 ? (
   gain += (gaintarget - gain) * 0.002;
   // ((⚪169, user's request 2026-10-14: lighter) stopped and faded out (the output is dq x gain = 0): no grains, no
   // effects; the delay lines get silence (as when the sound stops), the position goes on to the video below
-  sl_lite = gain < 0.00001 && gaintarget == 0;
+  sl_lite = gain < 0.00001 && gaintarget == 0 && !(ax_etail && ax_een > 0.000000001);   // ((⚪204) not while the echo's tail rings)
   sl_lite ? (
     gain = 0; dq_l = dq_r = 0; xf_gain += (xf_goal - xf_gain) * xf_k; xf_gain != xf_gain ? xf_gain = xf_goal == xf_goal ? xf_goal : 1;
     HGL[ax_ew % HGN] = HGR[ax_ew % HGN] = 0; MRL[ax_ew % MRN] = MRR[ax_ew % MRN] = 0; HSB[ax_ew % HSN] = 0; CHL[ax_ew % CHN] = CHR[ax_ew % CHN] = 0;
@@ -5720,13 +5759,16 @@ len > 0 ? (
   xf_gain += (xf_goal - xf_gain) * xf_k;
   xf_gain != xf_gain ? xf_gain = xf_goal == xf_goal ? xf_goal : 1;   // ((⚪151) a NaN here kept the main output silent)
   dq_l = outl + (tp_yl - outl) * pf_b; dq_r = outr + (tp_yr - outr) * pf_b;
+  // ((⚪204, from the web version) the deck's gain here, before the effects: it was on the output, so stopping (PLAY)
+  // faded the echo's tail out with the sound
+  dq_l *= gain; dq_r *= gain;
   ag_g += (ag_t - ag_g) * ax_fk; dq_l *= ag_g; dq_r *= ag_g;   // ((⚪185) auto gain)
   // (⚪92) the sound effects (see the block); each one only while its amount is above 0
   // (⚪113, user's report 2026-10-10: a click when the FX ON bar turned Tint on) the amounts follow over about 5 ms (they
   // switched at once), and Tint's filter follows the sound while off (it started from the sound of its last time on)
   ax_tw += ((ax_tint > 0.001) - ax_tw) * ax_fk; ax_rs += (ax_ring - ax_rs) * ax_fk; ax_cs += (ax_clip - ax_cs) * ax_fk;
   ax_crs += (ax_crush - ax_crs) * ax_fk; ax_ms += (ax_mir - ax_ms) * ax_fk; ax_chs += (ax_cho - ax_chs) * ax_fk;
-  ax_es += (ax_echo - ax_es) * ax_fk; ax_gts += (ax_gate - ax_gts) * ax_fk;
+  ax_es += (ax_elv - ax_es) * ax_fk; ax_gts += (ax_gate - ax_gts) * ax_fk;
   ax_tw > 0.0005 ? (ax_tl += (dq_l - ax_tl) * ax_tk; ax_tr += (dq_r - ax_tr) * ax_tk; nx_t2l += (ax_tl - nx_t2l) * ax_tk; nx_t2r += (ax_tr - nx_t2r) * ax_tk;
                    // (the level brought back: see ax_tpi in @init)
                    ax_tpi += (dq_l * dq_l + dq_r * dq_r - ax_tpi) * ax_tks; ax_tpo += (nx_t2l * nx_t2l + nx_t2r * nx_t2r - ax_tpo) * ax_tks;
@@ -5916,7 +5958,8 @@ len > 0 ? (
     ax_el = EDL[(ax_ew - ax_ed + ED_N) % ED_N]; ax_er = EDR[(ax_ew - ax_ed + ED_N) % ED_N];
     EDL[ax_ew % ED_N] = dq_l * ax_ewg + ax_er * ax_fb; EDR[ax_ew % ED_N] = dq_r * ax_ewg + ax_el * ax_fb;   // crossed: it bounces left / right
     dq_l += ax_el * ax_es; dq_r += ax_er * ax_es;
-  ) : (EDL[ax_ew % ED_N] = 0; EDR[ax_ew % ED_N] = 0);
+    ax_een += (ax_el * ax_el + ax_er * ax_er - ax_een) * 0.0005;   // ((⚪204) the tail's energy)
+  ) : (EDL[ax_ew % ED_N] = 0; EDR[ax_ew % ED_N] = 0; ax_een = 0);
   // (⚪114, user's request 2026-10-10: the echo, the bitcrusher and the stereo effects changed the loudness) the level
   // after them (about 0.2 s) brought back to the level before, -12 .. +6 dB (the echo at 1 was +8.8 dB), as much as the strongest of them is on (1 with
   // all off). In silence the gain is held (an echo's tail after the sound stops is not raised)
@@ -5942,8 +5985,8 @@ len > 0 ? (
   );   // (⚪169: the end of the full path)
   ax_ew += 1; ax_ew >= 1073741824 ? ax_ew = 0;
   (dq_l != dq_l || dq_r != dq_r) ? nan_reset();   // ((⚪151) see nan_reset)
-  spl2 = dq_l * gain;     // before the crossfader (channels 3/4, filmed by the "Rec" track)
-  spl3 = dq_r * gain;
+  spl2 = dq_l;     // before the crossfader (channels 3/4, filmed by the "Rec" track); ((⚪204) the gain is on before the effects)
+  spl3 = dq_r;
   spl0 = spl2 * xf_gain * ax_mlv;   // ((2026-10-13) ax_mlv: the helper's master fader)
   spl1 = spl3 * xf_gain * ax_mlv;
   peak = max(peak, max(abs(spl0), abs(spl1)));
@@ -8015,7 +8058,10 @@ g_page == 0 ? (
     // Relative, in window pixels (the same hand movement at any window scale)
     g_click && g_inside(g_lx, g_ly + 24, g_lw, g_lh - 24) ? (g_wdrag = 1; g_wpx = mouse_x; ui_goal = target; ui_touch = 1);
     g_wdrag && (mouse_cap & 1) ? (
-      ui_goal = max(0, min(len - 2, ui_goal - (mouse_x - g_wpx) * 0.002 * fsr * ((mouse_cap & 8) ? 0.25 : 1)));
+      // with the loop on the hand goes on past the loop's ends (@block's loop step carries it round; kept inside the
+      // sample, a scratch near the end stuck there. Web version, user's check 2026-10-21)
+      g_uid = ui_goal - (mouse_x - g_wpx) * 0.002 * fsr * ((mouse_cap & 8) ? 0.25 : 1);
+      ui_goal = slider5 && lp_l > 1 ? g_uid : max(0, min(len - 2, g_uid));
       g_wpx = mouse_x; ui_gen += 1;
     );
     // grab the whole file = search (CDJ / rekordbox style): the point under the cursor, from window pixels
@@ -8356,7 +8402,8 @@ g_page == 0 ? (
     g_pl_ha = atan2(mouse_y - g_pl_wy, mouse_x - g_pl_wx);
     sqrt((mouse_x - g_pl_wx) ^ 2 + (mouse_y - g_pl_wy) ^ 2) > g_pl_r * 0.12 * g_k ? (
       g_pl_da = g_pl_ha - g_pl_ang; g_pl_da > $pi ? g_pl_da -= 2 * $pi; g_pl_da < -$pi ? g_pl_da += 2 * $pi;
-      ui_goal = max(0, min(len - 2, ui_goal + g_pl_da / (2 * $pi) * 1.8 * fsr * ((mouse_cap & 8) ? 0.25 : 1)));
+      g_uid = ui_goal + g_pl_da / (2 * $pi) * 1.8 * fsr * ((mouse_cap & 8) ? 0.25 : 1);   // (the loop: as the zoom's drag)
+      ui_goal = slider5 && lp_l > 1 ? g_uid : max(0, min(len - 2, g_uid));
     );
     g_pl_ang = g_pl_ha; ui_gen += 1;
   );
@@ -8390,7 +8437,7 @@ g_page == 0 ? (
                           strcat(#g_bot, sprintf(#pn_sm, "sample %d: ", sm_cur + 1)); strcat(#g_bot, len > 0 ? sm_basename(sm_name(sm_cur, #g_smn)) : "empty");
                           strcat(#g_bot, "   |   preset: "); strcat(#g_bot, g_valstr(1, slider1)); strcat(#g_bot, "   |   keys: 'help' or ?"));
   g_keys ? strcpy(#g_bot, "keys work while this window is selected. Click anywhere, Esc or ? to close the help");
-  // crossfader (shown only; MIDI moves it): "A" slot "B" between the text and the sample buttons, never mirrored (its left
+  // crossfader (MIDI, the [ / ] keys and, ⚪204, the mouse move it): "A" slot "B" between the text and the sample buttons, never mirrored (its left
   // is the hardware's left). The slot glows in the lamp colour as loud as this deck's crossfader gain; this deck's letter
   // is dark, the other one faint (user's request: the crossfader had no picture, 2026-10-05)
   g_xfs0 = g_xfx + 12; g_xfs1 = g_xfx + g_xfw - 12;
@@ -8408,6 +8455,23 @@ g_page == 0 ? (
   abs(g_xfgc - g_xfc) >= 2 ? (gfx_a = 0.55; g_grey(0.97); gfx_rect(g_xfgc - 4, g_xfy - 7, 8, 14); g_grey(0.15); gfx_rect(g_xfgc - 4, g_xfy - 7, 8, 14, 0); gfx_line(g_xfgc, g_xfy - 5, g_xfgc, g_xfy + 4); gfx_a = 1);
   g_flat = 1; g_block(g_xfc - 4, g_xfy - 7, 8, 14, 0, 0.30, 0.95, 0); g_flat = 0;   // no random brush dabs: redrawn every frame, they flickered (user, 2026-10-05)
   g_grey(0.15); gfx_line(g_xfc, g_xfy - 5, g_xfc, g_xfy + 4);
+  // ((⚪204, from the web version, user's choice 2026-10-21) the crossfader by the mouse (it was shown only): press on the
+  // slot = the fader there, drag = follow (both decks, as the [ / ] keys: gmem[30-31]); two short presses within 350 ms =
+  // the middle. With this deck on no side (setup, Crossfader tab) it stays shown only
+  slider33 > 0 && g_click && g_inside(g_xfs0 - 6, g_xfy - 8, g_xfs1 - g_xfs0 + 12, 16) ? (
+    g_click = 0; xfm_drag = 1; xfm_t0 = time_precise(); xfm_mid = time_precise() - xfm_tap < 0.35;
+  );
+  xfm_drag ? (
+    (mouse_cap & 1) ? (
+      xfm_v = max(0, min(1, (g_mx - g_xfs0) / max(1, g_xfs1 - g_xfs0)));
+      !xfm_mid && xfm_v != xf_pos ? (xf_pos = xfm_v; gmem[30] = xf_pos; gmem[31] += 1; xk_seen = gmem[31]);   // (only when it moved)
+    ) : (
+      xfm_drag = 0;
+      xfm_mid ? (xf_pos = 0.5; gmem[30] = xf_pos; gmem[31] += 1; xk_seen = gmem[31]; xfm_tap = 0; strcpy(#tt_msg, "crossfader: the middle"); tt_msg_t = time_precise())
+              : (xfm_tap = time_precise() - xfm_t0 < 0.25 ? time_precise() : 0);
+      xfm_mid = 0;
+    );
+  );
   g_fittext(#g_bot, g_mr ? g_smx2 + SM_N * 22 - 2 + 8 + g_xfw + 10 : 24, g_H - 24, g_sm_x - 8 - 24 - g_xfw - 10);
 ) : (
   // ---- setup page: plain form, one colour per group; jog / touch & buttons on two coloured tabs

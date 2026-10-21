@@ -38,8 +38,10 @@ Product and company names are trademarks of their respective owners and are used
 
 ## Inspiration
 
-- **TIME-1** by tilr (tilr_jsfx) - https://github.com/tiagolr/tilr_jsfx
+- **TIME-1** by tilr (tiagolr) - https://github.com/tiagolr/time1
   The idea of scratching a time buffer inside a JSFX. No code from TIME-1 is used.
+- **OtoMadSampler (Sampler81800)** by neon-uriel - https://github.com/neon-uriel/Sampler81800
+  A sampler made for otoMAD, where the author first learned of WSOLA. No code from it is used.
 - The CDJ / rekordbox workflow (hot cues, memory cues, SLIP, BEAT SYNC, needle search) as a model for the controls.
 - **Resolume** (https://resolume.com/) and **gl-transitions** (https://gl-transitions.com/) as models for the video effects, blends and transitions. No code from either is used.
 - **librosa**'s `beat_track` (D. Ellis, "Beat Tracking by Dynamic Programming", 2007) for the beat maps of songs whose tempo moves, and F. Font and X. Serra, "Tempo estimation for music loops and a simple confidence measure" (ISMIR 2016) for short loops. The methods only, written anew in Lua.
