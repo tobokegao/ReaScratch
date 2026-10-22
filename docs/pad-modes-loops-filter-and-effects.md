@@ -4,6 +4,14 @@
 
 ## Pad modes, loops, filter and effects
 
+**Contents**
+
+- [Pad modes](#pad-modes)
+- [CUE LOOP](#cue-loop)
+- [Loops](#loops)
+- [Filter](#filter)
+- [Sound and video effects](#sound-and-video-effects)
+
 Besides hot cues, there are modes that play loops and effects from the pads, a DJ filter, and sound and video effects. Which buttons do what differs by controller (see [“Preset list”](controller-setup-and-midi-mapping.md#preset-list) below). This chapter uses the Reloop Buddy and the APC40 mkII as examples.
 
 ### Pad modes

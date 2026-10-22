@@ -7,7 +7,7 @@ Turn the jog wheel of a DJ controller (or a rotary encoder or plain knob) to **s
 Runs on REAPER 7.x (Windows / macOS) alone. The basic features need no extensions and no separate FFmpeg install (for what some features such as the LOAD button use, see [“What you need”](docs/setup.md#what-you-need) under [“Setup”](docs/setup.md)).
 
 **Try it in your browser first:** https://tobokegao.github.io/reascratch/play/  
-**Install with ReaPack:** Extensions > ReaPack > Import repositories, then add `https://raw.githubusercontent.com/tobokegao/ReaScratch/main/index.xml`  
+**Install with ReaPack:** Extensions > ReaPack > Import repositories, then add `https://github.com/tobokegao/ReaScratch/raw/main/index.xml`  
 **Download the kit:** https://github.com/tobokegao/ReaScratch/releases/latest
 
 The full manual is also in the kit as a PDF (`ReaScratch_manual_en.pdf`). `README_ja.md` and `ReaScratch_manual.pdf` are the Japanese versions.

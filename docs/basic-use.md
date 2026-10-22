@@ -4,6 +4,16 @@
 
 ## Basic use
 
+**Contents**
+
+- [Step 1: Import a video](#step-1-import-a-video)
+- [Step 2: Start the sync](#step-2-start-the-sync)
+- [Step 3: Scratch](#step-3-scratch)
+- [Loading with the LOAD button (from the Media Explorer)](#loading-with-the-load-button-from-the-media-explorer)
+- [Loading by dragging a file](#loading-by-dragging-a-file)
+- [Previewing a Media Explorer file (P key)](#previewing-a-media-explorer-file-p-key)
+- [Loading cues from rekordbox](#loading-cues-from-rekordbox)
+
 All the scripts can be run by typing `reascratch` into the search box of `Actions` > `Show action list...`. With the window layout, the buttons at the top left ([“ReaScratch buttons (toolbar 3)”](setup.md#reascratch-buttons-toolbar-3)) run the same scripts.
 
 ### Step 1: Import a video

@@ -4,6 +4,24 @@
 
 ## JSFX (ReaScratch) parameter reference
 
+**Contents**
+
+- [Reading the screen](#reading-the-screen)
+- [1. Preset](#1-preset)
+- [2. Sample and playback](#2-sample-and-playback)
+- [3. Jog](#3-jog)
+- [4. Touch and buttons](#4-touch-and-buttons)
+- [5. Sound (how grains are made)](#5-sound-how-grains-are-made)
+- [6. Crossfader](#6-crossfader)
+- [7. Hot cues](#7-hot-cues)
+- [8. Spin and brake (setup `Spin & brake` tab)](#8-spin-and-brake-setup-spin--brake-tab)
+- [9. Beat-quantized jumps (setup `Beat` tab)](#9-beat-quantized-jumps-setup-beat-tab)
+- [10. Samples (setup `Samples` tab)](#10-samples-setup-samples-tab)
+- [11. Decks and video blending (setup `Video` tab)](#11-decks-and-video-blending-setup-video-tab)
+- [12. Video effects (setup `FX` tab)](#12-video-effects-setup-fx-tab)
+- [13. Controller numbers and other settings (the setup screen's `More` tab and REAPER's parameter list)](#13-controller-numbers-and-other-settings-the-setup-screens-more-tab-and-reapers-parameter-list)
+- [Display only (values to look at; they appear in REAPER's parameter list, and the small windows and lamps at the top right of the screen show the same information)](#display-only-values-to-look-at-they-appear-in-reapers-parameter-list-and-the-small-windows-and-lamps-at-the-top-right-of-the-screen-show-the-same-information)
+
 `scratch engine` is **the track's name**; `ReaScratch` (`reascratch.jsfx`) on it is **the plug-in that makes the sound**. Press the **[FX]** button of the `scratch engine` track to open the JSFX window, where you adjust the sound and the feel.
 
 How it works: a "read position (head)" moves through the loaded WAV; grains of a few tens of ms are cut from that position and always played at normal speed, overlapped. The jog only moves the head, so the pitch does not change however fast you move it.

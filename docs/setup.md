@@ -4,6 +4,13 @@
 
 ## Setup
 
+**Contents**
+
+- [What you need](#what-you-need)
+- [1. Copy the files](#1-copy-the-files)
+- [2. Initial setup](#2-initial-setup)
+- [ReaScratch buttons (toolbar 3)](#reascratch-buttons-toolbar-3)
+
 ### What you need
 
 - **REAPER 7.x** (Windows / macOS; tested with 7.80)
@@ -27,7 +34,7 @@ You can install with ReaPack or copy the kit's folders by hand. Use one of the t
 **With ReaPack** (you can also get updates via ReaPack)
 
 1. In REAPER, choose `Extensions` > `ReaPack` > `Import repositories...`, paste this URL and click `OK`:
-   `https://raw.githubusercontent.com/tobokegao/ReaScratch/main/index.xml`
+   `https://github.com/tobokegao/ReaScratch/raw/main/index.xml`
 2. In `Extensions` > `ReaPack` > `Browse packages...`, find `ReaScratch`, right-click it, choose `Install`, then click `Apply`.
 3. The installed files and their locations are the same as when copied by hand. The manual PDFs and the HID bridge are not included; get them from the GitHub Releases if you need them.
 4. Restart REAPER and proceed to "2. Initial setup".

@@ -84,7 +84,7 @@ ReaPackで入れる方法と、キットのフォルダを手でコピーする�
 **ReaPackで入れる場合**（新しいバージョンもReaPackで受け取れます）
 
 1. REAPERのメニューから`Extensions` > `ReaPack` > `Import repositories...`を選び、次のURLを貼り付けて`OK`をクリックします。
-   `https://raw.githubusercontent.com/tobokegao/ReaScratch/main/index.xml`
+   `https://github.com/tobokegao/ReaScratch/raw/main/index.xml`
 2. `Extensions` > `ReaPack` > `Browse packages...`で`ReaScratch`を探し、右クリックして`Install`を選んでから`Apply`をクリックします。
 3. 入るファイルと場所は、手でコピーした場合と同じです。説明書のPDFとHID bridgeは入りません。必要な場合はGitHubのReleasesから入手してください。
 4. REAPERを再起動し、「2. 初期セットアップ」へ進みます。

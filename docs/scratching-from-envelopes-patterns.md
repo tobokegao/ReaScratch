@@ -4,6 +4,17 @@
 
 ## Scratching from envelopes (patterns)
 
+**Contents**
+
+- [How it works](#how-it-works)
+- [Placing a pattern](#placing-a-pattern)
+- [Showing only the lanes you use](#showing-only-the-lanes-you-use)
+- [Saving a rearranged pattern](#saving-a-rearranged-pattern)
+- [Fitting the swing](#fitting-the-swing)
+- [Recording a performance into envelopes](#recording-a-performance-into-envelopes)
+- [Recording and playing a performance on REAPER's timeline](#recording-and-playing-a-performance-on-reapers-timeline)
+- [Capturing a performance](#capturing-a-performance)
+
 Write the scratching hand (the record position) and the crossfader into REAPER envelopes, and when the deck plays that spot it scratches exactly that way. Place the included patterns and rearrange them as automation items: copy, move, stretch and edit points.
 
 ### How it works

@@ -4,6 +4,17 @@
 
 ## Controller setup and MIDI mapping
 
+**Contents**
+
+- [Preset list](#preset-list)
+- [Manual mapping (Custom)](#manual-mapping-custom)
+- [Check by touch / make a preset (setup `Learn` tab)](#check-by-touch--make-a-preset-setup-learn-tab)
+- [Button lights](#button-lights)
+- [Two controllers at once (e.g. Reloop Buddy + APC40 mkII)](#two-controllers-at-once-eg-reloop-buddy--apc40-mkii)
+- [HID controllers (NI Traktor Kontrol S4, S3, S2)](#hid-controllers-ni-traktor-kontrol-s4-s3-s2)
+
+Controllers: [APC40 mkI](#1--2-apc40-mki-deck-1--deck-2) · [APC40 mkII](#3--4-apc40-mkii-deck-1--deck-2) · [Behringer CMD Micro](#5--6-behringer-cmd-micro-deck-1--deck-2) · [Denon SC5000/SC6000](#7--8-denon-sc5000sc6000-deck-1--deck-2) · [Denon Prime 4](#9--10-denon-prime-4-deck-1--deck-2) · [Gemini FirstMix](#11--12-gemini-firstmix-deck-1--deck-2) · [Hercules DJ Control MP3 e2](#13--14-hercules-dj-control-mp3-e2-deck-1--deck-2) · [Hercules DJControl Compact](#15--16-hercules-djcontrol-compact-deck-1--deck-2) · [Hercules DJControl Starlight](#17--18-hercules-djcontrol-starlight-deck-1--deck-2) · [Hercules DJControl MIX](#19--20-hercules-djcontrol-mix-deck-1--deck-2) · [Hercules DJ Control Instinct](#21--22-hercules-dj-control-instinct-deck-1--deck-2) · [Hercules DJ Control AIR](#23--24-hercules-dj-control-air-deck-1--deck-2) · [Hercules DJ Console Mk4](#25--26-hercules-dj-console-mk4-deck-1--deck-2) · [Hercules DJ Console 4-Mx](#27--28-hercules-dj-console-4-mx-deck-1--deck-2) · [Hercules DJ 4Set](#29--30-hercules-dj-4set-deck-1--deck-2) · [Hercules DJControl Jogvision](#31--32-hercules-djcontrol-jogvision-deck-1--deck-2) · [Hercules Inpulse 200/300 (MK2)](#33--34-hercules-inpulse-200300-mk2-deck-1--deck-2) · [Hercules Inpulse 500](#35--36-hercules-inpulse-500-deck-1--deck-2) · [ION Discover DJ](#37--38-ion-discover-dj-deck-1--deck-2) · [ION Discover DJ Pro](#39--40-ion-discover-dj-pro-deck-1--deck-2) · [Korg KAOSS DJ](#41--42-korg-kaoss-dj-deck-1--deck-2) · [HID bridge (NI S2/S3/S4)](#43--44-hid-bridge-ni-s2s3s4-deck-1--deck-2) · [Numark Party Mix](#45--46-numark-party-mix-deck-1--deck-2) · [Numark Party Mix II/Live](#47--48-numark-party-mix-iilive-deck-1--deck-2) · [Numark DJ2GO2 deck 1 / deck 2, 51 · 52 Numark DJ2GO2 Touch](#49--50-numark-dj2go2-deck-1--deck-2-51--52-numark-dj2go2-touch-deck-1--deck-2) · [Numark Mixtrack](#53--54-numark-mixtrack-deck-1--deck-2) · [Numark Mixtrack Pro](#55--56-numark-mixtrack-pro-deck-1--deck-2) · [Numark Mixtrack 2](#57--58-numark-mixtrack-2-deck-1--deck-2) · [Numark Mixtrack (Pro) 3](#59--60-numark-mixtrack-pro-3-deck-1--deck-2) · [Numark Mixtrack Platinum](#61--62-numark-mixtrack-platinum-deck-1--deck-2) · [Numark Mixtrack Pro/Platinum FX](#63--64-numark-mixtrack-proplatinum-fx-deck-1--deck-2) · [DDJ-FLX2](#65--66-ddj-flx2-deck-1--deck-2) · [DDJ-FLX4](#67--68-ddj-flx4-deck-1--deck-2) · [DDJ-FLX6](#69--70-ddj-flx6-deck-1--deck-2) · [DDJ-FLX10](#71--72-ddj-flx10-deck-1--deck-2) · [DDJ-REV1](#73--74-ddj-rev1-deck-1--deck-2) · [DDJ-400](#81--82-ddj-400-deck-1--deck-2) · [DDJ-800](#83--84-ddj-800-deck-1--deck-2) · [DDJ-1000](#85--86-ddj-1000-deck-1--deck-2) · [DDJ-REV5](#75--76-ddj-rev5-deck-1--deck-2) · [DDJ-200](#77--78-ddj-200-deck-1--deck-2) · [DDJ-RB](#79--80-ddj-rb-deck-1--deck-2) · [DDJ-SB deck 1 / deck 2, 89 · 90 DDJ-SB2](#87--88-ddj-sb-deck-1--deck-2-89--90-ddj-sb2-deck-1--deck-2) · [DDJ-SB3 / SX](#91--92-ddj-sb3--sx-deck-1--deck-2) · [DDJ-SX3](#93--94-ddj-sx3-deck-1--deck-2) · [CDJ-2000NXS2 (MIDI ch 1) / (MIDI ch 2)](#95--96-cdj-2000nxs2-midi-ch-1--midi-ch-2) · [CDJ-3000/3000X (MIDI ch 1) / (MIDI ch 2)](#97--98-cdj-30003000x-midi-ch-1--midi-ch-2) · [XDJ-RX3 / XZ](#99--100-xdj-rx3--xz-deck-1--deck-2) · [Reloop Buddy](#101--102-reloop-buddy-deck-1--deck-2) · [Reloop Ready](#103--104-reloop-ready-deck-1--deck-2) · [Reloop Mixage](#105--106-reloop-mixage-deck-1--deck-2) · [Reloop Mixon 4](#107--108-reloop-mixon-4-deck-1--deck-2) · [Reloop Mixon 8 Pro](#109--110-reloop-mixon-8-pro-deck-1--deck-2) · [Reloop Touch](#111--112-reloop-touch-deck-1--deck-2) · [Reloop Beatpad](#113--114-reloop-beatpad-deck-1--deck-2) · [Reloop Beatpad 2](#115--116-reloop-beatpad-2-deck-1--deck-2) · [Reloop Beatmix 2/4](#117--118-reloop-beatmix-24-deck-1--deck-2) · [Reloop Terminal Mix 2/4](#119--120-reloop-terminal-mix-24-deck-1--deck-2) · [Reloop Terminal Mix 8](#121--122-reloop-terminal-mix-8-deck-1--deck-2)
+
 ### Preset list
 
 *Table 19. What each preset can do* ● yes, ○ no, ※ partly (see the notes), ✓ tested on real hardware. Numbers: left = deck 1, right = deck 2.
@@ -256,7 +267,9 @@ Most controllers with an FX section read it as the Reloop Buddy's FX controls ("
 
 #### Notes by model
 
-**1 · 2 APC40 mkI deck 1 / deck 2**
+##### 1 · 2 APC40 mkI deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The APC40 mkI's controls (numbered on columns 1–4 = deck A; columns 5–8 = deck B are the same)](img/dev_apc40mk1.svg)
 
@@ -302,7 +315,9 @@ Columns 1–4 are deck A, columns 5–8 deck B. The mouse works too for the jog.
 
 Controls without a number (STOP ALL CLIPS, SEND C) are not used. The mkI has no `TEMPO` knob, `CROSSFADER A/B`, `BANK` or `SESSION` (which the mkII has).
 
-**3 · 4 APC40 mkII deck 1 / deck 2**
+##### 3 · 4 APC40 mkII deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The APC40 mkII's controls (numbered on columns 1–4 = deck A; columns 5–8 = deck B are the same)](img/dev_apc40mk2.svg)
 
@@ -358,7 +373,9 @@ Buttons light up (hot cues in their colours, the sample in use in green and so o
 
 From the official MIDI lists (mkII from the spec sheet at hand, mkI from a version preserved on the Internet Archive). The mkII was tested on real hardware (jog, hot cues, lights, LOAD, crossfader, two controllers at once and more; the SHIFT combinations, the `SENDS` and `USER` pages, `MASTER`, `METRONOME`, `BANK`, `SESSION` and others have not been tested on real hardware yet). The mkI has not been tested on real hardware yet.
 
-**5 · 6 Behringer CMD Micro deck 1 / deck 2**
+##### 5 · 6 Behringer CMD Micro deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The CMD Micro's controls (numbered on the left deck and the centre; the right deck is the same)](img/dev_cmdmicro.svg)
 
@@ -385,7 +402,9 @@ Both decks on MIDI channel 1. No pads.
 
 Controls without a number (2, PITCH BEND − / +, LEFT, RIGHT, MAIN LEVEL, CUE LEVEL) are not used by ReaScratch. From Mixxx's mapping; not yet tested on the real hardware.
 
-**7 · 8 Denon SC5000/SC6000 deck 1 / deck 2**
+##### 7 · 8 Denon SC5000/SC6000 deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The SC6000's controls (one unit = one deck; the SC5000 is laid out the same)](img/dev_sc6000.svg)
 
@@ -412,7 +431,9 @@ LOOP IN (`IN` of `MANUAL LOOP`) also makes a loop. Controls without a number (OU
 
 The numbers come from a third party's measurements on a real SC5000M (the same numbers as Denon's official list for the LC6000). Whether the SC6000 is the same, and the tempo direction, are unconfirmed. Not yet tested on the real hardware.
 
-**9 · 10 Denon Prime 4 deck 1 / deck 2**
+##### 9 · 10 Denon Prime 4 deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The Prime 4's controls (numbered on the left deck, FX 1, the mixer's channel 1 and the centre; the right deck, FX 2 and channel 2 are the same)](img/dev_prime4.svg)
 
@@ -456,7 +477,9 @@ Note (13 · 14): What they act on depends on what you hold (as in the Reloop Bud
 
 Controls without a number (IN and OUT of MANUAL LOOP, DECK, TRACK SKIP, BEAT JUMP, VINYL, KEY LOCK, PITCH BEND, BEAT GRID, PARAMETER, the knobs above the FX buttons, the MIC and MASTER sections, the SWEEP FX buttons, channels 3 and 4 and so on) are not used by ReaScratch. Not yet tested on the real hardware.
 
-**11 · 12 Gemini FirstMix deck 1 / deck 2**
+##### 11 · 12 Gemini FirstMix deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The FirstMix's controls (numbered on the left deck and the left channel; the right side is the same, mirrored)](img/dev_firstmix.svg)
 
@@ -481,7 +504,9 @@ Both decks on MIDI channel 1. No tempo or channel faders, no pads.
 
 Controls without a number (the EFX knob, SEL, GAIN, TREBLE, BASS, SCRATCH, MASTER, PREVIEW) are not used by ReaScratch. From Mixxx's mapping; not yet tested on the real hardware.
 
-**13 · 14 Hercules DJ Control MP3 e2 deck 1 / deck 2**
+##### 13 · 14 Hercules DJ Control MP3 e2 deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The DJ Control MP3 e2's controls (numbered on the left deck and the centre; the right deck is the same, mirrored)](img/dev_mp3e2.svg)
 
@@ -508,7 +533,9 @@ Needs the Hercules driver (the MIDI channel can be changed in the driver's setti
 
 Controls without a number (MASTER TEMPO, PITCH, PITCH BEND − / +, ◀◀ ▶▶, TREBLE, MEDIUM, BASS, SCRATCH, the browser buttons) are not used by ReaScratch. Tempo is an endless knob (PITCH), so it is not read. From Hercules' official VirtualDJ mapping; not yet tested on the real hardware.
 
-**15 · 16 Hercules DJControl Compact deck 1 / deck 2**
+##### 15 · 16 Hercules DJControl Compact deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The DJControl Compact's controls (numbered on the left deck and the centre; the pads and the jog are the same on the right deck; MODE and REC are only on the left, SCRATCH and SHIFT only on the right)](img/dev_djccompact.svg)
 
@@ -531,7 +558,9 @@ Both decks on MIDI channel 1. No tempo or channel faders.
 
 Controls without a number (REC, VOLUME, MEDIUM, BASS, SCRATCH, SHIFT) are not used by ReaScratch. The official manual and MIDI list say SHIFT + pad clears a hot cue (notes 0x05-0x08), which differs from "cleared with the neighbouring button" in 6 (not confirmed on the real hardware). From Mixxx's mapping; not yet tested on the real hardware.
 
-**17 · 18 Hercules DJControl Starlight deck 1 / deck 2**
+##### 17 · 18 Hercules DJControl Starlight deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The DJControl Starlight's controls (numbered on the left deck and the centre; the right deck has the same layout, but SHIFT is only on the left and VINYL only on the right)](img/dev_starlight.svg)
 
@@ -559,7 +588,9 @@ Same numbers as the Inpulse 200. Decks on ch 2 / ch 3 (pads on ch 7 / ch 8). The
 
 Controls without a number (TEMPO, MASTER, HEADPHONES, VINYL) are not used by ReaScratch. From Mixxx's mapping; not yet tested on the real hardware.
 
-**19 · 20 Hercules DJControl MIX deck 1 / deck 2**
+##### 19 · 20 Hercules DJControl MIX deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The DJControl MIX's controls (the same layout as the Starlight; numbered on the left deck and the centre; the right deck has the same layout, but SHIFT is only on the left and VINYL only on the right)](img/dev_djcmix.svg)
 
@@ -587,7 +618,9 @@ Same numbers and layout as the Starlight (only the mode buttons are printed diff
 
 Controls without a number (TEMPO, MASTER, HEADPHONES, VINYL) are not used by ReaScratch. From Mixxx's mapping; not yet tested on the real hardware.
 
-**21 · 22 Hercules DJ Control Instinct deck 1 / deck 2**
+##### 21 · 22 Hercules DJ Control Instinct deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The DJ Control Instinct's controls (numbered on the left deck and the centre; the right deck is the same, mirrored)](img/dev_instinct.svg)
 
@@ -613,7 +646,9 @@ Both decks on MIDI channel 1.
 
 Controls without a number (Pitch, Pitch − / +, ◀◀ ▶▶, Treble, Mid, Bass, the headphone volume − / +, Vinyl, the browser buttons) and the keys 1–4 in the `Sample` mode are not used by ReaScratch. Tempo is ± buttons only, so it is not read. From Mixxx's mapping; not yet tested on the real hardware.
 
-**23 · 24 Hercules DJ Control AIR deck 1 / deck 2**
+##### 23 · 24 Hercules DJ Control AIR deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The DJ Control AIR's controls (numbered on the left deck and the centre; the right deck is the same, mirrored)](img/dev_djcair.svg)
 
@@ -644,7 +679,9 @@ The FX knob of FX (Buddy-style) is CC 0x3F, which Mixxx's mapping calls the Flan
 
 Controls without a number (− / +, ◀◀ ▶▶, Treble, Mid, Bass, the browser buttons, Rec) are not used by ReaScratch. From Mixxx's mapping; not yet tested on the real hardware.
 
-**25 · 26 Hercules DJ Console Mk4 deck 1 / deck 2**
+##### 25 · 26 Hercules DJ Console Mk4 deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The DJ Console Mk4's controls (numbered on the left deck and the centre; the right deck is the same, mirrored)](img/dev_hercmk4.svg)
 
@@ -670,7 +707,9 @@ Controls without a number (− / +, ◀◀ ▶▶, Treble, Mid, Bass, the browse
 
 The DJ Control MP3 e2's numbers (both decks on MIDI channel 1). Tempo (the `Pitch` knob) arrives as relative values, so it is not read. Whether the Hercules driver is needed is not known. The controls without a number (Pitch, Pitch Bend, ◀◀ ▶▶, Treble / Medium / Bass, the browser buttons, Mic On/Off) are not used by ReaScratch. From Mixxx's mapping; not yet tested on the real hardware.
 
-**27 · 28 Hercules DJ Console 4-Mx deck 1 / deck 2**
+##### 27 · 28 Hercules DJ Console 4-Mx deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The DJ Console 4-Mx's controls (numbered on the left deck and the centre; the right deck is the same, mirrored)](img/dev_herc4mx.svg)
 
@@ -696,7 +735,9 @@ The DJ Control MP3 e2's numbers (both decks on MIDI channel 1). Tempo (the `Pitc
 
 Needs the Hercules driver (set its deck mode to 2 decks). Both decks on MIDI channel 1. The controls without a number (Stop, P. Bend, Pitch Scale, Deck C / D, Ctrl, ◀◀ ▶▶, Source, Kill, the EQ knobs, the browser buttons, Auto) are not used by ReaScratch. From Mixxx's mapping; not yet tested on the real hardware.
 
-**29 · 30 Hercules DJ 4Set deck 1 / deck 2**
+##### 29 · 30 Hercules DJ 4Set deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The DJ 4Set's controls (numbered on the left deck and the centre; the right deck is the same, mirrored)](img/dev_herc4set.svg)
 
@@ -721,7 +762,9 @@ Needs the Hercules driver (set its deck mode to 2 decks). Both decks on MIDI cha
 
 The DJ Console 4-Mx's numbers (from the MIDI list at the end of Hercules' official user guide, via the Internet Archive). Needs the Hercules driver (set `Deck mode` in its control panel to `2-deck basic`). Both decks on MIDI channel 1. The controls without a number (Mic, DECK C / D, Modulate, Pitch Bend, ◀◀ ▶▶, Hi / Med / Low, Main, the browser buttons, Scratch, Record) are not used by ReaScratch. Not yet tested on the real hardware.
 
-**31 · 32 Hercules DJControl Jogvision deck 1 / deck 2**
+##### 31 · 32 Hercules DJControl Jogvision deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The DJControl Jogvision's controls (numbered on the left deck and the centre; the right deck is the same, mirrored)](img/dev_jogvision.svg)
 
@@ -755,7 +798,9 @@ The DJ Console 4-Mx's numbers (from the MIDI list at the end of Hercules' offici
 
 Decks on ch 1 / ch 2. The FX section is read Buddy-style (9–11 and 13 above). Besides press, halve, double and the loop knob, the loop can also be moved (Mixxx's `Move Loop By N Beats`; which control on the unit sends it is not known). The controls without a number (AIR FX, MULTI FX, TREBLE / MEDIUM / BASS, VINYL, MIC, VIEW, LOAD PREPARE) are not used by ReaScratch. From Mixxx's mapping; not yet tested on the real hardware.
 
-**33 · 34 Hercules Inpulse 200/300 (MK2) deck 1 / deck 2**
+##### 33 · 34 Hercules Inpulse 200/300 (MK2) deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The DJControl Inpulse 300's controls (numbered on the left deck and the centre; the right deck is the same. The 300 MK2 is taken to have nearly the same layout; not checked)](img/dev_inpulse300.svg)
 
@@ -794,7 +839,9 @@ Decks on ch 1 / ch 2. The FX section is read Buddy-style (9–11 and 13 above). 
 
 Decks on ch 2 / ch 3 (pads on ch 7 / ch 8), crossfader on ch 1. The FX section (300) is read Buddy-style. PADFX SELECT (notes 0x25 / 0x26 in the official MIDI list) is set as ◀ ▶, but the list does not say which control on the unit sends it, so it has no number in the drawing. The 200 has 2 mode buttons (`HOT CUE`, `ROLL`; on the MK2 `HOT CUE`, `STEMS`), and holding SHIFT gives the second modes (FX, SAMPLER). Its pads use the 300's numbers: HOT CUE = HOT CUE, ROLL (STEMS) → BOUNCE LOOP, FX → SLICER, SAMPLER → samples (read from the numbers; not checked on the real hardware). LOAD (ch2 13 / ch3 13) loads the file chosen in the Media Explorer into an empty sample slot. SHIFT + LOAD (ch5 13 / ch6 13) replaces the slot in use. Hold a mode button (8) and press LOAD to preview (the same as the `P` key). The controls without a number (Q, SLIP, GAIN, ASSISTANT, the HEADPHONES / MASTER knobs, MASTER, BEATMATCH GUIDE) are not used by ReaScratch. From Hercules' official MIDI list and Mixxx's mapping; not yet tested on the real hardware.
 
-**35 · 36 Hercules Inpulse 500 deck 1 / deck 2**
+##### 35 · 36 Hercules Inpulse 500 deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The DJControl Inpulse 500's controls (numbered on the left deck and the centre; the right deck is the same)](img/dev_inpulse500.svg)
 
@@ -826,7 +873,9 @@ Decks on ch 2 / ch 3 (pads on ch 7 / ch 8), crossfader on ch 1. The FX section (
 
 Decks on ch 2 / ch 3 (pads on ch 7 / ch 8), crossfader on ch 1. The jog's tick count differs from the 200/300 (`138` on the 200/300, `400` on the 500). LOAD (ch2 13 / ch3 13) loads the file chosen in the Media Explorer into an empty sample slot. SHIFT + LOAD (ch5 13 / ch6 13) replaces the slot in use. Hold a mode button (7) and press LOAD to preview (the same as the `P` key). The controls without a number (SLIP, QUANT, IN, OUT, ASSISTANT, the MIC / AUX knobs, GAIN, MASTER VOL, HEADPHONES, CUE / MASTER, FX1–FX4, BEATMATCH GUIDE) are not used by ReaScratch. From Hercules' official MIDI list and Mixxx's mapping; not yet tested on the real hardware.
 
-**37 · 38 ION Discover DJ deck 1 / deck 2**
+##### 37 · 38 ION Discover DJ deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The Discover DJ's controls (numbered on the left deck and the centre; the right deck is the same, mirrored)](img/dev_discoverdj.svg)
 
@@ -850,7 +899,9 @@ Both decks on MIDI channel 1. No tempo or channel faders, no pads.
 
 Controls without a number (PITCH −% / +%, MASTER VOLUME, TREBLE, BASS, VOLUME, SCRATCH/SEARCH) are not used by ReaScratch. From Mixxx's mapping; not yet tested on the real hardware.
 
-**39 · 40 ION Discover DJ Pro deck 1 / deck 2**
+##### 39 · 40 ION Discover DJ Pro deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The Discover DJ Pro's controls (numbered on the left deck and the centre; the right deck is the same)](img/dev_discoverpro.svg)
 
@@ -878,7 +929,9 @@ Both decks on MIDI channel 1. No pads.
 
 Controls without a number (PITCH BEND, BASS, MID, TREBLE, MUTE, KEYLOCK, SCRATCH, STUTTER, CUE VOLUME, MASTER VOLUME, CUE SOURCE, iPod VOLUME) are not used by ReaScratch. From Mixxx's mapping; not yet tested on the real hardware.
 
-**41 · 42 Korg KAOSS DJ deck 1 / deck 2**
+##### 41 · 42 Korg KAOSS DJ deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The KAOSS DJ's controls (numbered on the left deck and the centre; the right deck is the same)](img/dev_kaossdj.svg)
 
@@ -907,7 +960,9 @@ Decks on ch 8 / ch 9, the crossfader and BROWSE on ch 7. From Mixxx's mapping (t
 
 LOAD (ch8 14 / ch9 14) loads the file chosen in the Media Explorer into an empty sample slot. Controls without a number (headphone level, BALANCE, MASTER, GAIN, HI, MID, LO, the display, the touchpad and its mode button, the program/value knob, TAP, HOLD) are not used by ReaScratch. It is not known whether the message Korg's software sends at start-up is needed. Not yet tested on the real hardware.
 
-**43 · 44 HID bridge (NI S2/S3/S4) deck 1 / deck 2**
+##### 43 · 44 HID bridge (NI S2/S3/S4) deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ReaScratch can only read MIDI, so a separate bridge program (the `HID bridge` folder in the zip; see [“HID controllers (NI Traktor Kontrol S4, S3, S2)”](#hid-controllers-ni-traktor-kontrol-s4-s3-s2)) reads the HID data and sends MIDI with the DDJ-FLX4's numbers to a virtual MIDI port. The numbers come from Mixxx's mappings; not yet tested on the real hardware.
 
@@ -1038,7 +1093,9 @@ Controls without a number (the FX unit, DECK C, LOAD, FLUX, RESET, the loop knob
 
 Controls without a number (the FX unit, FLUX (RESET on the S2 MK1), the loop knobs, IN, OUT, GAIN | FILTER, EQ, the REMIX knob, BROWSE, LOAD and so on) are not used by ReaScratch.
 
-**45 · 46 Numark Party Mix deck 1 / deck 2**
+##### 45 · 46 Numark Party Mix deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The original Numark Party Mix's controls (numbered on the left deck and the centre; the right deck has the same controls, with the jog's surroundings and the tempo fader mirrored)](img/dev_partymix.svg)
 
@@ -1066,7 +1123,9 @@ Decks on ch 1 / ch 2, crossfader on ch 16. From Mixxx's mapping (its mode number
 
 Controls without a number (SCRATCH, GAIN, TREBLE, BASS, MASTER GAIN, CUE MIX, CUE GAIN) are not used by ReaScratch. There is no SHIFT button. The message Mixxx sends to the unit at start-up is "send back the current knob and fader values", which is probably not needed to receive MIDI (since it is not sent, fader positions are not reflected until you move them). Not yet tested on the real hardware.
 
-**47 · 48 Numark Party Mix II/Live deck 1 / deck 2**
+##### 47 · 48 Numark Party Mix II/Live deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The Numark Party Mix II's controls (numbered on the left deck and the centre; the right deck is the same. The Party Mix Live adds a speaker on top, with the same controls)](img/dev_partymix2.svg)
 
@@ -1097,7 +1156,9 @@ Same numbers as the Mixtrack (the Party Mix Live is a II with speakers, assumed 
 
 Controls without a number (LEVEL, HEADPHONE, MAIN) are not used by ReaScratch. There is no SHIFT button or MID knob. Mixxx keeps sending messages to the unit while running, but that is for the unit's lights and is probably not needed to receive MIDI (from the discussion of the Mixxx mapping draft). Not yet tested on the real hardware.
 
-**49 · 50 Numark DJ2GO2 deck 1 / deck 2, 51 · 52 Numark DJ2GO2 Touch deck 1 / deck 2**
+##### 49 · 50 Numark DJ2GO2 deck 1 / deck 2, 51 · 52 Numark DJ2GO2 Touch deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The Numark DJ2GO2's and DJ2GO2 Touch's controls (both laid out the same; numbered on the left deck and the centre; the right deck has the same controls, mirrored, except that SYNC / CUE / PLAY keep the same order. On the Touch, GAIN is printed LEVEL)](img/dev_dj2go2.svg)
 
@@ -1124,7 +1185,9 @@ Decks on ch 1 / ch 2 (pads on ch 5 / ch 6), crossfader on ch 16. The Touch is fr
 
 Controls without a number (GAIN, the Touch's LEVEL, MASTER GAIN, CUE GAIN) are not used by ReaScratch. No channel faders or FILTER knob (the Touch's knob in the FILTER position is gain and its MIDI is not used). There is no SHIFT button either. Not yet tested on the real hardware.
 
-**53 · 54 Numark Mixtrack deck 1 / deck 2**
+##### 53 · 54 Numark Mixtrack deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The Numark Mixtrack's (original) controls (numbered on the left deck and the centre; the right deck is the same)](img/dev_mixtrack.svg)
 
@@ -1159,7 +1222,9 @@ Note (9): What it acts on depends on what you hold (as in the Reloop Buddy's not
 
 Controls without a number (PITCH BEND, KEYLOCK, SCRATCH, STUTTER, VIEW, TICK, EQ KILL, SELECT, IN, OUT, TREBLE, MID, BASS, CUE GAIN, CUE MIX, BACK, MASTER GAIN) are not used by ReaScratch. Not yet tested on the real hardware.
 
-**55 · 56 Numark Mixtrack Pro deck 1 / deck 2**
+##### 55 · 56 Numark Mixtrack Pro deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The Numark Mixtrack Pro's (original) controls (numbered on the left deck and the centre; the right deck is the same)](img/dev_mixtrackpro.svg)
 
@@ -1196,7 +1261,9 @@ Note (11): What it acts on depends on what you hold (as in the Reloop Buddy's no
 
 Controls without a number (PITCH BEND, KEYLOCK, SCRATCH, STUTTER, CONTROL, IN, OUT, TREBLE, MID, BASS, CUE GAIN, CUE MIX, BACK, MASTER GAIN) are not used by ReaScratch. Not yet tested on the real hardware.
 
-**57 · 58 Numark Mixtrack 2 deck 1 / deck 2**
+##### 57 · 58 Numark Mixtrack 2 deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The Numark Mixtrack II's and Mixtrack Pro II's controls (the same layout; numbered on the left deck and the centre; the right deck is the same. The Pro II has BEATS where FILTER is and TAP where RESET is)](img/dev_mixtrack2.svg)
 
@@ -1225,7 +1292,9 @@ Both decks on MIDI channel 1, told apart by number. From Mixxx's mapping (MixTra
 
 Controls without a number (PITCH BEND, SCRATCH, STUTTER, SELECT, FILTER (BEATS), the bottom row's `OUT`, the SAMPLE mode, TREBLE, MID, BASS, CUE GAIN, CUE MIX, BACK, MASTER) are not used by ReaScratch. The FX knobs (SELECT) are endless and not read. Not yet tested on the real hardware.
 
-**59 · 60 Numark Mixtrack (Pro) 3 deck 1 / deck 2**
+##### 59 · 60 Numark Mixtrack (Pro) 3 deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The Numark Mixtrack 3's and Mixtrack Pro 3's controls (the same layout; numbered on the left deck and the centre; the right deck is the same)](img/dev_mixtrack3.svg)
 
@@ -1263,7 +1332,9 @@ Decks on ch 2 / ch 3, crossfader on ch 1. From Mixxx's mapping (the Mixtrack 3 a
 
 Controls without a number (PITCH BEND, the touch strip, BEATS, TAP, WHEEL, the headphone CUE, MASTER GAIN, CUE MIX, CUE GAIN) are not used by ReaScratch. The BEATS knobs are endless and not read. Headphone CUE arrives on channel 1 and cannot be read. There is no knob for the FX knob. Not yet tested on the real hardware.
 
-**61 · 62 Numark Mixtrack Platinum deck 1 / deck 2**
+##### 61 · 62 Numark Mixtrack Platinum deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The Numark Mixtrack Platinum's controls (numbered on the left deck and the centre; the right deck is the same)](img/dev_mixtrackplat.svg)
 
@@ -1304,7 +1375,9 @@ Note (11 · 12): What they act on depends on what you hold (as in the Reloop Bud
 
 LOAD (ch1 16 / ch2 16) loads the file chosen in the Media Explorer into an empty sample slot. Hold PAD MODE (7) and press LOAD to preview (the same as the `P` key). Controls without a number (PITCH BEND, the touch strip, TAP, WHEEL, LAYER, GAIN, MASTER GAIN, CUE MIX, CUE GAIN) are not used by ReaScratch. Not yet tested on the real hardware.
 
-**63 · 64 Numark Mixtrack Pro/Platinum FX deck 1 / deck 2**
+##### 63 · 64 Numark Mixtrack Pro/Platinum FX deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The Numark Mixtrack Pro FX's and Mixtrack Platinum FX's controls (the same layout; numbered on the left deck and the centre; the right deck is the same. The Platinum FX has a display inside the jog)](img/dev_mixtrackfx.svg)
 
@@ -1345,7 +1418,9 @@ Note (10 · 11): What they act on depends on what you hold (as in the Reloop Bud
 
 Controls without a number (SCRATCH, PITCH BEND, LEVEL, BEATS, TAP, the FX paddles, the loop 1/2 and x2, MIC, MASTER, CUE GAIN, CUE MIX) are not used by ReaScratch. Not yet tested on the real hardware.
 
-**65 · 66 DDJ-FLX2 deck 1 / deck 2**
+##### 65 · 66 DDJ-FLX2 deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The DDJ-FLX2's controls (numbered on the left deck and the centre; the right deck is the same)](img/dev_flx2.svg)
 
@@ -1375,7 +1450,9 @@ Same as the DDJ-FLX4 (same MIDI numbers). There are no loop, BEAT FX, BROWSE or 
 
 The MIDI numbers are taken from AlphaTheta's official MIDI message list; not yet tested on the real hardware.
 
-**67 · 68 DDJ-FLX4 deck 1 / deck 2**
+##### 67 · 68 DDJ-FLX4 deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The DDJ-FLX4's controls (numbered on the left deck and the centre; the right deck is the same)](img/dev_flx4.svg)
 
@@ -1417,7 +1494,9 @@ Note (21 · 22): What they act on depends on what you hold (as in the Reloop Bud
 
 Controls without a number (IN, OUT, TRIM, MIC LEVEL, SMART CFX, SMART FADER, MASTER LEVEL, FX SELECT and so on) are not used by ReaScratch. Tested on real hardware only early in development, not yet with current features (⚠︎ until tested again).
 
-**69 · 70 DDJ-FLX6 deck 1 / deck 2**
+##### 69 · 70 DDJ-FLX6 deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The DDJ-FLX6's controls (numbered on the left deck, mixer channel 1 and BEAT FX; the right deck is the same)](img/dev_flx6.svg)
 
@@ -1459,7 +1538,9 @@ Almost the same as the DDJ-FLX4. The mixer has 4 channels (3, 1, 2, 4 from the l
 
 Controls without a number (MERGE FX, IN, OUT, MEMORY, JOG CUTTER, DECK, MASTER, TRIM, CH SELECT, MASTER LEVEL, BOOTH, channels 3 and 4 and so on) are not used by ReaScratch. The MIDI numbers were checked against the official MIDI list (the version preserved on the Internet Archive); not yet tested on the real hardware.
 
-**71 · 72 DDJ-FLX10 deck 1 / deck 2**
+##### 71 · 72 DDJ-FLX10 deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The DDJ-FLX10's controls (numbered on the left deck, mixer channel 1 and BEAT FX; the right deck is the same)](img/dev_flx10.svg)
 
@@ -1499,7 +1580,9 @@ Almost the same as the DDJ-FLX4. The mixer has 4 channels (3, 1, 2, 4 from the l
 
 Controls without a number (IN, OUT, ACTIVE PART, MIX POINT, SLIP, QUANTIZE, 4 BEAT JUMP, PAGE, KEY SYNC, TEMPO RESET, TRIM, the COLOR FX buttons, FX PART, FX SELECT, CH SELECT, channels 3 and 4 and so on) are not used by ReaScratch. The MIDI numbers were checked against the official MIDI list (the version preserved on the Internet Archive); not yet tested on the real hardware.
 
-**73 · 74 DDJ-REV1 deck 1 / deck 2**
+##### 73 · 74 DDJ-REV1 deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The DDJ-REV1's controls (numbered on the left deck and the centre; the right deck is the same; its DECK button and the EQ are mirrored)](img/dev_rev1.svg)
 
@@ -1539,7 +1622,9 @@ Many controls have the DDJ-FLX4's numbers; SHIFT is in the centre (MIDI ch 7). T
 
 The ◀ ▶ for the effect type (SHIFT + the FX's `2` and `3` buttons) and SHIFT + paddle to turn all effects off while held are not mapped. Controls without a number (TRIM, the headphone LEVEL, MASTER LEVEL, DECK, the FX's `2` and `3` buttons, MASTER's CUE and so on) are not used by ReaScratch. The MIDI numbers were checked against the official MIDI list (the version preserved on the Internet Archive); not yet tested on the real hardware.
 
-**81 · 82 DDJ-400 deck 1 / deck 2**
+##### 81 · 82 DDJ-400 deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The DDJ-400's controls (numbered on the left deck and the centre; the right deck is the same)](img/dev_ddj400.svg)
 
@@ -1580,7 +1665,9 @@ The same MIDI numbers as the DDJ-FLX4 (all of them matched in the official MIDI 
 
 BEAT FX sends the same numbers whatever CH SELECT is set to, so it cannot pick a deck. Controls without a number (IN/4BEAT, OUT, TRIM, HEADPHONES MIXING and LEVEL, MASTER LEVEL and CUE, FX SELECT, CH SELECT and so on) are not used by ReaScratch. Not yet tested on the real hardware.
 
-**83 · 84 DDJ-800 deck 1 / deck 2**
+##### 83 · 84 DDJ-800 deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The DDJ-800's controls (numbered on the left deck and the centre; the right deck is the same)](img/dev_ddj800.svg)
 
@@ -1622,7 +1709,9 @@ Almost the same as the DDJ-FLX4. The tempo range is switched with its own TEMPO 
 
 Controls without a number (IN, OUT, QUANTIZE, DELETE, MEMORY, SLIP, SLIP REVERSE, JOG ADJUST, KEY SYNC, MASTER TEMPO, SEARCH, PAGE, TRIM, MIC, the SOUND COLOR FX buttons, HEADPHONES, MASTER, BOOTH, FX SELECT, CH SELECT and so on) are not used by ReaScratch. The MIDI numbers were checked against the official MIDI list (the version preserved on the Internet Archive); not yet tested on the real hardware.
 
-**85 · 86 DDJ-1000 deck 1 / deck 2**
+##### 85 · 86 DDJ-1000 deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The DDJ-1000's controls (numbered on the left deck, mixer channel 1 and BEAT FX; the right deck is the same)](img/dev_ddj1000.svg)
 
@@ -1661,7 +1750,9 @@ Almost the same as the DDJ-FLX4. The mixer has 4 channels (3, 1, 2, 4 from the l
 
 Loop halve and double are not mapped. Controls without a number (IN, OUT, QUANTIZE, SLIP, SLIP REVERSE, DECK, BACK, VIEW, JOG ADJUST, MEMORY, SEARCH, PAGE, MASTER TEMPO, KEY SYNC, KEY RESET, TRIM, the SOUND COLOR FX buttons, FX SELECT, CH SELECT, channels 3 and 4 and so on) are not used by ReaScratch. The MIDI numbers were checked against the official MIDI list (the version preserved on the Internet Archive); not yet tested on the real hardware.
 
-**75 · 76 DDJ-REV5 deck 1 / deck 2**
+##### 75 · 76 DDJ-REV5 deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The DDJ-REV5's controls (numbered on the left deck and the centre; the right deck is the same)](img/dev_rev5.svg)
 
@@ -1708,7 +1799,9 @@ Note (Buddy-style FX): deck 2 uses the same controls on the right (FX2). What th
 
 Controls without a number (AUTO BPM TRANSITION, BACK, SLIP, CENSOR, KEY − / +, STEMS, VOCAL to DRUMS, DECK, JOG FEEL, TRIM, LOCK ON, PARAMETER 1, SAMPLER VOLUME and so on) are not used by ReaScratch. From the official MIDI list; not yet tested on the real hardware.
 
-**77 · 78 DDJ-200 deck 1 / deck 2**
+##### 77 · 78 DDJ-200 deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The DDJ-200's controls (numbered on the left deck and the centre; the right deck is the same)](img/dev_ddj200.svg)
 
@@ -1739,7 +1832,9 @@ Same numbers as the DDJ-FLX4 (official MIDI list, version preserved on the Inter
 
 Controls without a number (HEADPHONES MASTER) are not used by ReaScratch. Not yet tested on the real hardware.
 
-**79 · 80 DDJ-RB deck 1 / deck 2**
+##### 79 · 80 DDJ-RB deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The DDJ-RB's controls (numbered on the left deck and the centre; the right deck is the same)](img/dev_rb.svg)
 
@@ -1780,7 +1875,9 @@ Note (Buddy-style FX): deck 2 uses the same controls on the right (FX2). What th
 
 Controls without a number (TRIM, MASTER LEVEL, HEADPHONES LEVEL, CUE MASTER, 4 BEAT, IN, OUT and so on) are not used by ReaScratch.
 
-**87 · 88 DDJ-SB deck 1 / deck 2, 89 · 90 DDJ-SB2 deck 1 / deck 2**
+##### 87 · 88 DDJ-SB deck 1 / deck 2, 89 · 90 DDJ-SB2 deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The DDJ-SB2's controls (the DDJ-SB is laid out the same, without TRIM, DECK and PAD TRANS; numbered on the left deck and the centre; the right deck is the same, with its TEMPO column on the right edge)](img/dev_sb2.svg)
 
@@ -1821,7 +1918,9 @@ Note (Buddy-style FX): deck 2 uses the same controls on the right (FX2). What th
 
 Controls without a number (TRIM, DECK, PAD TRANS, FX1 buttons 2 · 3, MASTER LEVEL, HEADPHONES MIX, HEADPHONES LEVEL, FILTER FADE and so on) are not used by ReaScratch.
 
-**91 · 92 DDJ-SB3 / SX deck 1 / deck 2**
+##### 91 · 92 DDJ-SB3 / SX deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The DDJ-SB3's controls (numbered on the left deck and the centre; the right deck is the same)](img/dev_sb3.svg)
 
@@ -1907,7 +2006,9 @@ Note (Buddy-style FX): deck 2 uses the same controls on the right (FX2). What th
 
 Controls without a number (NEEDLE SEARCH, GRID ADJUST, GRID SLIDE, SLIP, BEATS, TAP, PARAMETER1, channels 3 · 4 and so on) are not used by ReaScratch.
 
-**93 · 94 DDJ-SX3 deck 1 / deck 2**
+##### 93 · 94 DDJ-SX3 deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The DDJ-SX3's controls (numbered on the left deck (DECK 1) and mixer channel 1; the right deck (DECK 2) and channel 2 are the same)](img/dev_sx3.svg)
 
@@ -1950,7 +2051,9 @@ Note (Buddy-style FX): deck 2 uses the same controls on the right (FX2). What th
 
 Controls without a number (NEEDLE SEARCH, CENSOR, KEY UP / DOWN, SLIP, QUANTIZE, FLIP, BEATS, CH ASSIGN, PARAMETER1, the SOUND COLOR FX buttons, channels 3 · 4 and so on) are not used by ReaScratch.
 
-**95 · 96 CDJ-2000NXS2 (MIDI ch 1) / (MIDI ch 2)**
+##### 95 · 96 CDJ-2000NXS2 (MIDI ch 1) / (MIDI ch 2)
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The CDJ-2000NXS2's controls (one player = one deck)](img/dev_cdj2000nxs2.svg)
 
@@ -1989,7 +2092,9 @@ Controls without a number (4/8 BEAT, OUT, SEARCH, TIME MODE, MASTER, MASTER TEMP
 
 In MIDI mode the jog sends "turning speed" as 7 bits (steps of about 0.06x), so the movement is coarser than on the FLX4 or Buddy. The numbers come from the MIDI message list in the player's manual; not yet tested on the real hardware.
 
-**97 · 98 CDJ-3000/3000X (MIDI ch 1) / (MIDI ch 2)**
+##### 97 · 98 CDJ-3000/3000X (MIDI ch 1) / (MIDI ch 2)
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The CDJ-3000's controls (one player = one deck; the CDJ-3000X has the same controls in the same order)](img/dev_cdj3000.svg)
 
@@ -2029,7 +2134,9 @@ Controls without a number (OUT, BEAT LOOP, BEAT JUMP, SEARCH, TIME/A.CUE, JOG AD
 
 The numbers come from the official MIDI message lists of the CDJ-3000 and the CDJ-3000X (the numbers used are the same on both); not yet tested on the real hardware.
 
-**99 · 100 XDJ-RX3 / XZ deck 1 / deck 2**
+##### 99 · 100 XDJ-RX3 / XZ deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 Put the unit in MIDI mode (on the XDJ-XZ, PC Control mode via `BROWSE` → `MIDI` → `LOAD`). The jog works like a DDJ, the buttons use the CDJ numbers (PLAY/PAUSE, CUE, SYNC, TEMPO RANGE). LOAD (ch1 81 / ch2 81) loads the file chosen in the Media Explorer into an empty sample slot. Hold a PAD MODE button (5) and press LOAD to preview (the same as the `P` key). From the official MIDI list (RX3); not yet tested on the real hardware.
 
@@ -2098,7 +2205,9 @@ The same mapping as the XDJ-RX3, plus the 4/8 BEAT button (10).
 
 Controls without a number (IN/CUE, OUT, DELETE, MEMORY, SLIP, DIRECTION, TRACK SEARCH, SEARCH, JOG MODE, TRIM, the headphone CUE, the channel faders, channels 3 and 4, SOUND COLOR FX, BEAT FX, MIC and so on) are not used by ReaScratch.
 
-**101 · 102 Reloop Buddy deck 1 / deck 2**
+##### 101 · 102 Reloop Buddy deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The Reloop Buddy's controls (the left deck and the centre; the right deck is the same, mirrored)](img/dev_buddy.svg)
 
@@ -2134,7 +2243,9 @@ Note (14, 15): The FX knob sets an amount and `FX PARAM` ◀ ▶ picks a type. T
 
 On Windows it needs the driver described under [“Troubleshooting”](troubleshooting.md) below. The buttons light up in the hot cue colours and so on (see [“Button lights”](#button-lights) below). The jog, pads, LOOP knob, filter, FX and LOAD were tested on real hardware. Many SHIFT combinations (CUE, PLAY, jog, FX ON, headphones, HIGH / LOW / FILTER) and the TOUCH FX, PITCH PLAY and FILTER TYPE modes have not been tested on real hardware yet.
 
-**103 · 104 Reloop Ready deck 1 / deck 2**
+##### 103 · 104 Reloop Ready deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The Reloop Ready's controls (numbered on the left deck and the centre; the right deck is the same, except that its TEMPO is on the other side, both next to the mixer)](img/dev_ready.svg)
 
@@ -2173,7 +2284,9 @@ Same mapping as the Reloop Buddy, with the same MIDI numbers (checked against Mi
 
 Controls without a number (GAIN, VINYL, KEY LOCK, PARAMETER ◀ ▶, FX2 ON and FX3 ON of the right FX UNIT 2 and so on) are not used by ReaScratch.
 
-**105 · 106 Reloop Mixage deck 1 / deck 2**
+##### 105 · 106 Reloop Mixage deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The Reloop Mixage's controls (numbered on the left deck and the centre; the right deck is the same, mirrored)](img/dev_mixage.svg)
 
@@ -2210,7 +2323,9 @@ Both decks on MIDI channel 1, told apart by number. What 7–9 act on depends on
 
 Controls without a number (GAIN, DRY/WET, pitch − / +, the two buttons above the jog, MASTER, PHONES, CUEMIX and so on) are not used by ReaScratch.
 
-**107 · 108 Reloop Mixon 4 deck 1 / deck 2**
+##### 107 · 108 Reloop Mixon 4 deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The Reloop Mixon 4's controls (numbered on the left deck, the mixer's CHANNEL 1 and the centre; the right deck and CHANNEL 2 are the same, with the TEMPO and the SYNC / CUE / PLAY column mirrored to the outer edge)](img/dev_mixon4.svg)
 
@@ -2250,7 +2365,9 @@ Decks on ch 5 / ch 6 (pads on ch 1 / ch 2). What 11–13 act on depends on what 
 
 Controls without a number (GAIN, the effect unit's other knobs, TAP, PARAM − / +, the three buttons left of the jog, CHANNEL 3 / 4, the MASTER column's knobs and so on) are not used by ReaScratch.
 
-**109 · 110 Reloop Mixon 8 Pro deck 1 / deck 2**
+##### 109 · 110 Reloop Mixon 8 Pro deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The Reloop Mixon 8 Pro's controls (numbered on the left deck, the mixer's CHANNEL 1 and the centre; the right deck and CHANNEL 2 are the same, with the TEMPO and the SYNC / CUE / PLAY column mirrored to the outer edge)](img/dev_mixon8pro.svg)
 
@@ -2286,7 +2403,9 @@ Almost the same numbers as the Reloop Buddy (decks ch 1 / ch 2, jog CC 6, touch,
 
 Controls without a number (GAIN, the FX UNIT's other knobs and buttons, KEY SYNC, IN, OUT, PARAM ◀ ▶, CHANNEL 3 / 4, the MASTER column's knobs and so on) are not used by ReaScratch.
 
-**111 · 112 Reloop Touch deck 1 / deck 2**
+##### 111 · 112 Reloop Touch deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The Reloop Touch's controls (numbered on the left deck, the mixer's CH1 and the centre; the right deck and CH2 are the same, with the TEMPO and the SYNC / CUE / PLAY column mirrored to the outer edge. The right FADER EFFECTS UNIT is printed FX 1, FX 2, FX 3, VIDEO FX, but ReaScratch reads it by position: its first fader and ON from the left are 10 and 11)](img/dev_touch.svg)
 
@@ -2324,7 +2443,9 @@ Almost the same numbers as the Reloop Beatmix 2/4 (decks ch 2 / ch 3, jog CC 96,
 
 LOAD (ch2 57 / ch3 57) loads the file chosen in the Media Explorer into an empty sample slot. SHIFT + LOAD is the preview (the same as the `P` key). Controls without a number (the touchscreen, PITCH BEND ◀ ▶, MODE, SLIP, DECK 3, the FADER EFFECTS UNIT's second fader from the left and its third and fourth faders and ONs, PARAM, GAIN, CH3, CH4, MASTER, CUE VOL, CUE MIX and so on) are not used by ReaScratch.
 
-**113 · 114 Reloop Beatpad deck 1 / deck 2**
+##### 113 · 114 Reloop Beatpad deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The Reloop Beatpad's controls (numbered on the left deck and the centre; on the right deck the knobs and the upper button row are mirrored, the rest is the same)](img/dev_beatpad.svg)
 
@@ -2360,7 +2481,9 @@ Note (7): CUE is note 0x5F. In Mixxx's mapping 0x5F is the `JUMP` button (0x5E i
 
 LOAD 1 / 2 (ch1 98 / ch2 98) loads the file chosen in the Media Explorer into an empty sample slot. Hold a pad mode button (10) and press LOAD to preview (the same as the `P` key). Controls without a number (GAIN, JOG SCRATCH (used only to set up), JOG SEEK, FX SELECT, PITCH BEND, SET, REC, MASTER, PHONES, CUE MIX, AUX) are not used by ReaScratch. For the Beatpad, the official MIDI list and Mixxx's mapping disagree in places (such as the jog CC); Mixxx's is used. Tick count from the official list's 600 ticks per turn. Not yet tested on the real hardware.
 
-**115 · 116 Reloop Beatpad 2 deck 1 / deck 2**
+##### 115 · 116 Reloop Beatpad 2 deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The Reloop Beatpad 2's controls (numbered on the left deck and the centre; the right deck is the same)](img/dev_beatpad2.svg)
 
@@ -2390,7 +2513,9 @@ Reloop's Beatpad 2 MIDI list covers only the pads, mode buttons and EQ; the rest
 
 LOAD 1 / 2 (ch1 98 / ch2 98) loads the file chosen in the Media Explorer into an empty sample slot (not in Reloop's official list; assumed to be the same as the Beatpad). Hold a pad mode button (7) and press LOAD to preview (the same as the `P` key). Controls without a number (GAIN, PITCH − / +, SET, LIBRARY, BROWSE, MASTER, PHONES, CUE MIX, AUX) are not used by ReaScratch. Not yet tested on the real hardware.
 
-**117 · 118 Reloop Beatmix 2/4 deck 1 / deck 2**
+##### 117 · 118 Reloop Beatmix 2/4 deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The Reloop Beatmix 2's controls (numbered on the left deck and the centre; the right deck is the same. The Beatmix 4 has a 4-channel mixer and is otherwise the same)](img/dev_beatmix.svg)
 
@@ -2422,7 +2547,9 @@ Decks on ch 2 / ch 3. Numbers from Reloop's official MIDI map (version preserved
 
 The notes the unit sends when FX knobs 1–3 leave 0 are not used. LOAD 1 / 2 (ch2 80 / ch3 80) loads the file chosen in the Media Explorer into an empty sample slot. SHIFT + LOAD (ch2 64 / ch3 64) replaces the slot in use. Controls without a number (FX 2, FX 3, GAIN, HIGH, MID, LOW, BACK, the SAMPLER fader, MASTER, PHONES, CUE MIX) are not used by ReaScratch. Not yet tested on the real hardware.
 
-**119 · 120 Reloop Terminal Mix 2/4 deck 1 / deck 2**
+##### 119 · 120 Reloop Terminal Mix 2/4 deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The Reloop Terminal Mix 4's controls (numbered on the left deck and the centre; the right deck is the same. The Terminal Mix 2 has a 2-channel mixer and is otherwise the same)](img/dev_tmix4.svg)
 
@@ -2460,7 +2587,9 @@ From Mixxx's mapping. No headphone CUE.
 
 LOAD (ch1 50 / ch2 50) loads the file chosen in the Media Explorer into an empty sample slot. SHIFT + LOAD is the preview (the same as the `P` key). Controls without a number (KEYLOCK, TAP, OUT, VINYL, DECK, GAIN, the headphone buttons, CRATES, VIEW, BACK, PREP, MASTER, BOOTH, PHONES, CUE MIX, SAMPLER VOL) are not used by ReaScratch. Not yet tested on the real hardware.
 
-**121 · 122 Reloop Terminal Mix 8 deck 1 / deck 2**
+##### 121 · 122 Reloop Terminal Mix 8 deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
 
 ![The Reloop Terminal Mix 8's controls (numbered on the left deck and the centre; the right deck is the same)](img/dev_tmix8.svg)
 

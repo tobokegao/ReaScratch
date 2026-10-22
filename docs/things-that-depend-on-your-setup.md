@@ -4,6 +4,14 @@
 
 ## Things that depend on your setup
 
+**Contents**
+
+- [Sound](#sound)
+- [Video](#video)
+- [Controllers and keyboard](#controllers-and-keyboard)
+- [REAPER and the PC](#reaper-and-the-pc)
+- [Where files go](#where-files-go)
+
 What changes with your PC, your equipment or REAPER's settings. Where it says “not tried”, the author has not tested it.
 
 ### Sound

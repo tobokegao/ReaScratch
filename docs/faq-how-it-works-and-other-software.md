@@ -4,6 +4,18 @@
 
 ## FAQ (how it works and other software)
 
+**Contents**
+
+- [Why not just use DJ software such as rekordbox?](#why-not-just-use-dj-software-such-as-rekordbox)
+- [Is there DJ software that scratches without changing the pitch?](#is-there-dj-software-that-scratches-without-changing-the-pitch)
+- [Can the Bitwig–rekordbox integration edit scratches?](#can-the-bitwigrekordbox-integration-edit-scratches)
+- [How does it scratch without changing the pitch?](#how-does-it-scratch-without-changing-the-pitch)
+- [Don't the grains sound muddy when they are simply lined up?](#dont-the-grains-sound-muddy-when-they-are-simply-lined-up)
+- [How is this different from key lock (time stretching) in DJ software?](#how-is-this-different-from-key-lock-time-stretching-in-dj-software)
+- [Does a record-like movement, where the pitch follows the speed, need a separate engine?](#does-a-record-like-movement-where-the-pitch-follows-the-speed-need-a-separate-engine)
+- [Does it use a time-stretching library such as Rubber Band?](#does-it-use-a-time-stretching-library-such-as-rubber-band)
+- [If Rubber Band does not play backwards, how does Mixxx play in reverse?](#if-rubber-band-does-not-play-backwards-how-does-mixxx-play-in-reverse)
+
 This section summarizes questions asked since the release. Answers about other software cover what could be checked in public documents and source code in October 2026.
 
 ### Why not just use DJ software such as rekordbox?
