@@ -937,6 +937,7 @@ NB_AMT = 0.1; NB_COAST = 0.15; nb_rem = 0; nb_free = 1000000000;
 JRG_HOLD = 0.3; jsp_v = 0; jrg_v = 0; jrg_t = 1000000000;
 function cdj_speed(v, lo) ( v > 64 ? lo + (v - 65) * (4 - lo) / 62 : v < 64 ? -(lo + (63 - v) * (4 - lo) / 62) : 0; );
 head_mid = head_mid2 = 0;                   // first two of the three head smoothing stages
+sp_avg = 0; sp_t = 0;
 hd_v = 0; hd_prev = 0; hd_tch = 0; spin_on = 0; spin_v = 0; spin_r = 0;   // head speed (frames / sample), spin on release (slider 53),
                                                                           // brake / start / spinback (57-62): speed change per sample
 ui_pos = 0; ui_rate = 0; ui_cnt = 0; ui_avg = 1600; ui_gen = 0; ui_seen = 0; ui_was = 0;   // mouse drag: steady rate between GUI frames
@@ -3422,6 +3423,9 @@ function apply_sliders() (
   autorel = CV[13] * srate / 1000;                       // auto release in output samples
   tp_k = 1 - exp(-1 / (0.01 * srate));                     // slider 52 glide (10 ms)
   tp_vk = 1 - exp(-1 / (0.005 * srate));                   // speed estimates (5 ms)
+  // (2026-10-22, user's report: the brake after a fast backward jog spin came too soon) the hand's speed before it lets go,
+  // averaged over 80 ms: the spin on release starts from it (a jog slows in the last ms before the touch note-off)
+  sp_k = 1 - exp(-1 / (0.08 * srate));
   tp_xs = 1 / (0.005 * srate);                             // jump cross-fade (5 ms)
   slider4 != lastcue ? (
     jump_to(slider4 * fsr);
@@ -5556,7 +5560,7 @@ len > 0 ? (
   ) : (
     // spin on release: the hand just left while the head ran at least 1x away from where the transport goes
     spin_goal = slider3 ? te_1x() : 0;
-    hd_tch && !tch && spin_a > 0 && !apc_fwh && !apc_sph && !apc_spd && abs(hd_v - spin_goal) * srate / fsr >= 1 ? (spin_on = 1; spin_v = hd_v; spin_r = spin_a);
+    hd_tch && !tch && spin_a > 0 && !apc_fwh && !apc_sph && !apc_spd && abs(sp_avg - spin_goal) * srate / fsr >= 1 ? (spin_on = 1; spin_v = sp_avg; spin_r = spin_a);
     tch ? spin_on = 0;
     spin_on ? (
       spin_v = spin_v > spin_goal ? max(spin_goal, spin_v - spin_r) : min(spin_goal, spin_v + spin_r);
@@ -5592,6 +5596,8 @@ len > 0 ? (
   );
   jq_s += 1;
   hd_v += (head - hd_prev - hd_v) * tp_vk; hd_prev = head;   // head speed, smoothed over 5 ms (taken before this sample's move)
+  // the speed while touched, averaged over 80 ms (sp_k): from the first touched sample on
+  tch ? (sp_t ? sp_avg += (hd_v - sp_avg) * sp_k : sp_avg = hd_v); sp_t = tch;
   ended = 0;
   // ((2026-10-13) loop mode: at the loop's end (lp_b; whole bars with a BPM), back by the loop's length (more when the head
   // was beyond it: into the loop)
