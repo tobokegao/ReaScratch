@@ -25,7 +25,7 @@ The main changes in each version, newest first.
 - Fixed spin on release stopping too soon after a fast backward spin. It now starts from the speed averaged over 80 ms while the platter was touched, not the speed just before the hand let go
 - The README is now in English (the Japanese one is `README_ja.md`). The English manual is split into one page per chapter (`docs/`), each page has a table of contents, and the controller page links to each model and back to the list
 - The ReaPack repository URL is now written the same way everywhere: `https://github.com/tobokegao/ReaScratch/raw/main/index.xml`
-- The docs now say it is tested on Windows only and macOS is untested
+- Clarified system requirements (on macOS, only an early version has been tested)
 
 ### 0.7.3 (2026-10-21)
 

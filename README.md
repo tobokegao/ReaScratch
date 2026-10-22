@@ -4,7 +4,7 @@
 
 Turn the jog wheel of a DJ controller (or a rotary encoder or plain knob) to **scratch the audio without changing its pitch**, while **REAPER's video window shows the frame that matches the play position**.
 
-Runs on its own in REAPER 7.x on Windows (macOS untested). The basic features need no extensions and no separate FFmpeg install (for what some features such as the LOAD button use, see [“What you need”](docs/setup.md#what-you-need) under [“Setup”](docs/setup.md)).
+Runs on its own in REAPER 7.x on Windows or macOS (on macOS, only an early version has been tested). The basic features need no extensions and no separate FFmpeg install (for what certain features such as the LOAD button require, see [“What you need”](docs/setup.md#what-you-need) under [“Setup”](docs/setup.md)).
 
 **Try it in your browser first:** https://tobokegao.github.io/reascratch/play/  
 **Install with ReaPack:** Extensions > ReaPack > Import repositories, then add `https://github.com/tobokegao/ReaScratch/raw/main/index.xml`  

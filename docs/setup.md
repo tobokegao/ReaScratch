@@ -13,7 +13,7 @@
 
 ### What you need
 
-- **REAPER 7.x** on Windows (tested with 7.80; macOS untested)
+- **REAPER 7.x** on Windows or macOS (tested with 7.80 on Windows; on macOS, only an early version has been tested)
 - **A MIDI controller** (you can also try it with the mouse and keyboard). Some controllers need the manufacturer's driver.
   - Reloop Buddy (Windows): needs Reloop's “ASIO Driver”. Without it, the jog and buttons do not respond (see [“Troubleshooting”](troubleshooting.md)).
   - Some Hercules models, CDJs and others: noted under “Preparation” in the table and in “Notes by model” of the [“Preset list”](controller-setup-and-midi-mapping.md#preset-list).

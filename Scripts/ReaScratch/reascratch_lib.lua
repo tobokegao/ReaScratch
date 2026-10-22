@@ -1,5 +1,5 @@
 -- ReaScratch kit: shared helpers (loaded with dofile() by the other scripts in this folder).
--- Pure ReaScript API + Lua 5.3, no extensions required. Tested on Windows (macOS untested).
+-- Pure ReaScript API + Lua 5.3, no extensions required. Tested on Windows (on macOS, only an early version).
 
 local M = {}
 
