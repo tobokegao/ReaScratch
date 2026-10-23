@@ -1,6 +1,6 @@
--- ReaScratch: 動画の窓を開き直す
--- モニターやプロジェクターの電源・抜き差しのあとで動画の窓が止まったときに使う。
--- 全画面だった窓は全画面のまま戻る。窓が閉じていたときは開くだけ。
+-- ReaScratch: reopen the video window
+-- Use it when the video window has frozen after a monitor or projector was turned off/on or unplugged/replugged.
+-- A full-screen window comes back full screen. When the window was closed, this only opens it.
 
 local SHOW_HIDE = 50125 -- Video: Show/hide Video window
 
@@ -10,7 +10,7 @@ if reaper.GetToggleCommandState(SHOW_HIDE) ~= 1 then
 end
 
 reaper.Main_OnCommand(SHOW_HIDE, 0)
--- 閉じたのが反映されてから開く（同じ瞬間に2回送ると作り直されないことがある）
+-- open it only after the close has taken effect (two toggles at the same moment may not rebuild the window)
 local t0 = reaper.time_precise()
 local function reopen()
   if reaper.time_precise() - t0 < 0.3 then
