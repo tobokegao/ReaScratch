@@ -6,6 +6,7 @@
 
 **Contents**
 
+- [0.7.5 (2026-10-24)](#075-2026-10-24)
 - [0.7.4 (2026-10-22)](#074-2026-10-22)
 - [0.7.3 (2026-10-21)](#073-2026-10-21)
 - [0.7.2 (2026-10-17)](#072-2026-10-17)
@@ -19,6 +20,13 @@
 - [0.1 (2026-10-02)](#01-2026-10-02)
 
 The main changes in each version, newest first.
+
+### 0.7.5 (2026-10-24)
+
+- Added DVS (timecode vinyl / CD) control. A new JSFX (`DVS timecode to jog`) reads Serato, rekordbox, Traktor and MixVibes timecode from an audio interface input, along with the new preset `DVS (timecode vinyl / CD)`. Choosing this preset creates the tracks “DVS A in” and “DVS B in” (see [“Connecting by DVS”](controller-setup-and-midi-mapping.md#connecting-by-dvs-timecode-vinyl--cd-pioneer-dj-plx-crss12) in the manual)
+- New turntable presets: `Pioneer DJ PLX-CRSS12 (DVS)`, `Reloop RP-8000 (DVS)`, `Reloop RP-8000 MK2 (DVS)` and `Rane Twelve / Twelve MKII`. The Rane Twelve's platter is read over MIDI in USB mode (a new jog mode, `Platter counter (Rane Twelve)`). Performance pads and pad backlights are supported on all models (not yet tested on real hardware)
+- A deck whose `Preset` is `Custom` now automatically selects the preset matching the connected controller's name (when you run `reascratch_setup.lua`, and when you connect a new controller while video sync is running). With a jog wheel controller and an APC40 connected together, the APC40 is assigned to `2nd controller`
+- Making a take now also writes `_judge.json`, a record of each deck's playback position and more
 
 ### 0.7.4 (2026-10-22)
 

@@ -57,6 +57,7 @@ local t0, last, next_look = reaper.time_precise(), -1, 0
 -- ⚪38: the envelope scratch / fader lanes of both decks go to gmem (reascratch_lib.lua ev_export), checked every 0.5 s
 reaper.gmem_attach(L.GMEM)
 local evA, evB, ev_next, engB, fxEB = {}, {}, 0, nil, nil
+local ap_seen   -- (⚪215) the MIDI inputs seen at the last look (nil until the first)
 local pt_seen = nil   -- (⚪115) the pattern pads: the ExtState seen last (written again when it changes)
 local TL = {}   -- (⚪111) L.tempo_lead's counters
 
@@ -567,12 +568,29 @@ local function tick()
   -- (⚪110) a deck's "2nd controller" set: the two controllers' tracks (L.cx_apply) instead; the engines' own output stays off
   local cx_on, cx_t = false, t >= out_next
   if cx_t then
+    -- (⚪215) a controller connected while this runs: a deck on Custom takes its Preset (the inputs there at the start
+    -- are only noted: a Custom chosen by hand with them stays; the setup does those)
+    do
+      local now, fresh = {}, {}
+      for i = 0, reaper.GetNumMIDIInputs() - 1 do
+        local ok, nm = reaper.GetMIDIInputName(i, "")
+        if ok and nm ~= "" then now[nm] = true; if ap_seen and not ap_seen[nm] then fresh[#fresh + 1] = nm end end
+      end
+      if ap_seen and #fresh > 0 then
+        local _, ap_msg = L.auto_preset({ { tr, fx }, { engB, fxEB } }, fresh)
+        if ap_msg then say("video sync: " .. ap_msg) end
+      end
+      ap_seen = now
+    end
     local cx_ch, cx_msg, cx_warn
     cx_ch, cx_on, cx_msg, cx_warn = L.cx_apply({ { tr, fx }, { engB, fxEB } })
     if cx_ch then
       reaper.gmem_write(112, reaper.gmem_read(112) + 1)
       if cx_warn then L.log("video sync: " .. cx_msg) else say("video sync: " .. cx_msg) end   -- ((⚪151) a warning also when quiet)
     end
+    -- (⚪209) a deck on the DVS preset: its "DVS A in" / "DVS B in" track (L.dvs_apply)
+    local dv_ch, dv_msg = L.dvs_apply({ { tr, fx }, { engB, fxEB } })
+    if dv_ch and dv_msg then say("video sync: " .. dv_msg) end
     out_next = t + 2
   end
   if cx_t and not cx_on then

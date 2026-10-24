@@ -131,7 +131,7 @@ The parameters fall into the following 13 groups. The names in the tables are th
 |---|---|---|
 | **MIDI channel (deck)** | 2 | The MIDI channel to listen to. On DJ controllers the deck number is often the channel |
 | **Jog CC number** | 34 | The CC number of the jog / knob |
-| **Jog CC mode** | Relative 64-centre (FLX4) | How the jog values are read (8 modes): 3 relative (64-centre / two's complement / sign bit), 2 absolute (7-bit / 14-bit), CDJ speed, Denon platter position, and an absolute knob that can be turned endlessly. For the mode names and details, see [“Controller setup and MIDI mapping”](controller-setup-and-midi-mapping.md) |
+| **Jog CC mode** | Relative 64-centre (FLX4) | How the jog values are read (9 modes): 3 relative (64-centre / two's complement / sign bit), 2 absolute (7-bit / 14-bit), CDJ speed, Denon platter position, an absolute knob that can be turned endlessly, and the Rane Twelve's platter count. For the mode names and details, see [“Controller setup and MIDI mapping”](controller-setup-and-midi-mapping.md) |
 | **Jog ticks per second at 1x** | 400 | How many jog ticks per second correspond to normal speed. The smaller the value, the further the same turn moves |
 | **Encoder smoothing (ms)** | 0 | For rotary encoders. Estimates the turning speed from the spacing of the ticks and moves smoothly at that speed for this long. 0 moves directly with each tick (for DJ jogs) |
 | **2nd controller** | none | The preset of a second controller (for example Reloop Buddy + APC40 mkII). See [“Two controllers at once”](controller-setup-and-midi-mapping.md#two-controllers-at-once-eg-reloop-buddy--apc40-mkii) |

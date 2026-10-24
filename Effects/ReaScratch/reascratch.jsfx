@@ -175,7 +175,7 @@ desc: ReaScratch
 
 options:maxmem=134217728 gmem=ReaScratch_video
 
-slider1:0<0,123,1{Custom,⚠ APC40 mkI deck 1,⚠ APC40 mkI deck 2,APC40 mkII deck 1,APC40 mkII deck 2,⚠ Behringer CMD Micro deck 1,⚠ Behringer CMD Micro deck 2,⚠ Denon SC5000/SC6000 deck 1,⚠ Denon SC5000/SC6000 deck 2,⚠ Denon Prime 4 deck 1,⚠ Denon Prime 4 deck 2,⚠ Gemini FirstMix deck 1,⚠ Gemini FirstMix deck 2,⚠ Hercules DJ Control MP3 e2 deck 1,⚠ Hercules DJ Control MP3 e2 deck 2,⚠ Hercules DJControl Compact deck 1,⚠ Hercules DJControl Compact deck 2,⚠ Hercules DJControl Starlight deck 1,⚠ Hercules DJControl Starlight deck 2,⚠ Hercules DJControl MIX deck 1,⚠ Hercules DJControl MIX deck 2,⚠ Hercules DJ Control Instinct deck 1,⚠ Hercules DJ Control Instinct deck 2,⚠ Hercules DJ Control AIR deck 1,⚠ Hercules DJ Control AIR deck 2,⚠ Hercules DJ Console Mk4 deck 1,⚠ Hercules DJ Console Mk4 deck 2,⚠ Hercules DJ Console 4-Mx deck 1,⚠ Hercules DJ Console 4-Mx deck 2,⚠ Hercules DJ 4Set deck 1,⚠ Hercules DJ 4Set deck 2,⚠ Hercules DJControl Jogvision deck 1,⚠ Hercules DJControl Jogvision deck 2,⚠ Hercules Inpulse 200/300 (MK2) deck 1,⚠ Hercules Inpulse 200/300 (MK2) deck 2,⚠ Hercules Inpulse 500 deck 1,⚠ Hercules Inpulse 500 deck 2,⚠ ION Discover DJ deck 1,⚠ ION Discover DJ deck 2,⚠ ION Discover DJ Pro deck 1,⚠ ION Discover DJ Pro deck 2,⚠ Korg KAOSS DJ deck 1,⚠ Korg KAOSS DJ deck 2,⚠ HID bridge (NI S2/S3/S4) deck 1,⚠ HID bridge (NI S2/S3/S4) deck 2,⚠ Numark Party Mix deck 1,⚠ Numark Party Mix deck 2,⚠ Numark Party Mix II/Live deck 1,⚠ Numark Party Mix II/Live deck 2,⚠ Numark DJ2GO2 deck 1,⚠ Numark DJ2GO2 deck 2,⚠ Numark DJ2GO2 Touch deck 1,⚠ Numark DJ2GO2 Touch deck 2,⚠ Numark Mixtrack deck 1,⚠ Numark Mixtrack deck 2,⚠ Numark Mixtrack Pro deck 1,⚠ Numark Mixtrack Pro deck 2,⚠ Numark Mixtrack 2 deck 1,⚠ Numark Mixtrack 2 deck 2,⚠ Numark Mixtrack (Pro) 3 deck 1,⚠ Numark Mixtrack (Pro) 3 deck 2,⚠ Numark Mixtrack Platinum deck 1,⚠ Numark Mixtrack Platinum deck 2,⚠ Numark Mixtrack Pro/Platinum FX deck 1,⚠ Numark Mixtrack Pro/Platinum FX deck 2,⚠ DDJ-FLX2 deck 1,⚠ DDJ-FLX2 deck 2,⚠ DDJ-FLX4 deck 1,⚠ DDJ-FLX4 deck 2,⚠ DDJ-FLX6 deck 1,⚠ DDJ-FLX6 deck 2,⚠ DDJ-FLX10 deck 1,⚠ DDJ-FLX10 deck 2,⚠ DDJ-REV1 deck 1,⚠ DDJ-REV1 deck 2,⚠ DDJ-REV5 deck 1,⚠ DDJ-REV5 deck 2,⚠ DDJ-200 deck 1,⚠ DDJ-200 deck 2,⚠ DDJ-RB deck 1,⚠ DDJ-RB deck 2,⚠ DDJ-400 deck 1,⚠ DDJ-400 deck 2,⚠ DDJ-800 deck 1,⚠ DDJ-800 deck 2,⚠ DDJ-1000 deck 1,⚠ DDJ-1000 deck 2,⚠ DDJ-SB deck 1,⚠ DDJ-SB deck 2,⚠ DDJ-SB2 deck 1,⚠ DDJ-SB2 deck 2,⚠ DDJ-SB3 / SX deck 1,⚠ DDJ-SB3 / SX deck 2,⚠ DDJ-SX3 deck 1,⚠ DDJ-SX3 deck 2,⚠ CDJ-2000NXS2 (MIDI ch 1),⚠ CDJ-2000NXS2 (MIDI ch 2),⚠ CDJ-3000/3000X (MIDI ch 1),⚠ CDJ-3000/3000X (MIDI ch 2),⚠ XDJ-RX3 / XZ deck 1,⚠ XDJ-RX3 / XZ deck 2,Reloop Buddy deck 1,Reloop Buddy deck 2,⚠ Reloop Ready deck 1,⚠ Reloop Ready deck 2,⚠ Reloop Mixage deck 1,⚠ Reloop Mixage deck 2,⚠ Reloop Mixon 4 deck 1,⚠ Reloop Mixon 4 deck 2,⚠ Reloop Mixon 8 Pro deck 1,⚠ Reloop Mixon 8 Pro deck 2,⚠ Reloop Touch deck 1,⚠ Reloop Touch deck 2,⚠ Reloop Beatpad deck 1,⚠ Reloop Beatpad deck 2,⚠ Reloop Beatpad 2 deck 1,⚠ Reloop Beatpad 2 deck 2,⚠ Reloop Beatmix 2/4 deck 1,⚠ Reloop Beatmix 2/4 deck 2,⚠ Reloop Terminal Mix 2/4 deck 1,⚠ Reloop Terminal Mix 2/4 deck 2,⚠ Reloop Terminal Mix 8 deck 1,⚠ Reloop Terminal Mix 8 deck 2,FLX4 Emu test (loopMIDI deck 2)}>-Preset
+slider1:0<0,133,1{Custom,⚠ APC40 mkI deck 1,⚠ APC40 mkI deck 2,APC40 mkII deck 1,APC40 mkII deck 2,⚠ Behringer CMD Micro deck 1,⚠ Behringer CMD Micro deck 2,⚠ Denon SC5000/SC6000 deck 1,⚠ Denon SC5000/SC6000 deck 2,⚠ Denon Prime 4 deck 1,⚠ Denon Prime 4 deck 2,⚠ Gemini FirstMix deck 1,⚠ Gemini FirstMix deck 2,⚠ Hercules DJ Control MP3 e2 deck 1,⚠ Hercules DJ Control MP3 e2 deck 2,⚠ Hercules DJControl Compact deck 1,⚠ Hercules DJControl Compact deck 2,⚠ Hercules DJControl Starlight deck 1,⚠ Hercules DJControl Starlight deck 2,⚠ Hercules DJControl MIX deck 1,⚠ Hercules DJControl MIX deck 2,⚠ Hercules DJ Control Instinct deck 1,⚠ Hercules DJ Control Instinct deck 2,⚠ Hercules DJ Control AIR deck 1,⚠ Hercules DJ Control AIR deck 2,⚠ Hercules DJ Console Mk4 deck 1,⚠ Hercules DJ Console Mk4 deck 2,⚠ Hercules DJ Console 4-Mx deck 1,⚠ Hercules DJ Console 4-Mx deck 2,⚠ Hercules DJ 4Set deck 1,⚠ Hercules DJ 4Set deck 2,⚠ Hercules DJControl Jogvision deck 1,⚠ Hercules DJControl Jogvision deck 2,⚠ Hercules Inpulse 200/300 (MK2) deck 1,⚠ Hercules Inpulse 200/300 (MK2) deck 2,⚠ Hercules Inpulse 500 deck 1,⚠ Hercules Inpulse 500 deck 2,⚠ ION Discover DJ deck 1,⚠ ION Discover DJ deck 2,⚠ ION Discover DJ Pro deck 1,⚠ ION Discover DJ Pro deck 2,⚠ Korg KAOSS DJ deck 1,⚠ Korg KAOSS DJ deck 2,⚠ HID bridge (NI S2/S3/S4) deck 1,⚠ HID bridge (NI S2/S3/S4) deck 2,⚠ Numark Party Mix deck 1,⚠ Numark Party Mix deck 2,⚠ Numark Party Mix II/Live deck 1,⚠ Numark Party Mix II/Live deck 2,⚠ Numark DJ2GO2 deck 1,⚠ Numark DJ2GO2 deck 2,⚠ Numark DJ2GO2 Touch deck 1,⚠ Numark DJ2GO2 Touch deck 2,⚠ Numark Mixtrack deck 1,⚠ Numark Mixtrack deck 2,⚠ Numark Mixtrack Pro deck 1,⚠ Numark Mixtrack Pro deck 2,⚠ Numark Mixtrack 2 deck 1,⚠ Numark Mixtrack 2 deck 2,⚠ Numark Mixtrack (Pro) 3 deck 1,⚠ Numark Mixtrack (Pro) 3 deck 2,⚠ Numark Mixtrack Platinum deck 1,⚠ Numark Mixtrack Platinum deck 2,⚠ Numark Mixtrack Pro/Platinum FX deck 1,⚠ Numark Mixtrack Pro/Platinum FX deck 2,⚠ DDJ-FLX2 deck 1,⚠ DDJ-FLX2 deck 2,⚠ DDJ-FLX4 deck 1,⚠ DDJ-FLX4 deck 2,⚠ DDJ-FLX6 deck 1,⚠ DDJ-FLX6 deck 2,⚠ DDJ-FLX10 deck 1,⚠ DDJ-FLX10 deck 2,⚠ DDJ-REV1 deck 1,⚠ DDJ-REV1 deck 2,⚠ DDJ-REV5 deck 1,⚠ DDJ-REV5 deck 2,⚠ DDJ-200 deck 1,⚠ DDJ-200 deck 2,⚠ DDJ-RB deck 1,⚠ DDJ-RB deck 2,⚠ DDJ-400 deck 1,⚠ DDJ-400 deck 2,⚠ DDJ-800 deck 1,⚠ DDJ-800 deck 2,⚠ DDJ-1000 deck 1,⚠ DDJ-1000 deck 2,⚠ DDJ-SB deck 1,⚠ DDJ-SB deck 2,⚠ DDJ-SB2 deck 1,⚠ DDJ-SB2 deck 2,⚠ DDJ-SB3 / SX deck 1,⚠ DDJ-SB3 / SX deck 2,⚠ DDJ-SX3 deck 1,⚠ DDJ-SX3 deck 2,⚠ CDJ-2000NXS2 (MIDI ch 1),⚠ CDJ-2000NXS2 (MIDI ch 2),⚠ CDJ-3000/3000X (MIDI ch 1),⚠ CDJ-3000/3000X (MIDI ch 2),⚠ XDJ-RX3 / XZ deck 1,⚠ XDJ-RX3 / XZ deck 2,Reloop Buddy deck 1,Reloop Buddy deck 2,⚠ Reloop Ready deck 1,⚠ Reloop Ready deck 2,⚠ Reloop Mixage deck 1,⚠ Reloop Mixage deck 2,⚠ Reloop Mixon 4 deck 1,⚠ Reloop Mixon 4 deck 2,⚠ Reloop Mixon 8 Pro deck 1,⚠ Reloop Mixon 8 Pro deck 2,⚠ Reloop Touch deck 1,⚠ Reloop Touch deck 2,⚠ Reloop Beatpad deck 1,⚠ Reloop Beatpad deck 2,⚠ Reloop Beatpad 2 deck 1,⚠ Reloop Beatpad 2 deck 2,⚠ Reloop Beatmix 2/4 deck 1,⚠ Reloop Beatmix 2/4 deck 2,⚠ Reloop Terminal Mix 2/4 deck 1,⚠ Reloop Terminal Mix 2/4 deck 2,⚠ Reloop Terminal Mix 8 deck 1,⚠ Reloop Terminal Mix 8 deck 2,⚠ DVS (timecode vinyl / CD) deck 1,⚠ DVS (timecode vinyl / CD) deck 2,⚠ Pioneer DJ PLX-CRSS12 (DVS) deck 1,⚠ Pioneer DJ PLX-CRSS12 (DVS) deck 2,⚠ Reloop RP-8000 MK2 (DVS) deck 1,⚠ Reloop RP-8000 MK2 (DVS) deck 2,⚠ Rane Twelve / Twelve MKII deck 1,⚠ Rane Twelve / Twelve MKII deck 2,⚠ Reloop RP-8000 (DVS) deck 1,⚠ Reloop RP-8000 (DVS) deck 2,FLX4 Emu test (loopMIDI deck 2)}>-Preset
 slider2:/ReaScratch_samples:(empty).wav:-Sample file
 slider3:0<0,1,1{Stop,Play}>-Untouched transport
 slider4:0<0,3600,0.001>-Cue position (s)
@@ -293,7 +293,7 @@ slider219:-1<-1,0.95,0.01>-Echo feedback (how long the repeats go on; -1 = by th
 slider220:3<0,5,1{1 beat,1/2 beat (8th),1/3 beat (8th triplet),1/4 beat (16th),1/6 beat (16th triplet),1/8 beat (32nd)}>-Vibrato step (the swing goes up in one step and down in the next, by the BPM; no BPM: 0.1 s. Knob page 2; with SHIFT the knob = the swing's width)
 slider221:-1<-1,4,1>-Gate / Strobe step (-1 = by the amount; 0 .. 4 = 1, 2, 4, 8, 16 a beat. Knob page 2)
 slider231:0<0,2,1{Off,SYNC follows REAPER,REAPER follows this deck}>-REAPER tempo (SYNC follows REAPER = the SYNC button follows REAPER's tempo and beat, not the other deck; REAPER follows this deck = while it plays, louder than the other, REAPER's tempo is its BPM: the video sync script writes it)
-slider230:0<0,123,1>-2nd controller preset (the Preset list; its MIDI on bus 2 and its lights out on bus 2: setup makes the tracks "controller 2 in" / "lights 1" / "lights 2"; 0 = none)
+slider230:0<0,133,1>-2nd controller preset (the Preset list; its MIDI on bus 2 and its lights out on bus 2: setup makes the tracks "controller 2 in" / "lights 1" / "lights 2"; 0 = none)
 slider232:0<0,4,0.25>-Brake on stop in beats (beats from the playing speed to still, at this deck's BPM; 0 = the seconds of 'Brake on stop')
 slider233:0<0,3,1{Off,1 beat,1/2 beat (8th),1/4 beat (16th)}>-PAUSE quantize (Quantize on: PLAY to stop waits for this grid; the other deck's beat while it plays, else this deck's)
 slider249:11<0,14,1{Black,White,Lamp colour,Red,Orange,Yellow,Lime,Green,Cyan,Sky,Blue,Navy,Purple,Magenta,Pink}>-Tint dark colour (the Tint effect: the darks in this colour, the lights in 'Tint light colour', a gradient between)
@@ -342,7 +342,7 @@ gmem[142] = -1;   // ((⚪151) the crossfader's place for the transitions: none 
 CV = 62000; CVM = 62300; memset(CV, 0, 300); memset(CVM, 0, 300); ap_req = 0; pr_fresh = 0;
 CVM[6] = 1; CV[6] = 2;   //ctl:slider6:2<1,16,1>-MIDI channel (deck)
 CVM[7] = 1; CV[7] = 34;   //ctl:slider7:34<0,127,1>-Jog CC number
-CVM[8] = 1; CV[8] = 0;   //ctl:slider8:0<0,7,1{Relative 64-centre (FLX4),Relative two's complement,Relative sign bit,Absolute 7-bit,Absolute 14-bit (CC n / n+32),Speed (CDJ MIDI: 64 = still),Platter position 14-bit (Denon: CC n / n+22),Absolute knob turned (APC40 TRACK KNOB: sent back to 64)}>-Jog CC mode
+CVM[8] = 1; CV[8] = 0;   //ctl:slider8:0<0,8,1{Relative 64-centre (FLX4),Relative two's complement,Relative sign bit,Absolute 7-bit,Absolute 14-bit (CC n / n+32),Speed (CDJ MIDI: 64 = still),Platter position 14-bit (Denon: CC n / n+22),Absolute knob turned (APC40 TRACK KNOB: sent back to 64),Platter counter 7-bit (Rane Twelve: CC n counts round 0-127)}>-Jog CC mode
 CVM[9] = 1; CV[9] = 400;   //ctl:slider9:400<10,8000,1>-Jog ticks per second at 1x
 CVM[10] = 1; CV[10] = 0;   //ctl:slider10:0<0,1000,10>-Encoder smoothing (ms)
 CVM[12] = 1; CV[12] = 54;   //ctl:slider12:54<0,127,1>-Touch note (0=none)
@@ -2383,6 +2383,9 @@ function gq_run() local(op, a) (
 // jog mode 6 (Denon Prime 4 in Computer Mode, Mixxx PR 4027): the platter's position 0-16383, MSB at the jog CC, then the
 // LSB at CC + 22; the ticks are the change since the last position, across the wrap (the first one only sets it)
 dn_msb = 0; dn_prev = 0; dn_have = 0;
+// (⚪210) jog mode 8 (Rane Twelve MKII in USB mode, the Mixxx forum's mapping): CC n counts the platter's ticks round 0-127;
+// the ticks are the change since the last value, across the wrap (the first one only sets it)
+rn_prev = 0; rn_have = 0;
 function dn_ticks(lsb) local(p, d) (
   p = (dn_msb << 7) | lsb; d = dn_have ? p - dn_prev : 0;
   d > 8192 ? d -= 16384 : d < -8192 ? d += 16384;
@@ -2493,8 +2496,8 @@ function align(nominal, ndir, natural, pdir, wl, srch) local(c, best, bestc, s, 
 // the Preset slider lists the presets by maker, A-Z (user's request 2026-10-08); the presets keep their own numbers (pid,
 // the order they were added in) for the code below: po_s = the pid of each slider value, three digits each (a check in
 // the developer's consistency check: every preset once)
-po_s = "000118119116117106107060061058059100101110111082083078079080081086087112113122123120121124125084085050051052053102103104105098099062063064065048049108109066067072073076077074075068069070071046047008009002003016017024025018019028029034035092093014015020021022023090091088089026027044045010011012013030031006007032033094095036037040041042043096097114115038039056057054055001";
-function p_old(v) ( v = max(0, min(123, floor(v + 0.5)));
+po_s = "000118119116117106107060061058059100101110111082083078079080081086087112113122123120121124125084085050051052053102103104105098099062063064065048049108109066067072073076077074075068069070071046047008009002003016017024025018019028029034035092093014015020021022023090091088089026027044045010011012013030031006007032033094095036037040041042043096097114115038039056057054055126127128129130131132133134135001";
+function p_old(v) ( v = max(0, min(133, floor(v + 0.5)));
   (str_getchar(po_s, 3 * v) - 48) * 100 + (str_getchar(po_s, 3 * v + 1) - 48) * 10 + str_getchar(po_s, 3 * v + 2) - 48; );
 
 // the preset (slider 1, or slider 230 for the second controller's settings: cx_build): the controller settings it sets
@@ -2505,7 +2508,7 @@ function p_old(v) ( v = max(0, min(123, floor(v + 0.5)));
 // mode button + LOAD (1). The METRONOME button: the SHIFT side of a beat button (SYNC, TAP ...) the preset leaves free,
 // else a free button, else none; the preview: the mode button + LOAD where the preset has pad modes and LOAD, else a
 // free button (never LOAD itself: ⚪193), else none
-pd_s = "000000000020500001007700001020500001000000000000000000155400001168200001007300000020100000003100000015900000002200000015000000007700001020500001009700001022500001009300001022100001009300001022100001009700001022500001009700001022500001009300001022100001002700001015500001003100490015900500004200001017000001007300000020100000059110290071911570022600000035400000000400001013200001022602500035403780009300001022100001103400001116200001000000001000000001051805260064606540051805260064606540006700810019502090007701210020502490054000001066800001002200000002200000000000000000000000000800001013600001000000000000000000013900150026700160102900080115701360008200730008300810009300730009700810008200730008300810051800000064600000051800000064600000001300000006100000005400840018202120000500580003100570009300000022100000009300000022100000009300000022100000009600770009800910003000000015800000078009190078010470007300140005400800007300800007300000008200730008300810002000490003700500000000000000000000002000450004000440000300550002500540003000000015800000030501770081706890030501770081706890002000640005200630000500450002500440002000640005200630";
+pd_s = "000000000020500001007700001020500001000000000000000000155400001168200001007300000020100000003100000015900000002200000015000000007700001020500001009700001022500001009300001022100001009300001022100001009700001022500001009700001022500001009300001022100001002700001015500001003100490015900500004200001017000001007300000020100000059110290071911570022600000035400000000400001013200001022602500035403780009300001022100001103400001116200001000000001000000001051805260064606540051805260064606540006700810019502090007701210020502490054000001066800001002200000002200000000000000000000000000800001013600001000000000000000000013900150026700160102900080115701360008200730008300810009300730009700810008200730008300810051800000064600000051800000064600000001300000006100000005400840018202120000500580003100570009300000022100000009300000022100000009300000022100000009600770009800910003000000015800000078009190078010470007300140005400800007300800007300000008200730008300810002000490003700500000000000000000000002000450004000440000300550002500540003000000015800000030501770081706890030501770081706890002000640005200630000500450002500440002000640005200630000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
 function pd_v(k, w) ( k = 9 * pid + k; w == 1 ? str_getchar(pd_s, k) - 48 :
   (str_getchar(pd_s, k) - 48) * 1000 + (str_getchar(pd_s, k + 1) - 48) * 100 + (str_getchar(pd_s, k + 2) - 48) * 10 + str_getchar(pd_s, k + 3) - 48; );
 function pv_def() (
@@ -2542,7 +2545,7 @@ function preset_run() (
     // settings they do not have) and then set everything they have
     dk = pid & 1 ? 2 : 1;
     CV[260] = CV[261] = -1;   // ((⚪193) set by ld_def at the end)
-    pr = (pid >= 14 && pid <= 31) || pid >= 34 ? dk + 1 : pid >= 32 && pid <= 33 ? pid - 26 : pid;
+    pr = (pid >= 14 && pid <= 31) || (pid >= 34 && pid < 126) ? dk + 1 : pid >= 32 && pid <= 33 ? pid - 26 : pid;
     pr == 1 ? preset(2, 34, 0, 400, 33, 54, 150, 11, 12, 0, 0);     // FLX4 emulator on loopMIDI, deck 2
     pr == 2 ? preset(1, 34, 0, 400, 33, 54, 150, 11, 12, 0, 0);     // DDJ-FLX4 deck 1
     pr == 3 ? preset(2, 34, 0, 400, 33, 54, 150, 11, 12, 0, 0);     // DDJ-FLX4 deck 2
@@ -2946,6 +2949,43 @@ function preset_run() (
       preset_pad(0, 0, 0); preset_sm(0, 48); preset_vfx(0, -1); preset_te(dkv(13, 14), dkv(64, 71));
       preset_mx(dkv(8, 9), dkv(101, 102)); preset_rd(0, 1, 0);
     );
+    // (⚪209) DVS: the jog messages of the DVS JSFX (reascratch_dvs.jsfx on the track "DVS A in" / "DVS B in", which reads a
+    // timecode vinyl / CD or the Pioneer DJ PLX-CRSS12's control tone): relative CC 34 (two's complement) on the deck's
+    // channel, 8000 ticks a second at 1x (8 a cycle of the 1 kHz tone), no touch note (every message = touched; the JSFX
+    // sends one at least every 20 ms while it reads). No buttons (PLAY / CUE on notes nothing sends): those of the turntables
+    // below, or a 2nd controller. Not tried on hardware
+    (pid >= 126 && pid <= 131) || pid == 134 || pid == 135 ? (
+      preset(dk, 34, 1, 8000, 0, 0, 150, 126, 127, 0, 0); slider33 = dk; sliderchange(slider33);
+      preset_pad(0, 0, 0); preset_sm(0, 48); preset_vfx(0, -1); preset_te(-1, 0);
+      preset_mx(-1, -1); preset_rd(0, 1, 0);
+    );
+    // (⚪211) Pioneer DJ PLX-CRSS12 (AlphaTheta's MIDI list E1; the unit's DECK button = 1 / 2): the performance pads on
+    // ch 8 / 9, PAD MODE k pad i = note 16 (k - 1) + i - 1 (the 5-8 button: pads 5-8 = + 4), SHIFT + pad = + 8: HOT CUE
+    // (mode 1) = notes 0-7, SAMPLER (mode 2) = 16-23; SHIFT = note 48 on the deck channel. Its START/STOP and pitch fader
+    // move the platter itself (the deck follows the record): not taken
+    pid == 128 || pid == 129 ? (preset_pad(dk + 7, 0, dk + 7); preset_rd(0, 1, 8); preset_sm(dk + 7, 16); CV[181] = 48);
+    // (⚪211 / ⚪216) Reloop RP-8000 MK2: no MIDI list from Reloop; a Traktor mapping for it (DJ TechTools 9866, djrainx96
+    // 2019, its 2-deck .tsi read: tools/controller_research/sources/rp8000mk2/) has the pads of deck A on ch 6 and deck B on
+    // ch 7 (CH-1 / CH-2 on the unit), HOT CUE notes 20-27, SHIFT + pad = 28-35 (delete); the lights on the same notes take
+    // a 6-bit RGB as the Buddy's (its values 44, 58, 49, 12, 11). The Bome forum log (ch 6, notes 0x14-0x17) agrees
+    pid == 130 || pid == 131 ? (preset_pad(dk + 5, 20, dk + 5); preset_rd(0, 1, 8));
+    // (⚪213) Reloop RP-8000 (the first, MK1; Reloop's own mappings for Traktor and Scratch Live, 228337): one channel a
+    // deck (CH-1 / CH-2); the pads' notes go with the mode: CUE 0-7, LOOP 8-15, SAMPLE 16-21 (22 / 23 = the bank), SLICER
+    // 24-31; the mode button held + pad = + 32 (delete a cue, stop a sample). Lights: the same notes, 127 / 0 (the mode's
+    // colour is the unit's own). Its platter sends nothing: DVS (a timecode vinyl)
+    pid == 134 || pid == 135 ? (preset_pad(dk, 0, dk); preset_rd(0, 1, 32); preset_sm(dk, 16); preset_n(8, 6));
+    // (⚪210) Rane Twelve MKII in USB mode (the Mixxx forum's mapping, MK1 logs the same): its DECK 1-4 = ch 1-4; the
+    // platter CC 6 counting round 0-127 (jog mode 8), about 3600 ticks a turn (3584 also measured) = 2000 / s at 33 1/3;
+    // no touch sensor and a motor: the deck follows the platter, held touched (Auto release 0); the cue pads ch 5 / 6
+    // notes 20-27 (the touch strip's 8 parts in CUE MODE), CUE MODE held + a part = + 8 (delete; Mixxx maps 28-35 to
+    // hotcue_N_clear). (⚪213) The first Twelve (MK1): the same messages (the MKII guide: Serato USB mode "identical to the
+    // original Rane Twelve"; MK1 logs: CC 6, pitch bend, deck select the same). Its pitch fader moves the motor (not taken).
+    // Not tried on hardware
+    pid == 132 || pid == 133 ? (
+      preset(dk, 6, 8, 2000, 0, 0, 0, 126, 127, 0, 0); slider33 = dk; sliderchange(slider33);
+      preset_pad(dk + 4, 20, dk + 4); preset_sm(0, 48); preset_vfx(0, -1); preset_te(-1, 0);
+      preset_mx(-1, -1); preset_rd(0, 1, 8);
+    );
     // Behringer CMD Micro: both decks on ch 1: JOG CC 0x11 / 0x21 (64-centre, 128 / rev), TOUCH 1 / 2, PLAY 0x17 / 0x27,
     // CUE 0x18 / 0x28, SYNC 0x16 / 0x26, tempo CC 0x10 / 0x20 (7-bit), fader CC 0x12 / 0x22, PFL 0x19 / 0x29; crossfader
     // CC 0x40 (= deck 2's tempo CC + 32: an LSB counts only right after its MSB); no hot cue pads
@@ -3314,6 +3354,17 @@ function preset_run() (
     pid >= 116 && pid <= 119 ? (
       preset_lt(pid <= 117 ? 1 : 2, 1);   // APC40 mkII / mkI (as the presets above set)
     );
+    // (⚪212) the turntables: PLX-CRSS12 = Pioneer DJ's palette (its MIDI list: the pads lit in the colour number 0x01-0x7F
+    // sent to the note they send), RP-8000 MK2 = Reloop's RGB as the Buddy's (⚪216: the Traktor mapping's values), Rane Twelve MKII
+    // = one colour (the Mixxx forum's mapping: the cue pads take a colour 1-127 on their notes; its palette not known).
+    // The DVS preset alone has no unit to light. The CDJs take no lights (no MIDI in for them in their lists)
+    pid == 128 || pid == 129 ? preset_lt(6, 127);
+    pid == 130 || pid == 131 ? preset_lt(4, 127);
+    // (⚪213) the Rane Twelve's strip LEDs take a colour as 0b0RRGGBB (Mixxx forum mapping: white 127, red 112, green 28,
+    // teal 15, yellow 60, purple 18; the same as Numark NS6II's pads, inMusic): Reloop's RGB type. The RP-8000 (MK1): one
+    // colour 127 / 0 (its mappings)
+    pid == 132 || pid == 133 ? preset_lt(4, 127);
+    pid == 134 || pid == 135 ? preset_lt(3, 127);
     pid > 0 ? pv_def();   // (⚪189; Custom keeps its own)
     pid > 0 ? ld_def();   // (⚪193)
     // Reloop Ready: the Buddy's numbers (Mixxx PR 4513: jog CC 6 two's complement 300 / rev, touch 6, PLAY 0, CUE 1,
@@ -3339,12 +3390,12 @@ cx_on = 0; cx_cur = 0; cx_last = -1; jt_at = 0; jt_ar = 0; jt_on = 0;
 function cx_vs(o) (   // the controller's own state -> o
   o[0] = APL; o[1] = APR; o[2] = apc_type; o[3] = apc_sx; o[4] = apc_g112; o[5] = apc_clr; o[6] = apc_selw; o[7] = apc_full;
   o[8] = jk_last; o[9] = kp_page; o[10] = kp_eff; o[11] = te_msb; o[12] = te_lw; o[13] = xf_msb; o[14] = xf_lw;
-  o[15] = abs_msb; o[16] = abs_lsb; o[17] = dn_msb; o[18] = dn_have; o[19] = dn_prev;
+  o[15] = abs_msb; o[16] = abs_lsb; o[17] = dn_msb; o[18] = dn_have; o[19] = dn_prev; o[20] = rn_prev; o[21] = rn_have;
 );
 function cx_vl(o) (
   APL = o[0]; APR = o[1]; apc_type = o[2]; apc_sx = o[3]; apc_g112 = o[4]; apc_clr = o[5]; apc_selw = o[6]; apc_full = o[7];
   jk_last = o[8]; kp_page = o[9]; kp_eff = o[10]; te_msb = o[11]; te_lw = o[12]; xf_msb = o[13]; xf_lw = o[14];
-  abs_msb = o[15]; abs_lsb = o[16]; dn_msb = o[17]; dn_have = o[18]; dn_prev = o[19];
+  abs_msb = o[15]; abs_lsb = o[16]; dn_msb = o[17]; dn_have = o[18]; dn_prev = o[19]; rn_prev = o[20]; rn_have = o[21];
 );
 // the sliders (and that state) to controller c: 0 = the first, 1 = the second; MIDI sent from here goes out on its bus
 function cx_swap(c) local(i, f, t) (
@@ -3369,7 +3420,7 @@ function cx_build() local(i, s1, s33) (
     slider1 = s1; slider33 = s33; pid = p_old(slider1); dk = pid & 1 ? 2 : 1;
     CXVB[0] = APL_B; CXVB[1] = APR_B; CXVB[2] = -1; CXVB[3] = 0; CXVB[4] = gmem[112]; CXVB[5] = gmem[47]; CXVB[6] = -1; CXVB[7] = 0;
     CXVB[8] = -1; CXVB[9] = 0; CXVB[10] = 0; CXVB[11] = 0; CXVB[12] = -1; CXVB[13] = 64; CXVB[14] = -1;
-    CXVB[15] = 0; CXVB[16] = 0; CXVB[17] = 0; CXVB[18] = 0; CXVB[19] = 0;
+    CXVB[15] = 0; CXVB[16] = 0; CXVB[17] = 0; CXVB[18] = 0; CXVB[19] = 0; CXVB[20] = 0; CXVB[21] = 0;
     memset(APL_B, -1, 2048); memset(APR_B, -1, 24);
     cx_on = 1;
   );
@@ -4714,6 +4765,7 @@ while (midirecv(ofs, m1, m2, m3)) ( cx_on ? (cx_swap(midi_bus == 1); cx_ji = jog
       CV[8] == 3 ? (target = m3 / 127 * max(len - 1, 0)) :
       CV[8] == 4 ? (abs_msb = m3; target = ((m3 << 7) | abs_lsb) / 16383 * max(len - 1, 0)) :
       CV[8] == 6 ? (dn_msb = m3) :                                              // Denon: the LSB that follows moves it
+      CV[8] == 8 ? (rn_have ? (rn_d = m3 - rn_prev; rn_d > 63 ? rn_d -= 128 : rn_d < -64 ? rn_d += 128; jog_feed(rn_d)); rn_prev = m3; rn_have = 1) :
       // (⚪92) an absolute knob turned as a jog (APC40 TRACK KNOB 1 / 5): the change from the last value; near either
       // end the knob is sent back to 64 (in Ableton Live mode the APC40 takes the value: the knob turns on and on)
       CV[8] == 7 ? (
@@ -6170,14 +6222,14 @@ function g_rowdef(s) (
   g_kind = 0; g_n = 0; g_min = 0; g_max = 127; g_step = 1; g_def = 0; g_help = "";
   // ((⚪130) the More tab's rows: from the table cvd fills in @init)
   s <= 300 && CVM[s] == 2 ? (g_min = CVLO[s]; g_max = CVHI[s]; g_step = CVST[s]; g_def = CVDF[s]; g_help = CVHL[s]; CVMN[s] ? (g_kind = 1; g_n = CVMN[s])) :
-  s == 1  ? (g_kind = 1; g_n = 124; g_help = "Preset: fills the controller settings for a known controller (Custom keeps your values)") :
-  s == 230 ? (g_kind = 1; g_n = 124; g_help = "2nd controller: a second controller at the same time (as the Reloop Buddy + APC40 mkII); the video sync sets up its MIDI tracks") :
+  s == 1  ? (g_kind = 1; g_n = 134; g_help = "Preset: fills the controller settings for a known controller (Custom keeps your values)") :
+  s == 230 ? (g_kind = 1; g_n = 134; g_help = "2nd controller: a second controller at the same time (as the Reloop Buddy + APC40 mkII); the video sync sets up its MIDI tracks") :
   s == 3  ? (g_kind = 1; g_n = 2; g_help = "untouched: hand off the jog = stop or play at 1x (the PLAY button)") :
   s == 4  ? (g_max = len > 0 ? (len - 1) / fsr : 600; g_step = 0.001; g_help = "Cue position: where CUE (or the C key) jumps to. Right-click the waveform to set it") :
   s == 5  ? (g_kind = 1; g_n = 2; g_def = 1; g_help = "at end (end / loop): stop (silent when untouched) or loop to the start") :
   s == 6  ? (g_min = 1; g_max = 16; g_def = 2; g_help = "MIDI channel the controller sends on (DJ controllers: deck number)") :
   s == 7  ? (g_def = 34; g_help = "CC number of the jog / knob") :
-  s == 8  ? (g_kind = 1; g_n = 8; g_help = "How the jog CC value is read: relative 64 / 2's complement / sign bit, absolute 7 / 14-bit, CDJ speed, Denon platter position, an absolute knob turned (APC40)") :
+  s == 8  ? (g_kind = 1; g_n = 9; g_help = "How the jog CC value is read: relative 64 / 2's complement / sign bit, absolute 7 / 14-bit, CDJ speed, Denon platter position, an absolute knob turned (APC40)") :
   s == 9  ? (g_min = 10; g_max = 8000; g_def = 400; g_help = "Jog ticks per second that mean 1x speed. Smaller = the same turn moves faster") :
   s == 10 ? (g_max = 1000; g_step = 10; g_help = "Encoder smoothing: estimate the turn speed of a coarse encoder and glide at it. 0 = direct jog") :
   s == 11 ? (g_min = 0.1; g_max = 100; g_step = 0.1; g_def = 15; g_help = "smooth: how softly the read head follows the jog") :
@@ -6286,7 +6338,7 @@ function g_menustr(s) (
   s == 231 ? "Off|SYNC follows REAPER|REAPER follows this deck" :
   s == 233 ? "Off|1 beat|1/2 beat (8th)|1/4 beat (16th)" :
   s == 3 ? "Stop|Play" : s == 33 ? "Off|Left (deck 1 side)|Right (deck 2 side)" : s == 5 ? "Stop (silent)|Loop to start" : s == 32 ? "Yellow|Blue" : s == 249 || s == 250 ? "Black|White|Lamp colour|Red|Orange|Yellow|Lime|Green|Cyan|Sky|Blue|Navy|Purple|Magenta|Pink" :
-  s == 8 ? "Relative 64-centre (FLX4)|Relative two's complement|Relative sign bit|Absolute 7-bit|Absolute 14-bit|Speed (CDJ MIDI)|Platter position (Denon)|Absolute knob turned (APC40)" :
+  s == 8 ? "Relative 64-centre (FLX4)|Relative two's complement|Relative sign bit|Absolute 7-bit|Absolute 14-bit|Speed (CDJ MIDI)|Platter position (Denon)|Absolute knob turned (APC40)|Platter counter (Rane Twelve)" :
   s == 20 ? "Always forward|Follow motion" : s == 54 || s == 91 ? "Off|On" : s == 90 ? "+-8 %|+-16 %|+-50 %|+-5 BPM|+-10 BPM|+-15 BPM|+-20 BPM|+-30 BPM|+-40 BPM|+-60 BPM" : s == 40 ? "On|Off" : s == 77 ? "Linear|Equal power" : s == 81 ? "Right-handed (record right)|Left-handed (record left)" : s == 82 || s == 86 ? "Off|Tint|Hue rotate|Invert|Threshold|Mirror|Kaleidoscope|LoRez|Shift RGB|Strobe|Trails|VHS|Disc|Line art|Halftone|Zoom blur" :
   s == 78 ? "Mix (crossfade)|Add|Subtract|Multiply|Overlay|Soft light|Hard light|Luma key|Chroma key (green)|>Transitions: shapes|Wipe right|Wipe down|Wipe diagonal|Split|Slide|Blinds|Iris box|Iris diamond|Iris circle|Clock|Blocks|Dip to black|Dip to white|Pixelate|<Zoom|>Transitions: camera moves|Punch zoom|Whip right|Whip up|Whip down|Shake cut|Spin zoom|Drop bounce|Tilt right|<Tilt down|>Transitions: more|Brush wipe|Defocus|Picture in picture|Shatter|<PiP to corner" :
   "";
@@ -6294,7 +6346,7 @@ function g_menustr(s) (
 // the short preset names by the preset's own number (pid); g_valstr(1, slider value) adds "⚠ " for the ones not tried
 // on the hardware (all but Custom, the FLX4 emulator, the APC40 mkII and the Reloop Buddy; user's request 2026-10-08)
 function g_pname(v) (
-  v == 0 ? "Custom" : v == 1 ? "FLX4 Emu test (loopMIDI deck 2)" : v == 2 ? "DDJ-FLX4 deck 1" : v == 3 ? "DDJ-FLX4 deck 2" : v == 6 ? "Reloop Buddy deck 1" : v == 7 ? "Reloop Buddy deck 2" : v == 8 ? "DDJ-FLX2 deck 1" : v == 9 ? "DDJ-FLX2 deck 2" : v == 10 ? "CDJ-2000NXS2 (ch 1)" : v == 11 ? "CDJ-2000NXS2 (ch 2)" : v == 12 ? "CDJ-3000/3000X (ch 1)" : v == 13 ? "CDJ-3000/3000X (ch 2)" : v == 14 ? "DDJ-400 deck 1" : v == 15 ? "DDJ-400 deck 2" : v == 16 ? "DDJ-FLX6 deck 1" : v == 17 ? "DDJ-FLX6 deck 2" : v == 18 ? "DDJ-REV1 deck 1" : v == 19 ? "DDJ-REV1 deck 2" : v == 20 ? "DDJ-800 deck 1" : v == 21 ? "DDJ-800 deck 2" : v == 22 ? "DDJ-1000 deck 1" : v == 23 ? "DDJ-1000 deck 2" : v == 24 ? "DDJ-FLX10 deck 1" : v == 25 ? "DDJ-FLX10 deck 2" : v == 26 ? "DDJ-SB3/SX deck 1" : v == 27 ? "DDJ-SB3/SX deck 2" : v == 28 ? "DDJ-REV5 deck 1" : v == 29 ? "DDJ-REV5 deck 2" : v == 30 ? "XDJ-RX3/XZ deck 1" : v == 31 ? "XDJ-RX3/XZ deck 2" : v == 32 ? "Reloop Ready deck 1" : v == 33 ? "Reloop Ready deck 2" : v == 34 ? "DDJ-200 deck 1" : v == 35 ? "DDJ-200 deck 2" : v == 36 ? "Reloop Mixon 4 deck 1" : v == 37 ? "Reloop Mixon 4 deck 2" : v == 38 ? "Reloop Beatmix 2/4 deck 1" : v == 39 ? "Reloop Beatmix 2/4 deck 2" : v == 40 ? "Reloop Mixon 8 Pro deck 1" : v == 41 ? "Reloop Mixon 8 Pro deck 2" : v == 42 ? "Reloop Touch deck 1" : v == 43 ? "Reloop Touch deck 2" : v == 44 ? "DDJ-SX3 deck 1" : v == 45 ? "DDJ-SX3 deck 2" : v == 46 ? "Numark Mixtrack Pro/Platinum FX deck 1" : v == 47 ? "Numark Mixtrack Pro/Platinum FX deck 2" : v == 48 ? "Numark Party Mix II/Live deck 1" : v == 49 ? "Numark Party Mix II/Live deck 2" : v == 50 ? "Hercules Inpulse 200/300 (MK2) deck 1" : v == 51 ? "Hercules Inpulse 200/300 (MK2) deck 2" : v == 52 ? "Hercules Inpulse 500 deck 1" : v == 53 ? "Hercules Inpulse 500 deck 2" : v == 54 ? "Reloop Terminal Mix 8 deck 1" : v == 55 ? "Reloop Terminal Mix 8 deck 2" : v == 56 ? "Reloop Terminal Mix 2/4 deck 1" : v == 57 ? "Reloop Terminal Mix 2/4 deck 2" : v == 58 ? "Denon Prime 4 deck 1" : v == 59 ? "Denon Prime 4 deck 2" : v == 60 ? "Denon SC5000/SC6000 deck 1" : v == 61 ? "Denon SC5000/SC6000 deck 2" : v == 62 ? "HID bridge (NI S2/S3/S4) deck 1" : v == 63 ? "HID bridge (NI S2/S3/S4) deck 2" : v == 64 ? "Numark Party Mix deck 1" : v == 65 ? "Numark Party Mix deck 2" : v == 66 ? "Numark DJ2GO2 Touch deck 1" : v == 67 ? "Numark DJ2GO2 Touch deck 2" : v == 68 ? "Numark Mixtrack (Pro) 3 deck 1" : v == 69 ? "Numark Mixtrack (Pro) 3 deck 2" : v == 70 ? "Numark Mixtrack Platinum deck 1" : v == 71 ? "Numark Mixtrack Platinum deck 2" : v == 72 ? "Numark Mixtrack deck 1" : v == 73 ? "Numark Mixtrack deck 2" : v == 74 ? "Numark Mixtrack 2 deck 1" : v == 75 ? "Numark Mixtrack 2 deck 2" : v == 76 ? "Numark Mixtrack Pro deck 1" : v == 77 ? "Numark Mixtrack Pro deck 2" : v == 78 ? "Hercules DJControl Starlight deck 1" : v == 79 ? "Hercules DJControl Starlight deck 2" : v == 80 ? "Hercules DJControl MIX deck 1" : v == 81 ? "Hercules DJControl MIX deck 2" : v == 82 ? "Hercules DJControl Compact deck 1" : v == 83 ? "Hercules DJControl Compact deck 2" : v == 84 ? "Hercules DJControl Jogvision deck 1" : v == 85 ? "Hercules DJControl Jogvision deck 2" : v == 86 ? "Hercules DJ Control Instinct deck 1" : v == 87 ? "Hercules DJ Control Instinct deck 2" : v == 88 ? "DDJ-SB2 deck 1" : v == 89 ? "DDJ-SB2 deck 2" : v == 90 ? "DDJ-SB deck 1" : v == 91 ? "DDJ-SB deck 2" : v == 92 ? "DDJ-RB deck 1" : v == 93 ? "DDJ-RB deck 2" : v == 94 ? "Reloop Mixage deck 1" : v == 95 ? "Reloop Mixage deck 2" : v == 96 ? "Reloop Beatpad deck 1" : v == 97 ? "Reloop Beatpad deck 2" : v == 98 ? "Korg KAOSS DJ deck 1" : v == 99 ? "Korg KAOSS DJ deck 2" : v == 100 ? "Gemini FirstMix deck 1" : v == 101 ? "Gemini FirstMix deck 2" : v == 102 ? "ION Discover DJ deck 1" : v == 103 ? "ION Discover DJ deck 2" : v == 104 ? "ION Discover DJ Pro deck 1" : v == 105 ? "ION Discover DJ Pro deck 2" : v == 106 ? "Behringer CMD Micro deck 1" : v == 107 ? "Behringer CMD Micro deck 2" : v == 108 ? "Numark DJ2GO2 deck 1" : v == 109 ? "Numark DJ2GO2 deck 2" : v == 110 ? "Hercules DJ Control MP3 e2 deck 1" : v == 111 ? "Hercules DJ Control MP3 e2 deck 2" : v == 112 ? "Hercules DJ Control AIR deck 1" : v == 113 ? "Hercules DJ Control AIR deck 2" : v == 114 ? "Reloop Beatpad 2 deck 1" : v == 115 ? "Reloop Beatpad 2 deck 2" : v == 116 ? "APC40 mkII deck 1" : v == 117 ? "APC40 mkII deck 2" : v == 118 ? "APC40 mkI deck 1" : v == 119 ? "APC40 mkI deck 2" : v == 120 ? "Hercules DJ Console 4-Mx deck 1" : v == 121 ? "Hercules DJ Console 4-Mx deck 2" : v == 122 ? "Hercules DJ Console Mk4 deck 1" : v == 123 ? "Hercules DJ Console Mk4 deck 2" : v == 124 ? "Hercules DJ 4Set deck 1" : "Hercules DJ 4Set deck 2";
+  v == 0 ? "Custom" : v == 1 ? "FLX4 Emu test (loopMIDI deck 2)" : v == 2 ? "DDJ-FLX4 deck 1" : v == 3 ? "DDJ-FLX4 deck 2" : v == 6 ? "Reloop Buddy deck 1" : v == 7 ? "Reloop Buddy deck 2" : v == 8 ? "DDJ-FLX2 deck 1" : v == 9 ? "DDJ-FLX2 deck 2" : v == 10 ? "CDJ-2000NXS2 (ch 1)" : v == 11 ? "CDJ-2000NXS2 (ch 2)" : v == 12 ? "CDJ-3000/3000X (ch 1)" : v == 13 ? "CDJ-3000/3000X (ch 2)" : v == 14 ? "DDJ-400 deck 1" : v == 15 ? "DDJ-400 deck 2" : v == 16 ? "DDJ-FLX6 deck 1" : v == 17 ? "DDJ-FLX6 deck 2" : v == 18 ? "DDJ-REV1 deck 1" : v == 19 ? "DDJ-REV1 deck 2" : v == 20 ? "DDJ-800 deck 1" : v == 21 ? "DDJ-800 deck 2" : v == 22 ? "DDJ-1000 deck 1" : v == 23 ? "DDJ-1000 deck 2" : v == 24 ? "DDJ-FLX10 deck 1" : v == 25 ? "DDJ-FLX10 deck 2" : v == 26 ? "DDJ-SB3/SX deck 1" : v == 27 ? "DDJ-SB3/SX deck 2" : v == 28 ? "DDJ-REV5 deck 1" : v == 29 ? "DDJ-REV5 deck 2" : v == 30 ? "XDJ-RX3/XZ deck 1" : v == 31 ? "XDJ-RX3/XZ deck 2" : v == 32 ? "Reloop Ready deck 1" : v == 33 ? "Reloop Ready deck 2" : v == 34 ? "DDJ-200 deck 1" : v == 35 ? "DDJ-200 deck 2" : v == 36 ? "Reloop Mixon 4 deck 1" : v == 37 ? "Reloop Mixon 4 deck 2" : v == 38 ? "Reloop Beatmix 2/4 deck 1" : v == 39 ? "Reloop Beatmix 2/4 deck 2" : v == 40 ? "Reloop Mixon 8 Pro deck 1" : v == 41 ? "Reloop Mixon 8 Pro deck 2" : v == 42 ? "Reloop Touch deck 1" : v == 43 ? "Reloop Touch deck 2" : v == 44 ? "DDJ-SX3 deck 1" : v == 45 ? "DDJ-SX3 deck 2" : v == 46 ? "Numark Mixtrack Pro/Platinum FX deck 1" : v == 47 ? "Numark Mixtrack Pro/Platinum FX deck 2" : v == 48 ? "Numark Party Mix II/Live deck 1" : v == 49 ? "Numark Party Mix II/Live deck 2" : v == 50 ? "Hercules Inpulse 200/300 (MK2) deck 1" : v == 51 ? "Hercules Inpulse 200/300 (MK2) deck 2" : v == 52 ? "Hercules Inpulse 500 deck 1" : v == 53 ? "Hercules Inpulse 500 deck 2" : v == 54 ? "Reloop Terminal Mix 8 deck 1" : v == 55 ? "Reloop Terminal Mix 8 deck 2" : v == 56 ? "Reloop Terminal Mix 2/4 deck 1" : v == 57 ? "Reloop Terminal Mix 2/4 deck 2" : v == 58 ? "Denon Prime 4 deck 1" : v == 59 ? "Denon Prime 4 deck 2" : v == 60 ? "Denon SC5000/SC6000 deck 1" : v == 61 ? "Denon SC5000/SC6000 deck 2" : v == 62 ? "HID bridge (NI S2/S3/S4) deck 1" : v == 63 ? "HID bridge (NI S2/S3/S4) deck 2" : v == 64 ? "Numark Party Mix deck 1" : v == 65 ? "Numark Party Mix deck 2" : v == 66 ? "Numark DJ2GO2 Touch deck 1" : v == 67 ? "Numark DJ2GO2 Touch deck 2" : v == 68 ? "Numark Mixtrack (Pro) 3 deck 1" : v == 69 ? "Numark Mixtrack (Pro) 3 deck 2" : v == 70 ? "Numark Mixtrack Platinum deck 1" : v == 71 ? "Numark Mixtrack Platinum deck 2" : v == 72 ? "Numark Mixtrack deck 1" : v == 73 ? "Numark Mixtrack deck 2" : v == 74 ? "Numark Mixtrack 2 deck 1" : v == 75 ? "Numark Mixtrack 2 deck 2" : v == 76 ? "Numark Mixtrack Pro deck 1" : v == 77 ? "Numark Mixtrack Pro deck 2" : v == 78 ? "Hercules DJControl Starlight deck 1" : v == 79 ? "Hercules DJControl Starlight deck 2" : v == 80 ? "Hercules DJControl MIX deck 1" : v == 81 ? "Hercules DJControl MIX deck 2" : v == 82 ? "Hercules DJControl Compact deck 1" : v == 83 ? "Hercules DJControl Compact deck 2" : v == 84 ? "Hercules DJControl Jogvision deck 1" : v == 85 ? "Hercules DJControl Jogvision deck 2" : v == 86 ? "Hercules DJ Control Instinct deck 1" : v == 87 ? "Hercules DJ Control Instinct deck 2" : v == 88 ? "DDJ-SB2 deck 1" : v == 89 ? "DDJ-SB2 deck 2" : v == 90 ? "DDJ-SB deck 1" : v == 91 ? "DDJ-SB deck 2" : v == 92 ? "DDJ-RB deck 1" : v == 93 ? "DDJ-RB deck 2" : v == 94 ? "Reloop Mixage deck 1" : v == 95 ? "Reloop Mixage deck 2" : v == 96 ? "Reloop Beatpad deck 1" : v == 97 ? "Reloop Beatpad deck 2" : v == 98 ? "Korg KAOSS DJ deck 1" : v == 99 ? "Korg KAOSS DJ deck 2" : v == 100 ? "Gemini FirstMix deck 1" : v == 101 ? "Gemini FirstMix deck 2" : v == 102 ? "ION Discover DJ deck 1" : v == 103 ? "ION Discover DJ deck 2" : v == 104 ? "ION Discover DJ Pro deck 1" : v == 105 ? "ION Discover DJ Pro deck 2" : v == 106 ? "Behringer CMD Micro deck 1" : v == 107 ? "Behringer CMD Micro deck 2" : v == 108 ? "Numark DJ2GO2 deck 1" : v == 109 ? "Numark DJ2GO2 deck 2" : v == 110 ? "Hercules DJ Control MP3 e2 deck 1" : v == 111 ? "Hercules DJ Control MP3 e2 deck 2" : v == 112 ? "Hercules DJ Control AIR deck 1" : v == 113 ? "Hercules DJ Control AIR deck 2" : v == 114 ? "Reloop Beatpad 2 deck 1" : v == 115 ? "Reloop Beatpad 2 deck 2" : v == 116 ? "APC40 mkII deck 1" : v == 117 ? "APC40 mkII deck 2" : v == 118 ? "APC40 mkI deck 1" : v == 119 ? "APC40 mkI deck 2" : v == 120 ? "Hercules DJ Console 4-Mx deck 1" : v == 121 ? "Hercules DJ Console 4-Mx deck 2" : v == 122 ? "Hercules DJ Console Mk4 deck 1" : v == 123 ? "Hercules DJ Console Mk4 deck 2" : v == 124 ? "Hercules DJ 4Set deck 1" : v == 125 ? "Hercules DJ 4Set deck 2" : v == 126 ? "DVS (timecode vinyl / CD) deck 1" : v == 127 ? "DVS (timecode vinyl / CD) deck 2" : v == 128 ? "Pioneer DJ PLX-CRSS12 (DVS) deck 1" : v == 129 ? "Pioneer DJ PLX-CRSS12 (DVS) deck 2" : v == 130 ? "Reloop RP-8000 MK2 (DVS) deck 1" : v == 131 ? "Reloop RP-8000 MK2 (DVS) deck 2" : v == 132 ? "Rane Twelve / Twelve MKII deck 1" : v == 133 ? "Rane Twelve / Twelve MKII deck 2" : v == 134 ? "Reloop RP-8000 (DVS) deck 1" : "Reloop RP-8000 (DVS) deck 2";
 );
 function g_pname_w(v) local(o) (
   o = p_old(v);
@@ -6350,7 +6402,7 @@ function g_valstr(s, v) (
   s == 33 ? (v == 0 ? "Off" : v == 1 ? "Left (deck 1 side)" : "Right (deck 2 side)") :
   s == 36 ? sprintf(#g_v, "%.1f", v) :
   s == 37 ? (v == 0 ? "instant" : sprintf(#g_v, "%.1f", v)) :
-  s == 8 ? (v == 0 ? "Relative 64-centre (FLX4)" : v == 1 ? "Relative two's complement" : v == 2 ? "Relative sign bit" : v == 3 ? "Absolute 7-bit" : v == 4 ? "Absolute 14-bit" : v == 5 ? "Speed (CDJ MIDI)" : v == 6 ? "Platter position (Denon)" : "Absolute knob turned (APC40)") :
+  s == 8 ? (v == 0 ? "Relative 64-centre (FLX4)" : v == 1 ? "Relative two's complement" : v == 2 ? "Relative sign bit" : v == 3 ? "Absolute 7-bit" : v == 4 ? "Absolute 14-bit" : v == 5 ? "Speed (CDJ MIDI)" : v == 6 ? "Platter position (Denon)" : v == 7 ? "Absolute knob turned (APC40)" : "Platter counter (Rane Twelve)") :
   s == 13 ? (v == 0 ? "hold" : sprintf(#g_v, "%d", v)) :
   (s == 12 || s == 14 || s == 17 || s == 46 || s == 48 || s == 61 || s == 73) && v == 0 ? "none" :
   s == 10 ? (v == 0 ? "off" : sprintf(#g_v, "%d", v)) :
@@ -6370,11 +6422,11 @@ function g_valstr(s, v) (
 // slider values in menu order is 0, 1, 2, ... (three digits each; the developer's consistency check: every preset once); the menu
 // returns the position (1..n), pmn_val turns it back into the slider value. The submenus are menu positions a..b; the
 // current preset is ticked. "⚠ " in front of a name = not tried on the hardware (user's request 2026-10-08)
-pmn_s = "000001002003004005006007008009010011012013014015016017018019020021022023024025026027028029030031032033034035036037038039040041042043044045046047048049050051052053054055056057058059060061062063064065066067068069070071072073074075076077078079080081082083084085086087088089090091092093094095096097098099100101102103104105106107108109110111112113114115116117118119120121122123";
+pmn_s = "000001002003004005006007008009010011012013014015016017018019020021022023024025026027028029030031032033034035036037038039040041042043044045046047048049050051052053054055056057058059060061062063064065066067068069070071072073074075076077078079080081082083084085086087088089090091092093094095096097098099100101102103104105106107108109110111112113114115116117118119120121122123124125126127128129130131132133";
 function pmn_val(k) ( (str_getchar(pmn_s, 3 * k - 3) - 48) * 100 + (str_getchar(pmn_s, 3 * k - 2) - 48) * 10 + str_getchar(pmn_s, 3 * k - 1) - 48; );
 // a deck 1 / deck 2 (CDJ: ch 1 / ch 2) pair: presets v and v + 1, shown as one model with its own submenu (user's request)
-function pmn_pair_o(v) ( v == 2 || v == 6 || v == 8 || v == 10 || v == 12 || (v >= 14 && v <= 124 && !(v & 1)); );
-function pmn_pair(v) ( v < 123 && pmn_pair_o(p_old(v)) && p_old(v + 1) == p_old(v) + 1; );   // v = slider 1 value
+function pmn_pair_o(v) ( v == 2 || v == 6 || v == 8 || v == 10 || v == 12 || (v >= 14 && v <= 134 && !(v & 1)); );
+function pmn_pair(v) ( v < 133 && pmn_pair_o(p_old(v)) && p_old(v + 1) == p_old(v) + 1; );   // v = slider 1 value
 // one menu item: closes = how many submenus it is the last item of; short = only the "deck 1" / "(ch 1)" end of the name
 function pmn_leaf(v, closes, short) (
   loop(closes, strcat(#pmn_m, "<"));
@@ -6419,7 +6471,7 @@ function pmn_menu(sl) (   // sl = 1 (Preset) or 230 (2nd controller, ⚪110: its
   pmn_sub("Hercules", 14, 37); pmn_sub("ION", 38, 41); pmn_sub("Korg", 42, 43); pmn_sub("Native Instruments", 44, 45);
   pmn_sub("Numark", 46, 65);
   pmn_head("Pioneer DJ / AlphaTheta", 66, 101, 0); pmn_subl("DDJ", 66, 95, 0); pmn_subl("CDJ / XDJ", 96, 101, 1);
-  pmn_sub("Reloop", 102, 123); pmn_sub("Test", 124, 124);
+  pmn_sub("Reloop", 102, 123); pmn_sub("Turntables / DVS", 124, 133); pmn_sub("Test", 134, 134);
   str_setlen(#pmn_m, strlen(#pmn_m) - 1);   // no empty item after the last "|"
   #pmn_m;
 );
@@ -6947,7 +6999,7 @@ function g_shead(title, y, col) (
 // order) list under it; Up / Down + Enter or a click picks one, Esc or a click elsewhere closes it. Letters and digits only
 // count, any case ("flx4", "DDJ 400", "3000", "s4", "reloop"). While typing, the keys do not reach the deck (Space, 1-8 ...)
 function pmn_maker(k) (   // the maker words of menu position k (the submenu titles of pmn_menu)
-  k <= 1 ? "" : k <= 5 ? "Akai " : k <= 7 ? "Behringer " : k <= 11 ? "Denon DJ " : k <= 13 ? "Gemini " : k <= 37 ? "Hercules " : k <= 41 ? "ION " : k <= 43 ? "Korg " : k <= 45 ? "Native Instruments Traktor Kontrol HID " : k <= 65 ? "Numark " : k <= 95 ? "Pioneer DJ AlphaTheta DDJ " : k <= 101 ? "Pioneer DJ AlphaTheta CDJ XDJ " : k <= 123 ? "Reloop " : "Test ";
+  k <= 1 ? "" : k <= 5 ? "Akai " : k <= 7 ? "Behringer " : k <= 11 ? "Denon DJ " : k <= 13 ? "Gemini " : k <= 37 ? "Hercules " : k <= 41 ? "ION " : k <= 43 ? "Korg " : k <= 45 ? "Native Instruments Traktor Kontrol HID " : k <= 65 ? "Numark " : k <= 95 ? "Pioneer DJ AlphaTheta DDJ " : k <= 101 ? "Pioneer DJ AlphaTheta CDJ XDJ " : k <= 123 ? "Reloop " : k <= 133 ? "Turntables DVS timecode vinyl CD Serato rekordbox Traktor Technics " : "Test ";
 );
 function g_ps_norm(src, dst) local(i, n, c) (   // lower-case letters and digits only
   strcpy(dst, ""); i = 0; n = strlen(src);
@@ -6976,7 +7028,7 @@ function g_ps_find() local(k, v) (   // #g_psm = the matching presets, three dig
   strcpy(#g_psm, ""); g_ps_n = 0;
   strlen(g_ps_norm(#g_ps, #g_psq)) ? (
     k = 1;
-    while (k <= 124) (
+    while (k <= 134) (
       v = pmn_val(k);
       strcpy(#g_psk, pmn_maker(k)); strcat(#g_psk, g_valstr(1, v)); g_ps_norm(#g_psk, #g_psn);
       g_ps_hit(#g_psn) ? (sprintf(#g_psc, "%03d", v); strcat(#g_psm, #g_psc); g_ps_n += 1);
@@ -7111,7 +7163,7 @@ function wz_sname(s) (
   s == 163 ? "FX knob CC (master type)" : s == 159 ? "FX < button" : s == 160 ? "FX > button" : "setting";
 );
 function wz_vs(s, v, dst) (
-  s == 8 ? strcpy(dst, v == 0 ? "64-centre" : v == 1 ? "two's compl." : v == 2 ? "sign bit" : v == 3 ? "absolute 7-bit" : v == 4 ? "absolute 14-bit" : v == 5 ? "CDJ speed" : v == 6 ? "platter position" : "knob turned") :
+  s == 8 ? strcpy(dst, v == 0 ? "64-centre" : v == 1 ? "two's compl." : v == 2 ? "sign bit" : v == 3 ? "absolute 7-bit" : v == 4 ? "absolute 14-bit" : v == 5 ? "CDJ speed" : v == 6 ? "platter position" : v == 7 ? "knob turned" : "platter counter") :
   s == 92 && v == 128 ? strcpy(dst, "pitch bend") :
   (s == 92 || s == 106 || s == 117 || s == 85 || s == 107 || s == 163 || s == 159 || s == 160 || s == 225) && v < 0 ? strcpy(dst, "none") :
   s == 84 && v == 0 ? strcpy(dst, "none") :

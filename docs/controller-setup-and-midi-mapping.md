@@ -12,8 +12,9 @@
 - [Button lights](#button-lights)
 - [Two controllers at once (e.g. Reloop Buddy + APC40 mkII)](#two-controllers-at-once-eg-reloop-buddy--apc40-mkii)
 - [HID controllers (NI Traktor Kontrol S4, S3, S2)](#hid-controllers-ni-traktor-kontrol-s4-s3-s2)
+- [Connecting by DVS (timecode vinyl / CD, Pioneer DJ PLX-CRSS12)](#connecting-by-dvs-timecode-vinyl--cd-pioneer-dj-plx-crss12)
 
-Controllers: [APC40 mkI](#1--2-apc40-mki-deck-1--deck-2) · [APC40 mkII](#3--4-apc40-mkii-deck-1--deck-2) · [Behringer CMD Micro](#5--6-behringer-cmd-micro-deck-1--deck-2) · [Denon SC5000/SC6000](#7--8-denon-sc5000sc6000-deck-1--deck-2) · [Denon Prime 4](#9--10-denon-prime-4-deck-1--deck-2) · [Gemini FirstMix](#11--12-gemini-firstmix-deck-1--deck-2) · [Hercules DJ Control MP3 e2](#13--14-hercules-dj-control-mp3-e2-deck-1--deck-2) · [Hercules DJControl Compact](#15--16-hercules-djcontrol-compact-deck-1--deck-2) · [Hercules DJControl Starlight](#17--18-hercules-djcontrol-starlight-deck-1--deck-2) · [Hercules DJControl MIX](#19--20-hercules-djcontrol-mix-deck-1--deck-2) · [Hercules DJ Control Instinct](#21--22-hercules-dj-control-instinct-deck-1--deck-2) · [Hercules DJ Control AIR](#23--24-hercules-dj-control-air-deck-1--deck-2) · [Hercules DJ Console Mk4](#25--26-hercules-dj-console-mk4-deck-1--deck-2) · [Hercules DJ Console 4-Mx](#27--28-hercules-dj-console-4-mx-deck-1--deck-2) · [Hercules DJ 4Set](#29--30-hercules-dj-4set-deck-1--deck-2) · [Hercules DJControl Jogvision](#31--32-hercules-djcontrol-jogvision-deck-1--deck-2) · [Hercules Inpulse 200/300 (MK2)](#33--34-hercules-inpulse-200300-mk2-deck-1--deck-2) · [Hercules Inpulse 500](#35--36-hercules-inpulse-500-deck-1--deck-2) · [ION Discover DJ](#37--38-ion-discover-dj-deck-1--deck-2) · [ION Discover DJ Pro](#39--40-ion-discover-dj-pro-deck-1--deck-2) · [Korg KAOSS DJ](#41--42-korg-kaoss-dj-deck-1--deck-2) · [HID bridge (NI S2/S3/S4)](#43--44-hid-bridge-ni-s2s3s4-deck-1--deck-2) · [Numark Party Mix](#45--46-numark-party-mix-deck-1--deck-2) · [Numark Party Mix II/Live](#47--48-numark-party-mix-iilive-deck-1--deck-2) · [Numark DJ2GO2 deck 1 / deck 2, 51 · 52 Numark DJ2GO2 Touch](#49--50-numark-dj2go2-deck-1--deck-2-51--52-numark-dj2go2-touch-deck-1--deck-2) · [Numark Mixtrack](#53--54-numark-mixtrack-deck-1--deck-2) · [Numark Mixtrack Pro](#55--56-numark-mixtrack-pro-deck-1--deck-2) · [Numark Mixtrack 2](#57--58-numark-mixtrack-2-deck-1--deck-2) · [Numark Mixtrack (Pro) 3](#59--60-numark-mixtrack-pro-3-deck-1--deck-2) · [Numark Mixtrack Platinum](#61--62-numark-mixtrack-platinum-deck-1--deck-2) · [Numark Mixtrack Pro/Platinum FX](#63--64-numark-mixtrack-proplatinum-fx-deck-1--deck-2) · [DDJ-FLX2](#65--66-ddj-flx2-deck-1--deck-2) · [DDJ-FLX4](#67--68-ddj-flx4-deck-1--deck-2) · [DDJ-FLX6](#69--70-ddj-flx6-deck-1--deck-2) · [DDJ-FLX10](#71--72-ddj-flx10-deck-1--deck-2) · [DDJ-REV1](#73--74-ddj-rev1-deck-1--deck-2) · [DDJ-400](#81--82-ddj-400-deck-1--deck-2) · [DDJ-800](#83--84-ddj-800-deck-1--deck-2) · [DDJ-1000](#85--86-ddj-1000-deck-1--deck-2) · [DDJ-REV5](#75--76-ddj-rev5-deck-1--deck-2) · [DDJ-200](#77--78-ddj-200-deck-1--deck-2) · [DDJ-RB](#79--80-ddj-rb-deck-1--deck-2) · [DDJ-SB deck 1 / deck 2, 89 · 90 DDJ-SB2](#87--88-ddj-sb-deck-1--deck-2-89--90-ddj-sb2-deck-1--deck-2) · [DDJ-SB3 / SX](#91--92-ddj-sb3--sx-deck-1--deck-2) · [DDJ-SX3](#93--94-ddj-sx3-deck-1--deck-2) · [CDJ-2000NXS2 (MIDI ch 1) / (MIDI ch 2)](#95--96-cdj-2000nxs2-midi-ch-1--midi-ch-2) · [CDJ-3000/3000X (MIDI ch 1) / (MIDI ch 2)](#97--98-cdj-30003000x-midi-ch-1--midi-ch-2) · [XDJ-RX3 / XZ](#99--100-xdj-rx3--xz-deck-1--deck-2) · [Reloop Buddy](#101--102-reloop-buddy-deck-1--deck-2) · [Reloop Ready](#103--104-reloop-ready-deck-1--deck-2) · [Reloop Mixage](#105--106-reloop-mixage-deck-1--deck-2) · [Reloop Mixon 4](#107--108-reloop-mixon-4-deck-1--deck-2) · [Reloop Mixon 8 Pro](#109--110-reloop-mixon-8-pro-deck-1--deck-2) · [Reloop Touch](#111--112-reloop-touch-deck-1--deck-2) · [Reloop Beatpad](#113--114-reloop-beatpad-deck-1--deck-2) · [Reloop Beatpad 2](#115--116-reloop-beatpad-2-deck-1--deck-2) · [Reloop Beatmix 2/4](#117--118-reloop-beatmix-24-deck-1--deck-2) · [Reloop Terminal Mix 2/4](#119--120-reloop-terminal-mix-24-deck-1--deck-2) · [Reloop Terminal Mix 8](#121--122-reloop-terminal-mix-8-deck-1--deck-2)
+Controllers: [APC40 mkI](#1--2-apc40-mki-deck-1--deck-2) · [APC40 mkII](#3--4-apc40-mkii-deck-1--deck-2) · [Behringer CMD Micro](#5--6-behringer-cmd-micro-deck-1--deck-2) · [Denon SC5000/SC6000](#7--8-denon-sc5000sc6000-deck-1--deck-2) · [Denon Prime 4](#9--10-denon-prime-4-deck-1--deck-2) · [Gemini FirstMix](#11--12-gemini-firstmix-deck-1--deck-2) · [Hercules DJ Control MP3 e2](#13--14-hercules-dj-control-mp3-e2-deck-1--deck-2) · [Hercules DJControl Compact](#15--16-hercules-djcontrol-compact-deck-1--deck-2) · [Hercules DJControl Starlight](#17--18-hercules-djcontrol-starlight-deck-1--deck-2) · [Hercules DJControl MIX](#19--20-hercules-djcontrol-mix-deck-1--deck-2) · [Hercules DJ Control Instinct](#21--22-hercules-dj-control-instinct-deck-1--deck-2) · [Hercules DJ Control AIR](#23--24-hercules-dj-control-air-deck-1--deck-2) · [Hercules DJ Console Mk4](#25--26-hercules-dj-console-mk4-deck-1--deck-2) · [Hercules DJ Console 4-Mx](#27--28-hercules-dj-console-4-mx-deck-1--deck-2) · [Hercules DJ 4Set](#29--30-hercules-dj-4set-deck-1--deck-2) · [Hercules DJControl Jogvision](#31--32-hercules-djcontrol-jogvision-deck-1--deck-2) · [Hercules Inpulse 200/300 (MK2)](#33--34-hercules-inpulse-200300-mk2-deck-1--deck-2) · [Hercules Inpulse 500](#35--36-hercules-inpulse-500-deck-1--deck-2) · [ION Discover DJ](#37--38-ion-discover-dj-deck-1--deck-2) · [ION Discover DJ Pro](#39--40-ion-discover-dj-pro-deck-1--deck-2) · [Korg KAOSS DJ](#41--42-korg-kaoss-dj-deck-1--deck-2) · [HID bridge (NI S2/S3/S4)](#43--44-hid-bridge-ni-s2s3s4-deck-1--deck-2) · [Numark Party Mix](#45--46-numark-party-mix-deck-1--deck-2) · [Numark Party Mix II/Live](#47--48-numark-party-mix-iilive-deck-1--deck-2) · [Numark DJ2GO2 deck 1 / deck 2, 51 · 52 Numark DJ2GO2 Touch](#49--50-numark-dj2go2-deck-1--deck-2-51--52-numark-dj2go2-touch-deck-1--deck-2) · [Numark Mixtrack](#53--54-numark-mixtrack-deck-1--deck-2) · [Numark Mixtrack Pro](#55--56-numark-mixtrack-pro-deck-1--deck-2) · [Numark Mixtrack 2](#57--58-numark-mixtrack-2-deck-1--deck-2) · [Numark Mixtrack (Pro) 3](#59--60-numark-mixtrack-pro-3-deck-1--deck-2) · [Numark Mixtrack Platinum](#61--62-numark-mixtrack-platinum-deck-1--deck-2) · [Numark Mixtrack Pro/Platinum FX](#63--64-numark-mixtrack-proplatinum-fx-deck-1--deck-2) · [DDJ-FLX2](#65--66-ddj-flx2-deck-1--deck-2) · [DDJ-FLX4](#67--68-ddj-flx4-deck-1--deck-2) · [DDJ-FLX6](#69--70-ddj-flx6-deck-1--deck-2) · [DDJ-FLX10](#71--72-ddj-flx10-deck-1--deck-2) · [DDJ-REV1](#73--74-ddj-rev1-deck-1--deck-2) · [DDJ-400](#81--82-ddj-400-deck-1--deck-2) · [DDJ-800](#83--84-ddj-800-deck-1--deck-2) · [DDJ-1000](#85--86-ddj-1000-deck-1--deck-2) · [DDJ-REV5](#75--76-ddj-rev5-deck-1--deck-2) · [DDJ-200](#77--78-ddj-200-deck-1--deck-2) · [DDJ-RB](#79--80-ddj-rb-deck-1--deck-2) · [DDJ-SB deck 1 / deck 2, 89 · 90 DDJ-SB2](#87--88-ddj-sb-deck-1--deck-2-89--90-ddj-sb2-deck-1--deck-2) · [DDJ-SB3 / SX](#91--92-ddj-sb3--sx-deck-1--deck-2) · [DDJ-SX3](#93--94-ddj-sx3-deck-1--deck-2) · [CDJ-2000NXS2 (MIDI ch 1) / (MIDI ch 2)](#95--96-cdj-2000nxs2-midi-ch-1--midi-ch-2) · [CDJ-3000/3000X (MIDI ch 1) / (MIDI ch 2)](#97--98-cdj-30003000x-midi-ch-1--midi-ch-2) · [XDJ-RX3 / XZ](#99--100-xdj-rx3--xz-deck-1--deck-2) · [Reloop Buddy](#101--102-reloop-buddy-deck-1--deck-2) · [Reloop Ready](#103--104-reloop-ready-deck-1--deck-2) · [Reloop Mixage](#105--106-reloop-mixage-deck-1--deck-2) · [Reloop Mixon 4](#107--108-reloop-mixon-4-deck-1--deck-2) · [Reloop Mixon 8 Pro](#109--110-reloop-mixon-8-pro-deck-1--deck-2) · [Reloop Touch](#111--112-reloop-touch-deck-1--deck-2) · [Reloop Beatpad](#113--114-reloop-beatpad-deck-1--deck-2) · [Reloop Beatpad 2](#115--116-reloop-beatpad-2-deck-1--deck-2) · [Reloop Beatmix 2/4](#117--118-reloop-beatmix-24-deck-1--deck-2) · [Reloop Terminal Mix 2/4](#119--120-reloop-terminal-mix-24-deck-1--deck-2) · [Reloop Terminal Mix 8](#121--122-reloop-terminal-mix-8-deck-1--deck-2) · [DVS (timecode vinyl / CD)](#123--124-dvs-timecode-vinyl--cd-deck-1--deck-2) · [Pioneer DJ PLX-CRSS12 (DVS)](#125--126-pioneer-dj-plx-crss12-dvs-deck-1--deck-2) · [Reloop RP-8000 MK2 (DVS)](#127--128-reloop-rp-8000-mk2-dvs-deck-1--deck-2) · [Reloop RP-8000 (DVS)](#131--132-reloop-rp-8000-dvs-deck-1--deck-2) · [Rane Twelve / Twelve MKII](#129--130-rane-twelve--twelve-mkii-deck-1--deck-2)
 
 ### Preset list
 
@@ -198,9 +199,19 @@ Controllers: [APC40 mkI](#1--2-apc40-mki-deck-1--deck-2) · [APC40 mkII](#3--4-a
 | No. | Preset | Tested | Jog | Touch | PLAYCUE | SYNC | Tempo | Loop | Cross-fader | Volume | Phones | Filter | Hotcues | Samples | Modes | Effects |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | 0 | Custom |  |  |
-| 123 | FLX4 Emu test |  |  |
+| 123・124 | DVS (timecode vinyl / CD) (Timecode vinyl / CD) |  | ● | ● | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ |
+| 125・126 | Pioneer DJ PLX-CRSS12 (DVS) |  | ● | ● | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ● | ● | ○ | ○ |
+| 127・128 | Reloop RP-8000 MK2 (DVS) |  | ● | ● | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ● | ○ | ○ | ○ |
+| 129・130 | Rane Twelve / Twelve MKII |  | ● | ● | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ● | ○ | ○ | ○ |
+| 131・132 | Reloop RP-8000 (DVS) (original) |  | ● | ● | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ● | ● | ○ | ○ |
+| 133 | FLX4 Emu test |  |  |
 
 - Custom: Controllers not in the list. Set the numbers yourself ([“Manual mapping (Custom)”](#manual-mapping-custom))
+- DVS (timecode vinyl / CD): Reads the record from sound. Needs an audio interface ([“Connecting by DVS”](#connecting-by-dvs-timecode-vinyl--cd-pioneer-dj-plx-crss12))
+- Pioneer DJ PLX-CRSS12 (DVS): DVS + the USB pads. Set the unit's DECK to 1 / 2
+- Reloop RP-8000 MK2 (DVS): DVS + the USB pads (from a Traktor mapping)
+- Rane Twelve / Twelve MKII: USB mode: the platter over MIDI
+- Reloop RP-8000 (DVS): DVS + the USB pads (from Reloop's own mappings)
 - FLX4 Emu test: For development; not for normal use
 
 Notes:
@@ -210,6 +221,8 @@ Notes:
 - ※3: Mixage: tempo on deck 1 only (deck 2's pitch bend arrives on MIDI channel 2)
 
 Choose from `Preset` in the settings list opened with `setup` at the bottom right of the JSFX window. The menu goes manufacturer → model → `deck 1` / `deck 2` (`(ch 1)` / `(ch 2)` for CDJs; Pioneer DJ / AlphaTheta has an extra `DDJ` / `CDJ / XDJ` level in between). Within each manufacturer, models are listed together by series (DDJ-FLX, DDJ-REV and so on), cheaper models first. The current model is marked. Click the search box to the right of `Preset` and type part of a name (`flx4`, `ddj 400`, `3000`, `s4`, `reloop` and so on; case and `-` are ignored, and with several words separated by spaces, only entries containing all of them are listed. Adding a number, as in `beatpad 2`, also matches `deck 2`, so pick from the list of candidates) and the candidates appear below. Choose with ↑↓ and Enter, or click; Esc closes it. While you type, keys do not reach the deck. Choosing a preset fills in the jog, touch and buttons, crossfader, hot cue and sample pads, tempo and SYNC, the video effect knob, the channel fader and the headphone CUE in one go. Presets marked ⚠︎ have not been tested on the real hardware. The numbers in the table below are the `Preset` values, in the order of the menu.
+
+**Auto-select**: a deck whose `Preset` is `Custom` automatically selects the preset matching the connected controller's name. This happens when you run `reascratch_setup.lua`, and when you connect a new controller while video sync is running. Deck A gets `deck 1`, deck B `deck 2`. Presets selected manually are not changed. With a jog wheel controller and an APC40 connected together, the jog wheel controller is assigned to `Preset` and the APC40 to `2nd controller` ([“Two controllers at once”](#two-controllers-at-once-eg-reloop-buddy--apc40-mkii)). The Web version also automatically selects a preset based on the controller's name.
 
 In “Notes by model”, "pad modes" are written as the controller's mode label → the ReaScratch mode (see [“Pad modes, loops, filter and effects”](pad-modes-loops-filter-and-effects.md) above). Following the Reloop Buddy, the EQ and filter knobs are HI = filter Morph, LOW = Resonance, CFX / FILTER / COLOR = Cutoff, and MID = how much the video effects act on the sound (on controllers with SHIFT, holding SHIFT gives echo length, feedback and key). LOAD does the same job as on the Buddy. The BROWSE knob: turn = how much the video effects act on the sound, push = switch the deck the knob works on, SHIFT + turn = the headphone cue mix (the Reloop Buddy and Ready work as their notes say).
 
@@ -262,8 +275,13 @@ Most controllers with an FX section read it as the Reloop Buddy's FX controls ("
 | 113 · 114 **Reloop Beatpad deck 1 / deck 2**<br>115 · 116 **Reloop Beatpad 2 deck 1 / deck 2** | Reloop Beatpad and Beatpad 2 | Set the jog mode to Vinyl |
 | 117 · 118 **Reloop Beatmix 2/4 deck 1 / deck 2** | Reloop Beatmix 2 and Beatmix 4 (MK2) | — |
 | 119 · 120 **Reloop Terminal Mix 2/4 deck 1 / deck 2**<br>121 · 122 **Reloop Terminal Mix 8 deck 1 / deck 2** | Reloop Terminal Mix 2, 4 and 8 | — |
+| 123 · 124 **DVS (timecode vinyl / CD) deck 1 / deck 2** | Turntables and CDJs playing a timecode vinyl or CD (Serato, rekordbox, Traktor, MixVibes) | Needs an audio interface ([“Connecting by DVS”](#connecting-by-dvs-timecode-vinyl--cd-pioneer-dj-plx-crss12)) |
+| 125 · 126 **Pioneer DJ PLX-CRSS12 (DVS) deck 1 / deck 2** | Pioneer DJ PLX-CRSS12 (Digital Vinyl mode; the pads over USB MIDI) | Needs an audio interface. Set the unit's `DECK` to 1 / 2 |
+| 127 · 128 **Reloop RP-8000 MK2 (DVS) deck 1 / deck 2** | Reloop RP-8000 MK2 (with timecode vinyl; the pads over USB MIDI) | Needs an audio interface. Set the unit's channel to `CH-1` / `CH-2` |
+| 129 · 130 **Rane Twelve / Twelve MKII deck 1 / deck 2** | Rane Twelve (original) and Twelve MKII (USB mode: the platter sends MIDI) | Set the unit's `DECK` to 1 / 2 |
+| 131 · 132 **Reloop RP-8000 (DVS) deck 1 / deck 2** | Reloop RP-8000 (original; with timecode vinyl; the pads over USB MIDI) | Needs an audio interface. Set the unit's channel to `CH-1` / `CH-2` |
 | 0 **Custom** | Generic / manual setup | Set up by hand using the table below |
-| 123 **FLX4 Emu test (loopMIDI deck 2)** | Virtual MIDI for development and testing | Connect `tools/flx4_emu.py` (for development) |
+| 133 **FLX4 Emu test (loopMIDI deck 2)** | Virtual MIDI for development and testing | Connect `tools/flx4_emu.py` (for development) |
 
 #### Notes by model
 
@@ -2625,11 +2643,51 @@ From Reloop's official MIDI map and Mixxx's mapping.
 
 LOAD (ch1 16 / ch2 16) loads the file chosen in the Media Explorer into an empty sample slot. SHIFT + LOAD (ch1 80 / ch2 80) replaces the slot in use. Hold a pad mode button (7) and press LOAD to preview (the same as the `P` key). Controls without a number (DECK FX ASSIGN, the ON under LOOP SIZE, STUTTER, DECK, GAIN, AREA, VIEW, BACK, PREPARE, MASTER, BOOTH, PHONES, CUE MIX, SAMPLER VOL) are not used by ReaScratch. Not yet tested on the real hardware.
 
+##### 123 · 124 DVS (timecode vinyl / CD) deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
+
+Reads the record's movement from sound (the timecode signal), not MIDI. See [“Connecting by DVS”](#connecting-by-dvs-timecode-vinyl--cd-pioneer-dj-plx-crss12) for the setup. There are no buttons: use the keyboard, the screen, or a second unit chosen as the `2nd controller` for PLAY and the hot cues. Not yet tested on the real hardware.
+
+##### 125 · 126 Pioneer DJ PLX-CRSS12 (DVS) deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
+
+The platter works as in [“Connecting by DVS”](#connecting-by-dvs-timecode-vinyl--cd-pioneer-dj-plx-crss12). Connected over USB, the pads work too (from AlphaTheta's official MIDI list).
+
+- `HOT CUE` mode: pads 1–8 are hot cues 1–8 (pads 5–8 with the `5-8` button). Hold `SHIFT` and press a pad to delete it
+- `SAMPLER` mode: the pads switch samples
+- `START/STOP` and the pitch fader change the unit's own platter (the deck follows the record, so they are not mapped in ReaScratch)
+- Set the unit's `DECK` to 1 for deck A and 2 for deck B. Not yet tested on the real hardware
+
+##### 127 · 128 Reloop RP-8000 MK2 (DVS) deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
+
+The platter works as in [“Connecting by DVS”](#connecting-by-dvs-timecode-vinyl--cd-pioneer-dj-plx-crss12) (with timecode vinyl). There is no official MIDI list, so the pad numbers come from a Traktor mapping shared on DJ TechTools (made by a user). Deck A is on ch 6 and deck B on ch 7, and in `HOT CUE` mode pads 1–8 are hot cues 1–8. Hold `SHIFT` and press a pad to delete the cue. The pads light up in colour. If the numbers differ, check them in the setup's `Learn` tab. Not yet tested on the real hardware.
+
+##### 131 · 132 Reloop RP-8000 (DVS) deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
+
+The original RP-8000 (the MK2 is 127 / 128). The platter works as in [“Connecting by DVS”](#connecting-by-dvs-timecode-vinyl--cd-pioneer-dj-plx-crss12) (with timecode vinyl). The pad numbers come from Reloop's own mappings (for Traktor and Scratch Live).
+
+- `CUE` mode: pads 1–8 are hot cues 1–8. Hold the mode button and press a pad to delete it
+- `SAMPLE` mode: pads 1–6 switch samples
+- The pads only turn on and off (the unit picks the colour for each mode)
+- Set the unit's channel to `CH-1` for deck A and `CH-2` for deck B. Not yet tested on the real hardware
+
+##### 129 · 130 Rane Twelve / Twelve MKII deck 1 / deck 2
+
+[↑ All controllers](#controller-setup-and-midi-mapping)
+
+In USB mode (the unit's `DVS Mode` set to `Serato USB`) the platter's movement is sent as MIDI (no audio interface needed). The numbers come from a mapping on the Mixxx forum (about 3600 ticks a turn). The platter is motor-driven, so the deck always follows it (the unit sends no touch signal). In Cue Mode the touch strip's 8 sections are hot cues 1–8. Hold `CUE MODE` and touch a section to delete the cue (the MIDI note number is a guess). The sections light up in colour. The original Twelve should work with the same preset: the MKII's guide says its Serato USB mode works the same as the original. The pitch fader changes the platter's speed, so it is not mapped. To use its DVS mode instead, choose `DVS (timecode vinyl / CD)`. Not yet tested on the real hardware.
+
 **0 Custom**
 
 Set up by hand using the table below.
 
-**123 FLX4 Emu test (loopMIDI deck 2)**
+**133 FLX4 Emu test (loopMIDI deck 2)**
 
 For development (only when connecting `tools/flx4_emu.py`, which is not in the kit; not for normal use).
 
@@ -2641,7 +2699,7 @@ Set each parameter to match your controller (the setup screen's `Jog` and `Touch
 |---|---|
 | **MIDI channel** | The channel the controller sends on (on DJ controllers often the deck number) |
 | **Jog CC number** | CC number of the jog / knob (FLX4: 34, APC40 TRACK KNOB 1 / 5: 48 / 52) |
-| **Jog CC mode** | How the jog values are read (8 modes; listed below the table) |
+| **Jog CC mode** | How the jog values are read (9 modes; listed below the table) |
 | **Jog ticks per second at 1x** | Ticks per second that correspond to 1x playback. Smaller values move faster.<br>- DDJ-FLX4: `400`<br>- DDJ-FLX2: `256`<br>- Coarse encoders (about 24 clicks per turn): `20`–`40`<br>- The APC40's `TRACK KNOB` (`Absolute knob turned`): `120` |
 | **Fine ring CC** | CC number for fine adjustment (FLX4 outer ring: 33). 0 turns it off |
 | **Touch note** | Note number of the top touch sensor (FLX4: 54). Set to `0` on controllers without touch. |
@@ -2659,6 +2717,7 @@ The 8 **Jog CC mode** modes:
 - **Speed (CDJ MIDI)**: CDJ-2000NXS2 MIDI mode. The value is the turning speed (64 = still, 65–127 forward at 0.06–4x, 63–0 backward). Moves only while the top is touched, and the `Fine ring CC` (the side) is also read as speed
 - **Platter position (Denon)**: Denon DJ Prime 4 Computer Mode. Receives the platter position (14-bit, 0–16383) as `Jog CC number` (high) and the CC +22 (low), and reads the difference from the previous position as the amount turned
 - **Absolute knob turned (APC40)**: uses a knob that sends absolute values 0–127 (the APC40's `TRACK KNOB`) as a jog. The difference from the previous value is read as the amount turned, and when it nears an end (below 20 or above 107) the knob's value is sent back to 64, so you can keep turning in the same direction
+- **Platter counter (Rane Twelve)**: the Rane Twelve MKII in USB mode. While the platter turns it sends a count that runs 0–127 over and over; the difference from the previous value (joined across the wrap from 127 to 0) is read as the amount turned
 
 The numbers for pad modes, loops, the filter, BROWSE, CDJ buttons and so on are entered on the setup screen's `More` tab (group 13 of the parameter reference).
 
@@ -2689,7 +2748,8 @@ With many presets, ReaScratch lights the controller's pads and buttons.
 - **Buttons:** PLAY (while playing), CUE (while stopped), SYNC (while on), headphone CUE (while on)
 - **Controllers with colour lights:** Reloop Buddy, Ready, Mixon 8 Pro and Mixon 4; DDJ-800, DDJ-1000, DDJ-FLX10, DDJ-REV5, DDJ-SX3, XDJ-RX3 and XDJ-XZ; Hercules Inpulse 500; Denon DJ Prime 4, SC5000 and SC6000; APC40 mkII (the mkI has three colours: green, red and orange)
 - **On/off-only controllers:** controllers that cannot show colours (DDJ-FLX4, DDJ-FLX2, DDJ-400 and others, Numark, the other Hercules and so on) light the pads that have a hot cue
-- **Controllers that do not light:** CDJs (no way to light them over MIDI)
+- **Turntables:** The Pioneer DJ PLX-CRSS12, Reloop RP-8000 MK2 and Rane Twelve light up in colour (the Twelve's colour format is not confirmed). The original RP-8000 only turns on and off
+- **Controllers that do not light:** CDJs (no mechanism to light them via MIDI). The DVS (timecode vinyl / CD) preset has no unit to light
 - **When REAPER closes:** if the video sync script is running, all lights are turned off as REAPER closes (Windows; how it works is in the paragraph below)
 - **NI Traktor Kontrol connected over HID:** the bridge program lights them (see `ReaScratch LED` under [“HID controllers”](#hid-controllers-ni-traktor-kontrol-s4-s3-s2) below)
 
@@ -2791,6 +2851,32 @@ The report contains the OS and Python package versions, the self-check result, t
 - The left deck is deck A (MIDI channel 1) and the right deck is deck B (channel 2). The S4 MK3's deck C/D switching is not used.
 - The lights are PLAY, CUE, SYNC, headphone CUE, SHIFT, the pad mode buttons and the pads (hot cue colours, samples). Colours become the closest one the controller can show. Change the name of the port that receives the lights with `--led-port name`, and leave the lights alone with `--no-lights`
 - The tempo fader direction (which end is +) is unknown. If it is reversed, start the program with `--tempo-invert` (on Windows, in a Command Prompt: `ReaScratch-HID-Bridge.exe --tempo-invert`). If the jog is too fast or too slow, change the count per turn with `--s4-ticks` (default 2880) or `--s2-ticks` (default 600)
+
+### Connecting by DVS (timecode vinyl / CD, Pioneer DJ PLX-CRSS12)
+
+Play a timecode vinyl or CD on a turntable or CDJ, and the record's movement moves the deck (DVS). The Pioneer DJ PLX-CRSS12 in Digital Vinyl mode (`NEEDLE MODE`) converts platter movement into the same signal and outputs it from the rear `PHONO OUT`.
+
+- Supported timecodes: Serato (CV02 vinyl and CD), rekordbox, Traktor, MixVibes
+- Only the record's speed and direction are read (like Serato's REL mode). Wherever the needle drops, the deck moves on from where it is
+- You need an audio interface with at least two input channels (stereo). Both phono and line inputs work. The PLX-CRSS12 and turntables output at phono level, so the signal is low on a line input (if nothing is read, lower `Signal threshold`)
+- Ordinary turntables such as the Reloop RP-8000 MK2 work with timecode vinyl. The Rane Twelve MKII's DVS mode signal is expected to work too (untested)
+
+1. Connect the turntable's or CDJ's output to the audio interface's input (at first deck A reads inputs 1/2, deck B inputs 3/4)
+2. On the `scratch engine`'s setup screen, choose the `Preset` (deck B: `deck 2`)
+   - PLX-CRSS12: `Pioneer DJ PLX-CRSS12 (DVS) deck 1`
+   - RP-8000 MK2: `Reloop RP-8000 MK2 (DVS) deck 1`; original RP-8000: `Reloop RP-8000 (DVS) deck 1`
+   - Other gear: `DVS (timecode vinyl / CD) deck 1`
+3. With the video sync running, the track “DVS A in” (deck B: “DVS B in”) appears within about 2 seconds (running `reascratch_setup.lua` again also creates it). If the signal comes in on other inputs, change this track's recording input. The project remembers the input you chose
+4. In the track's FX (`DVS timecode to jog`), choose your timecode in `Timecode`. For the PLX-CRSS12, select `Serato / rekordbox (1 kHz)` (the unit's `APPLICATION` can be set to either Serato or rekordbox)
+5. Turn the record and check that the FX's `Signal level` is above about −40 dB and `Speed` reads about 1.00. If turning forward moves the deck backward, set `Direction` to `Reversed`; at 45 rpm set `Record speed` to `45 rpm`. If there is sound but nothing is read, lower `Signal threshold`
+
+- The deck follows the record. Stop the record by hand and the deck stops too, with the same sound as a held jog (the sound at that point repeating). With `Pitch mode` set toward Tape, a stopped record is silent
+- The jog is treated as touched at all times, so PLAY does not move it. Use the keyboard, the screen, or a second unit chosen as the `2nd controller` (for example the Reloop Buddy) for CUE, hot cues, and other controls
+- To stop reading, set the FX's `Reading` to `Off` (after `Auto release`, deck control returns to normal). Choosing another `Preset` removes the track
+- The latency from the record to the deck audio is the audio interface latency plus about 30 ms (measured during testing)
+- The pads on the PLX-CRSS12 and RP-8000 (original and MK2) work when connected over USB (see the notes by model)
+- The Web version (in a browser) also supports DVS: in a deck's `setup`, under “DVS”, choose the timecode input (the audio interface). The first time, the browser asks to allow the microphone (nothing is recorded)
+- Tested with a synthesized timecode (1 kHz like Serato, 2 kHz like Traktor) in REAPER. Not yet tested on real hardware (the PLX-CRSS12 or timecode vinyl)
 
 ---
 

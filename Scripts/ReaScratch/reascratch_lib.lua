@@ -4039,6 +4039,36 @@ local function tk_recorded(d)
   end
 end
 
+-- (⚪208) the take's records for the likeness judge (tools/q208): per deck its recorded sound and every block's REAPER
+-- position, frame shown ((slot - 1) x SLOT_SPAN + s of the sample, -1 = none), how late the sound is and crossfader gain
+-- (the position already moved by the lateness in tk_build), the files of the deck's slots, and the mix's sound
+local function tk_judge_json(file, decks, mix)
+  local function s(v) return '"' .. tostring(v):gsub('[\\"]', "\\%0"):gsub("[%c]", " ") .. '"' end
+  local function n(v) return v and string.format("%.6f", v) or "null" end
+  local function snd(x) return string.format('"wav": %s, "pos": %s, "offs": %s, "len": %s', s(x.wav or ""), n(x.pos), n(x.offs), n(x.len)) end
+  local out = { '{"version": 1, "slot_span": ' .. M.SLOT_SPAN .. ', "decks": [' }
+  for i, d in ipairs(decks) do
+    local slots = {}
+    local tr = M.find_engine(d.deck)
+    local names = tr and M.engine_samples(tr) or {}
+    for k = 1, M.SLOTS do
+      local wav = names[k]
+      if wav and wav ~= "" and not wav:find("(empty)", 1, true) then
+        local paths = {}
+        for _, p in ipairs(M.slot_paths(tr, d.deck, k, wav)) do paths[#paths + 1] = s(p) end
+        slots[#slots + 1] = '"' .. k .. '": [' .. table.concat(paths, ", ") .. "]"
+      end
+    end
+    local recs = {}
+    for _, r in ipairs(d.recs) do recs[#recs + 1] = string.format("[%.4f,%.4f,%.4f,%.4f]", r[1], r[2], r[3], r[4]) end
+    out[#out + 1] = (i > 1 and ", " or "") .. string.format('{"deck": %d, %s, "slots": {%s}, "recs": [%s]}',
+      d.deck, snd(d), table.concat(slots, ", "), table.concat(recs, ","))
+  end
+  out[#out + 1] = "]" .. (mix and (', "mix": {' .. snd(mix) .. "}") or "") .. "}\n"
+  local h = io.open(file, "w")
+  if h then h:write(table.concat(out)); h:close() end
+end
+
 local function tk_build(take)
   local live, live_path = reaper.EnumProjects(-1)
   local fps_proj = reaper.TimeMap_curFrameRate(0)
@@ -4069,6 +4099,7 @@ local function tk_build(take)
   local name = (live_path and live_path ~= "" and M.stem(live_path) or "untitled") .. "_" .. os.date("%Y%m%d_%H%M%S")
   reaper.RecursiveCreateDirectory(M.TAKE_DIR, 0)
   local path = M.TAKE_DIR .. M.SEP .. name .. ".rpp"
+  tk_judge_json(M.TAKE_DIR .. M.SEP .. name .. "_judge.json", decks, mix)   -- (before the new tab: it reads the live project)
   reaper.Main_OnCommand(40859, 0)                    -- New project tab
   local proj = reaper.EnumProjects(-1)
   local function track(nm)
@@ -4334,10 +4365,31 @@ local function po_presets()
   f:close()
   return po_list
 end
+-- ((⚪212) the turntables' ports are named as one word ("PLX-CRSS12", "RP8000MK2") or without the maker's words the preset
+-- has ("Pioneer DJ ...", "... (DVS)"): a preset whose name has one of these keys fits a port whose name, letters and
+-- digits only, has the key's port word; nothing else is tried for it. Not seen on the units (port names guessed from
+-- their manuals: the RP-8000 MK2 "RP8000MK2"; the others by their model names)
+local PO_ALIAS = { { "plx-crss12", "plxcrss12" }, { "rp-8000 mk2", "rp8000mk2" }, { "rp-8000 (dvs)", "rp8000" }, { "rane twelve", "twelve" } }
+local function po_alias(preset_name)
+  local n = (preset_name or ""):lower()
+  for _, a in ipairs(PO_ALIAS) do if n:find(a[1], 1, true) then return a[2] end end
+end
 function M.preset_output(preset_name, input)
+  local al = po_alias(preset_name)
+  if al then
+    for i = 0, (input and reaper.GetNumMIDIInputs() or reaper.GetNumMIDIOutputs()) - 1 do
+      local ok, name
+      if input then ok, name = reaper.GetMIDIInputName(i, "") else ok, name = reaper.GetMIDIOutputName(i, "") end
+      local n = ok and (name or ""):lower():gsub("[^%w]", "") or ""
+      local other = false   -- ((⚪213) "RP8000MK2" is the MK2's: not the first RP-8000's "rp8000")
+      for _, a in ipairs(PO_ALIAS) do if #a[2] > #al and a[2]:find(al, 1, true) and n:find(a[2], 1, true) then other = true end end
+      if ok and not other and n:find(al, 1, true) then return i, name end
+    end
+    return nil
+  end
   local groups = po_groups(preset_name)
   local first = groups[1] and groups[1][1]
-  if not first or first == "custom" or first == "flx4" or first == "none" then return nil end
+  if not first or first == "custom" or first == "flx4" or first == "none" or first == "dvs" then return nil end
   local best_i, best_name, best_s
   for i = 0, (input and reaper.GetNumMIDIInputs() or reaper.GetNumMIDIOutputs()) - 1 do
     local ok, name
@@ -4499,6 +4551,136 @@ function M.cx_apply(engines)
     (in1 and "" or M.T("（1台目の入力を機種名から決められないので、デッキは全MIDI入力にしました。2台目の信号もデッキに直接届いて二重になることがあります）",
       " (the first controller's input could not be told from its preset, so the decks take all MIDI inputs: the second controller's MIDI may also reach them directly, twice)")),
     not in1   -- ((⚪151) a 4th value: the message warns (the video sync shows it also when started quietly)
+end
+
+-- (⚪215, user's request and choices 2026-10-24) the Preset from the connected controller, as the Web version does: a
+-- MIDI input whose name fits a preset (the same words as the lights' output: po_alias, po_score) gives the decks its
+-- "deck 1" / "deck 2" (or "(MIDI ch 1)" / "(MIDI ch 2)"), but only a deck whose Preset is Custom (one chosen by hand
+-- stays). With two such controllers, the one with a jog takes the Preset and an APC40 (mkII / mkI: no jog) the "2nd
+-- controller" (when that is none). ports = the input names to look at (nil = every MIDI input). Returns the number of
+-- changes and a message. The setup calls it with every input; the video sync with the inputs that came since it last
+-- looked (an input already there when it starts is left alone: a Custom set by hand with that controller stays)
+local ap_names
+local function ap_list()   -- the Preset slider's names, index = its value
+  if ap_names then return ap_names end
+  ap_names = {}
+  local f = io.open(M.RES .. M.SEP .. "Effects" .. M.SEP .. M.JSFX:gsub("/", M.SEP), "r")
+  if not f then return ap_names end
+  for line in f:lines() do
+    local l = line:match("^slider1:[^{]*{(.*)}")
+    if l then for nm in l:gmatch("[^,]+") do ap_names[#ap_names + 1] = nm end break end
+  end
+  f:close()
+  return ap_names
+end
+-- the deck 1 preset whose name fits the port best: value (deck 1), its name; nil when none
+function M.preset_for_port(port)
+  local n = (port or ""):lower():gsub("[^%w]", "")
+  local best, bname, bs
+  for i, nm in ipairs(ap_list()) do
+    local plain = nm:gsub("^[^%w]+", "")
+    local d1 = plain:match("deck 1$") or plain:match("%(MIDI ch 1%)$")
+    local low = plain:lower()
+    if d1 and not low:find("^custom") and not low:find("emu") and not low:find("^dvs") then
+      local s
+      local al = po_alias(plain)
+      if al then
+        local other = false
+        for _, a in ipairs(PO_ALIAS) do if #a[2] > #al and a[2]:find(al, 1, true) and n:find(a[2], 1, true) then other = true end end
+        s = (not other and n:find(al, 1, true)) and 100 + #al or nil
+      else
+        s = po_score(po_groups(plain), port or "")
+      end
+      if s and (not bs or s > bs) then best, bname, bs = i - 1, plain, s end
+    end
+  end
+  return best, bname
+end
+function M.auto_preset(engines, ports)
+  if not ports then
+    ports = {}
+    for i = 0, reaper.GetNumMIDIInputs() - 1 do
+      local ok, nm = reaper.GetMIDIInputName(i, "")
+      if ok and nm ~= "" then ports[#ports + 1] = nm end
+    end
+  end
+  local jog, apc
+  for _, port in ipairs(ports) do
+    local v, nm = M.preset_for_port(port)
+    if v then
+      if nm:find("^APC40") then apc = apc or { v, nm, port } else jog = jog or { v, nm, port } end
+    end
+  end
+  local main, second = jog or apc, jog and apc or nil
+  if not main then return 0 end
+  local n, said = 0, {}
+  for d = 1, 2 do
+    local e, f = engines[d] and engines[d][1], engines[d] and engines[d][2]
+    if e and f and reaper.ValidatePtr2(0, e, "MediaTrack*") then
+      local pp, p2 = M.param_index(e, f, "Preset"), M.param_index(e, f, "2nd controller")
+      local cur = pp and math.floor(reaper.TrackFX_GetParam(e, f, pp) + 0.5)
+      if cur == 0 then
+        reaper.TrackFX_SetParam(e, f, pp, main[1] + d - 1); n = n + 1; cur = main[1] + d - 1
+        said[#said + 1] = ("deck %s = %s"):format(d == 2 and "B" or "A", main[2]:gsub("deck 1$", "deck " .. d):gsub("ch 1%)$", "ch " .. d .. ")"))
+      end
+      -- (the APC40 as the 2nd controller: under a jog controller's Preset, when none is set yet)
+      if second and p2 and cur and cur ~= 0 and math.floor(reaper.TrackFX_GetParam(e, f, p2) + 0.5) == 0 then
+        local nm = (ap_list()[cur + 1] or ""):gsub("^[^%w]+", "")
+        if not nm:find("^APC40") then
+          reaper.TrackFX_SetParam(e, f, p2, second[1] + d - 1); n = n + 1
+          said[#said + 1] = ("deck %s 2nd controller = %s"):format(d == 2 and "B" or "A", second[2]:gsub("deck 1$", "deck " .. d))
+        end
+      end
+    end
+  end
+  if n == 0 then return 0 end
+  return n, M.T("コントローラーに合わせてプリセットを選びました: ", "Preset from the connected controller: ") .. table.concat(said, ", ")
+end
+
+-- (⚪209, the tester's request 2026-10-24: the Pioneer DJ PLX-CRSS12) DVS: a deck whose Preset is a DVS one ("DVS (timecode
+-- vinyl / CD)", "Pioneer DJ PLX-CRSS12 (DVS)", "Reloop RP-8000 MK2 (DVS)") reads the record from a track "DVS A in" / "DVS B in": its input = a stereo pair of the audio interface
+-- (where the turntable / CDJ with a timecode vinyl / CD, or the PLX-CRSS12's PHONO OUT, comes in; first made on in 1/2
+-- for deck A and in 3/4 for deck B, then the user's choice is kept: also in the project, when the track goes and comes
+-- back), armed with monitoring (the tone goes nowhere: the JSFX makes it silent, no master send), the DVS JSFX on it
+-- (reascratch_dvs.jsfx: the deck's channel), its MIDI sent to the engine. Another Preset: the track goes.
+-- engines = { { track, fx }, ... } (deck A, deck B). Returns changed, a message
+M.TRACK_DVS, M.DVS_JSFX = { "DVS A in", "DVS B in" }, "ReaScratch/reascratch_dvs.jsfx"
+function M.dvs_apply(engines)
+  local ch, msg = false, nil
+  for d = 1, 2 do
+    local e, f = engines[d] and engines[d][1], engines[d] and engines[d][2]
+    local on = false
+    if e and f and reaper.ValidatePtr2(0, e, "MediaTrack*") then
+      local pp = M.param_index_cached(e, f, "Preset")
+      local pn = pp and select(2, reaper.TrackFX_GetFormattedParamValue(e, f, pp, "")) or ""
+      on = pn:find("DVS", 1, true) ~= nil   -- (DVS (timecode vinyl / CD), PLX-CRSS12 (DVS), RP-8000 MK2 (DVS))
+    end
+    local key = "dvs_in_" .. (d == 2 and "B" or "A")
+    local dv = M.track_by_name(M.TRACK_DVS[d])
+    if not on and dv then
+      reaper.SetProjExtState(0, "ReaScratch", key, ("%d"):format(math.floor(reaper.GetMediaTrackInfo_Value(dv, "I_RECINPUT"))))
+      reaper.DeleteTrack(dv); ch = true
+      msg = (msg and msg .. "; " or "") .. ("DVS: %s removed"):format(M.TRACK_DVS[d])
+    elseif on then
+      local made
+      dv, made = M.ensure_track(M.TRACK_DVS[d])
+      if made then
+        local _, kept = reaper.GetProjExtState(0, "ReaScratch", key)
+        cx_set(dv, "I_RECINPUT", tonumber(kept) or (1024 + (d - 1) * 2))   -- 1024 = a stereo pair, + its first input
+        msg = (msg and msg .. "; " or "") .. M.T(("DVS: %s を作りました（入力はオーディオインターフェースの %s。違うときはトラックの録音入力を変えてください）"):format(M.TRACK_DVS[d], d == 2 and "3/4" or "1/2"),
+          ("DVS: made %s (input = the audio interface's in %s; change the track's record input if the record comes in elsewhere)"):format(M.TRACK_DVS[d], d == 2 and "3/4" or "1/2"))
+        ch = true
+      end
+      ch = cx_set(dv, "B_MAINSEND", 0) or ch
+      ch = cx_set(dv, "I_RECMODE", 2) or ch   -- (records nothing: monitor only)
+      ch = cx_set(dv, "I_RECARM", 1) or ch
+      ch = cx_set(dv, "I_RECMON", 1) or ch
+      local df = reaper.TrackFX_AddByName(dv, "JS:" .. M.DVS_JSFX, false, 1)
+      if df >= 0 and math.floor(reaper.TrackFX_GetParam(dv, df, 5) + 0.5) ~= d then reaper.TrackFX_SetParam(dv, df, 5, d); ch = true end
+      ch = cx_send(dv, e, 0) or ch
+    end
+  end
+  return ch, msg
 end
 
 

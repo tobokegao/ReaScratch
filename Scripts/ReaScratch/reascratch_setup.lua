@@ -232,8 +232,17 @@ end
 do
   local ea, fa = L.find_engine(1)
   local eb, fb = L.find_engine(2)
+  -- (⚪215) a deck still on Custom: the Preset of the controller that is connected (an APC40 beside a jog controller as
+  -- the 2nd controller); before the two controllers' tracks and the DVS tracks, which follow the Presets
+  -- (REASCRATCH_TEST.no_auto: the isolated tests, whose REAPER sees the developer's own controllers, keep Custom)
+  if not (REASCRATCH_TEST and REASCRATCH_TEST.no_auto) then
+    local _, ap_msg = L.auto_preset({ { ea, fa }, { eb, fb } })
+    if ap_msg then L.log(ap_msg) end
+  end
   local _, _, cx_msg = L.cx_apply({ { ea, fa }, { eb, fb } })
   if cx_msg then L.log(cx_msg) end
+  local _, dv_msg = L.dvs_apply({ { ea, fa }, { eb, fb } })   -- (⚪209) a deck on the DVS preset: its input track
+  if dv_msg then L.log(dv_msg) end
 end
 -- headphone cue: the "Cue" track (decks' cue + main, the Cue mix knob) straight to the headphone output
 local _, cue_out = L.cue_prepare()

@@ -1,0 +1,95 @@
+desc: DVS timecode to jog (timecode vinyl / CD, Pioneer DJ PLX-CRSS12)
+//tags: reascratch dvs timecode turntable
+//author: ReaScratch
+//
+// (⚪209) Reads a DVS control tone (the stereo signal of a timecode vinyl or CD, or the Serato control tone that the
+// Pioneer DJ PLX-CRSS12 sends from its PHONO OUT in Digital Vinyl mode) from the track's audio input and turns the
+// record's movement into jog MIDI for a ReaScratch deck. The setup script puts it on a track "DVS A in" / "DVS B in"
+// (record armed, input = the audio interface's pair, monitoring on) whose MIDI goes to the deck's engine track
+// (a send: MIDI only). The deck's preset "DVS (timecode, PLX-CRSS12)" reads it: relative jog CC 34 on the deck's
+// channel (two's complement), 8000 ticks a second at 1x, no touch note (any jog message = touched).
+// The name must not contain "ReaScratch" (reascratch_lib.lua finds the engine by that name).
+//
+// Relative mode only (the record's speed and direction; the bits that give the absolute place are not read): the
+// carrier is a quadrature tone (1 kHz at 33 1/3 rpm for Serato and rekordbox, 2 kHz Traktor, 1.3 kHz MixVibes), one
+// channel 90 degrees from the other; its phase atan2(L, R) turns once a carrier cycle, forward one way, backward the
+// other. The phase is followed sample by sample (the amplitude, which carries the bits, drops out of atan2), so a turn
+// of the record is read to a fraction of a cycle. Written from the signal's description, not from another decoder's code.
+// (⚪214) Which way is forward, from xwax's timecoder.c (its direction test copied into Python, tools/q214/xwax_dir.py):
+// Serato, rekordbox and Traktor go forward while atan2(L, R) grows; MixVibes the other way (its SWITCH_PHASE alone), so
+// with MixVibes chosen the direction is turned round here and Direction Normal still means forward.
+//
+// While "Reading" is on it sends a jog message at least every 20 ms (0 = still), so the deck stays touched: the deck
+// follows the record (a record held still = the deck still, as with a hand on a jog). Off = it sends nothing: after the
+// deck's Auto release the deck plays by itself again.
+
+slider1:1<0,1,1{Off,On}>Reading
+slider2:0<0,2,1{Serato / rekordbox (1 kHz),Traktor (2 kHz),MixVibes (1.3 kHz)}>Timecode
+slider3:0<0,1,1{33 1/3 rpm,45 rpm}>Record speed
+slider4:0<0,1,1{Normal,Reversed (swap if forward plays backward)}>Direction
+slider5:-50<-80,-10,1>Signal threshold (dB)
+slider6:1<1,16,1>MIDI channel (the deck's)
+slider7:34<0,127,1>Jog CC
+slider10:0<-20,20,0.001>Speed (x, read only)
+slider11:-150<-150,0,0.1>Signal level (dB, read only)
+slider12:0<0,100000000,1>-Ticks sent (read)
+
+in_pin:left
+in_pin:right
+out_pin:left
+out_pin:right
+
+@init
+ext_noinit = 1;   // REAPER's play / seek must not reset the count (the deck would jump)
+TPS = 8000;       // jog ticks a second at 1x (the preset's "Jog ticks per second")
+dv_pl = 0; dv_pr = 0; dv_xl = 0; dv_xr = 0;   // DC blockers
+dv_ph = 0; dv_cyc = 0; dv_sent = 0;             // last phase, cycles moved (unwrapped), ticks sent
+dv_env = 0; dv_spd = 0; dv_last = 0; dv_si = 0;
+dv_hp = exp(-2 * $pi * 5 / srate);             // 5 Hz: the record's rumble and the input's DC, below a slow scratch's carrier
+dv_ea = 1 - exp(-1 / (0.02 * srate));          // level, 20 ms
+dv_sa = 1 - exp(-1 / (0.05 * srate));          // shown speed, 50 ms
+
+// the ticks owed: sent in 63s at most (two's complement CC: 1..63 forward, 127..65 backward)
+function dv_flush(o) local(t, d) (
+  t = floor(dv_cyc * TPS / dv_f0 + 0.5);
+  d = t - dv_sent;
+  d != 0 || o - dv_last >= 0.02 * srate ? (
+    d == 0 ? midisend(o, 0xB0 | dv_ch, slider7, 0) :
+    while (d != 0) (
+      t = max(-63, min(63, d));
+      midisend(o, 0xB0 | dv_ch, slider7, t < 0 ? 128 + t : t);
+      dv_sent += t; d -= t; slider12 += abs(t);
+    );
+    dv_last = o;
+  );
+);
+
+@slider
+dv_f0 = (slider2 == 1 ? 2000 : slider2 == 2 ? 1300 : 1000) * (slider3 ? 1.35 : 1);
+dv_thr = 10 ^ (slider5 / 20);
+
+@block
+dv_si = 0;
+dv_ch = max(0, min(15, slider6 - 1));
+
+@sample
+// DC blocked
+dv_xl = spl0 - dv_pl + dv_hp * dv_xl; dv_pl = spl0;
+dv_xr = spl1 - dv_pr + dv_hp * dv_xr; dv_pr = spl1;
+dv_a = sqrt(dv_xl * dv_xl + dv_xr * dv_xr);
+dv_env += (dv_a - dv_env) * dv_ea;
+dv_p = slider4 != (slider2 == 2) ? atan2(dv_xr, dv_xl) : atan2(dv_xl, dv_xr);   // (MixVibes: the other way, see the top)
+dv_d = dv_p - dv_ph; dv_ph = dv_p;
+dv_d > $pi ? dv_d -= 2 * $pi : dv_d < -$pi ? dv_d += 2 * $pi;
+// below the threshold the phase is noise: the record stands (or the needle is up)
+dv_m = slider1 && dv_a > dv_thr && dv_env > dv_thr ? dv_d / (2 * $pi) : 0;
+dv_cyc += dv_m;
+dv_spd += (dv_m * srate / dv_f0 - dv_spd) * dv_sa;
+slider1 && ((dv_si & 15) == 15 || dv_si == samplesblock - 1) ? dv_flush(dv_si);
+dv_si += 1;
+dv_si == samplesblock ? (
+  dv_last -= samplesblock;   // dv_last counts from the next block's start
+  slider10 = dv_spd;
+  slider11 = dv_env > 0 ? max(-150, 20 * log10(dv_env)) : -150;
+);
+spl0 = spl1 = 0;   // the tone is not heard
