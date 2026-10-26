@@ -6,6 +6,7 @@
 
 **Contents**
 
+- [0.7.6 (2026-10-26)](#076-2026-10-26)
 - [0.7.5 (2026-10-24)](#075-2026-10-24)
 - [0.7.4 (2026-10-22)](#074-2026-10-22)
 - [0.7.3 (2026-10-21)](#073-2026-10-21)
@@ -20,6 +21,14 @@
 - [0.1 (2026-10-02)](#01-2026-10-02)
 
 The main changes in each version, newest first.
+
+### 0.7.6 (2026-10-26)
+
+- With SYNC on, starting a stopped deck with a hot cue or by holding CUE now also lines it up with the other deck's beat (before, only PLAY did). When the cue is at the very start of the sample (0 s), it lines up one beat later
+- With Quantize on, touching the platter or searching while PLAY waits for the next bar now cancels the wait
+- Pressing a hot cue or CUE while PAUSE quantize waits to stop now gives priority to the later press (before, the deck stopped and then jumped at once, off the beat)
+- Fixed waits that could be left over when buttons were pressed almost at the same time, making the deck start or stop on its own later
+- The web version has the same fixes
 
 ### 0.7.5 (2026-10-24)
 

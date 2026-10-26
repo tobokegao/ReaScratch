@@ -1510,6 +1510,8 @@ function sy_bpm(ob) local(r, p) (
 function sy_beat(ob_b) local(d) (
   d = ob_b * te_k - gb_b(head);
   d -= floor(d + 0.5);
+  // ((⚪218) at the sample's start (a CUE at 0) there is no room to go back: a beat later instead; at its end, earlier
+  gb_p(gb_b(head) + d) < 0 ? d += 1 : gb_p(gb_b(head) + d) > len - 1 ? d -= 1;
   abs(d) > 0.002 ? jump_to(gb_p(gb_b(head) + d));
 );
 function te_follow() ( sy_bpm(te_obpm); );
@@ -1613,7 +1615,9 @@ function te_zone(raw) local(z, d) (
   z <= 0 ? raw : abs(d) <= z ? 8192 : 8192 + sign(d) * (abs(d) - z) * (d > 0 ? 8191 : 8192) / ((d > 0 ? 8191 : 8192) - z);
 );
 function te_in(raw) ( te_cc(te_zone(CV[119] ? 16383 - raw : raw)); );   // slider 119: a fader whose 127 is the + side (CDJ)
-function play_on(on) ( slider3 = on; sliderchange(slider3); spin_on = 0; run_at(on ? te_1x() : 0); );
+// ((⚪218) started some other way: a quantized PLAY still waiting is done with (else a stop in the same block started the
+// deck again at the other deck's next bar); stopped some other way: so is a quantized PAUSE)
+function play_on(on) ( slider3 = on; sliderchange(slider3); spin_on = 0; run_at(on ? te_1x() : 0); on ? pq_wait = 0 : pz_wait = 0; );
 // spin_to(on, a): set the transport and let the head go from its present speed to the new one at a (frames / sample
 // per sample) instead of at once: brake (PLAY to stop) and start (PLAY to play). a = 0 or a hand on the platter: at once
 function spin_to(on, a) (
@@ -1819,7 +1823,8 @@ function hc_go(n, first) local(c) (   // hot cue n: jump there and play (q_off: 
     bl_a = max(0, min(len - 2, c)); bl_b = min(len - 1, bl_a + bl_beats * bl_beat());
     bl_on = 1; bl_has = 1; bl_roll = 0; bl_pad = -1; bl_fit();
   );
-  !slider3 ? play_on(1);
+  // ((⚪218) from stop with SYNC: onto the other deck's beat, as PLAY does)
+  !slider3 ? (slider91 ? sy_align(); play_on(1));
 );
 function q_fire(on_beat) local(a) (   // do the waiting jump (on_beat = 0: cut short by stop / touch / search)
   a = q_act; q_act = 0;
@@ -1834,6 +1839,9 @@ function q_fire(on_beat) local(a) (   // do the waiting jump (on_beat = 0: cut s
 function q_set(act, n, first) local(bf, b) (
   bf = floor(gb_b(head)); b = gb_p(bf);   // the beat at or before the head
   q_act = act; q_n = n; q_first = first;
+  // ((⚪218) a jump asked for while a quantized PAUSE waits: the later press rules (a PAUSE on a 1/2 or 1/4 beat stopped
+  // first, and the waiting jump then went at once, off the beat)
+  pz_wait = 0; pz_cnt = 0;
   head - b < Q_LATE * fsr ? (q_at = b; q_fire(1)) : (q_at = gb_p(bf + 1); q_at >= len - 1 ? q_fire(0));
 );
 function hc_press(n) local(p, first) (
@@ -1959,8 +1967,10 @@ function pz_ready() ( slider40 == 0 && slider233 > 0 && slider3 && !tch && !ui_s
 // press up to Q_LATE s after its bar = at once). The bar, not the beat: starting on beat 2 sounded off (user 2026-10-21).
 // PLAY again while waiting = never mind. No other deck playing: at once.
 function pq_frac() local(b) ( b = gmem[te_ob + 2] / 4; b - floor(b); );
+// ((⚪218) PLAY while a jump waits for its beat = never mind the jump (as the web version), and it plays on from here (a way
+// back with slip too, as PLAY while holding a hot cue goes on from here); a PAUSE no longer waits beside it
 function play_btn() (
-  hc_held ? hc_keep = 1 : cue_prev ? cue_keep = 1 : pq_wait ? pq_wait = 0 : pz_wait ? (pz_wait = 0; pz_cnt = 0) :
+  hc_held ? hc_keep = 1 : cue_prev ? cue_keep = 1 : pq_wait ? pq_wait = 0 : pz_wait ? (pz_wait = 0; pz_cnt = 0) : q_act ? (q_act == 3 ? slip_on = 0; q_act = 0) :
   pz_ready() && (pz_grid(); pz_src > 0 && pz_f * pz_sps > Q_LATE) ? (pz_wait = 1; pz_last = pz_f) :
   !slider3 && slider40 == 0 && slider63 > 0 && len > 0 && te_obpm > 0 && gmem[te_ob + 6] && pq_frac() * 240 / te_obpm > Q_LATE ?
     (pq_wait = 1; pq_last = pq_frac()) : play_go();
@@ -1971,7 +1981,8 @@ function cue_press() (
     q_ready() ? q_set(4, 0, 0) : (jump_to(slider4 * fsr); play_on(0)); cue_prev = 0;
   ) : len > 0 ? (
     abs(head - slider4 * fsr) > 0.002 * fsr ? (slider4 = head / fsr; lastcue = slider4; sliderchange(slider4));   // already here: no jump
-    cue_prev = 1; cue_keep = 0; play_on(1);
+    // ((⚪218) with SYNC the preview starts on the other deck's beat, as PLAY does)
+    cue_prev = 1; cue_keep = 0; slider91 ? sy_align(); play_on(1);
   );
 );
 function cue_release() (
@@ -5400,6 +5411,8 @@ rt_ps = play_state & 1; rt_ps && !rt_was && slider91 && slider231 == 1 && slider
 gmem[slider76 == 2 ? 114 : 113] = slider231;
 // a waiting quantized PLAY: start when the other deck's bar comes round (or at once if it stopped / Q went off)
 pq_wait ? (
+  // ((⚪218) a touch or a search drops it, as it drops the waiting jumps and PAUSE)
+  tch || ui_seek ? pq_wait = 0 :
   !(te_obpm > 0 && gmem[te_ob + 6]) || slider40 != 0 || slider3 ? (pq_wait = 0; !slider3 ? play_go()) : (
     pq_f = pq_frac(); pq_f < pq_last - 0.5 ? (pq_wait = 0; play_go()) : pq_last = pq_f;
   );

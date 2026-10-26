@@ -226,7 +226,7 @@ Memory cue positions are not parameters; they are saved in the project as the JS
 | **Spinback MIDI channel (0=none)** | 0 | MIDI channel of the spinback button. 0 = not used (off by default, because the DDJ-FLX4 has no dedicated button) |
 | **Spinback note** | 0 | Note number of the spinback button |
 
-**PAUSE quantize**: A press up to 0.03 s after a grid line stops at once. With a brake, the brake starts at the grid line. Pressing PLAY again while waiting keeps playing without stopping (touching, searching or CUE also cancel it). On a loop shorter than the grid step, it stops when the loop returns to its start.
+**PAUSE quantize**: A press up to 0.03 s after a grid line stops at once. With a brake, the brake starts at the grid line. Pressing PLAY again while waiting keeps playing without stopping (touching, searching, CUE or a hot cue also cancel it). On a loop shorter than the grid step, it stops when the loop returns to its start.
 
 The pitch follows the bar at the bottom (`pitch ─ tape`). Towards `pitch` the pitch does not change and the grains slowly advance and stop; for the pitch-dropping slowdown effect, move the bar towards `tape`. Touching again, or CUE, a hot cue or a search, ends the slowdown and the spinback.
 
@@ -249,9 +249,9 @@ The pitch follows the bar at the bottom (`pitch ─ tape`). Towards `pitch` the 
 | **SYNC note (note+8 = tempo range; 0=none)** | 88 | Note number of the SYNC button (on the deck's MIDI channel; DDJ-FLX4 `BEAT SYNC`: 88). This number + 8 switches the tempo range (`SHIFT` + `BEAT SYNC`: 96). 0 = not used. On the setup `Touch & buttons` tab |
 | **REAPER tempo** | Off | Sync with REAPER's own tempo (per deck): **SYNC follows REAPER** or **REAPER follows this deck** (the difference is below the table). One deck cannot do both |
 
-**Quantize**: Jumps land on the same spot within the beat, so the beat is not broken. A press up to 0.03 s after a beat jumps immediately (pressing slightly late does not make you wait a whole beat). If the other deck is playing, pressing PLAY while stopped waits for the start of its next bar (every 4 beats from its beat grid) before playback starts (press again while waiting to cancel; if the other deck is stopped, playback starts immediately). The value order is On = 0, Off = 1 (in older projects this slot held the record-display setting).
+**Quantize**: Jumps land on the same spot within the beat, so the beat is not broken. A press up to 0.03 s after a beat jumps immediately (pressing slightly late does not make you wait a whole beat). Pressing PLAY while a jump waits cancels the jump and keeps playing. If the other deck is playing, pressing PLAY while stopped waits for the start of its next bar (every 4 beats from its beat grid) before playback starts. Pressing again, touching the platter or searching while waiting cancels it (if the other deck is stopped, playback starts immediately). The value order is On = 0, Off = 1 (in older projects this slot held the record-display setting).
 
-**Sync**: The beat positions can be off by up to one audio block because of the order in which the decks are processed.
+**Sync**: Starting from a stop, by PLAY, a hot cue or CUE (while held), lines the beat up with the other deck. The beat positions can be off by up to one audio block because of the order in which the decks are processed.
 
 **BPM**: A clip of 20 seconds or less (a drum loop, for example) gets the tempo that fits a whole number of beats into its length. Since a loop plays at the speed determined by its length, decimal BPMs are kept. When a BPM with decimals does not fit the sample's length, the front page's label reads `bpm?`. In setup, the mouse wheel moves it by 0.1 (by 1 with Shift). Click the front page's `bpm` box while stopped, or Shift+click it, to type it (Enter = set, Esc = cancel; it is the sample's BPM, whatever the tempo).
 
